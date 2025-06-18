@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <meta-data
+                android:name="rxmodule"
+                android:value="true" />
+        <meta-data
+                android:name="rxposed_clsentry"
+                android:value="io.github.duzhaokun123.loader.rxposed.LoadEntry" />
+        <meta-data
+                android:name="rxposed_mtdentry"
+                android:value="entry" />
+        <meta-data
+                android:name="rxposed_hide"
+                android:value="false" />
+    </application>
+</manifest>
