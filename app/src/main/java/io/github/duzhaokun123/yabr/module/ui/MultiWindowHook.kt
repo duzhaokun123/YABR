@@ -10,11 +10,11 @@ import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
 import io.github.duzhaokun123.yabr.utils.findAllMethods
 
 @ModuleEntry(
-    id = "multi_window_hook",
+    id = "fake_non_multi_window_hook",
     targets = [ModuleEntryTarget.MAIN]
 )
-object MultiWindowHook : BaseModule(), UISwitch, SwitchModule {
-    override val name = "多窗口支持"
+object FakeNonMultiWindowHook : BaseModule(), UISwitch, SwitchModule {
+    override val name = "假装不是多窗口"
     override val description = "允许非全屏下的一些操作"
     override val category = UICategory.UI
 

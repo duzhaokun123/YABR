@@ -53,6 +53,7 @@ object UICategory {
     const val TOOL = "tool"
     const val UI = "ui"
     const val ABOUT = "about"
+    const val FUN = "fun"
 }
 
 @ModuleEntry(
@@ -61,7 +62,7 @@ object UICategory {
 )
 object SettingsUI : BaseModule(), Core, DexKitContext {
     const val START_SETTING_KEY = "biliroaming_start_setting"
-    const val SETTINGS_ID = 23232323
+    const val SETTINGS_ID = 23232323L
     const val SETTINGS_URI = "bilibili://yabr_settings"
     const val ACTION_SETTINGS = "io.github.duzhaokun123.yabr.action.SETTINGS"
 
@@ -278,9 +279,7 @@ object SettingsUI : BaseModule(), Core, DexKitContext {
                     message.appendLine("Name: ${module.name}")
                     message.appendLine("Description: ${module.description}")
                     message.appendLine("Implementation: ${module.javaClass.interfaces.joinToString(", ") { it.simpleName }}")
-                    if (module is SwitchModule) {
-                        message.appendLine("Enabled: ${module.isEnabled}")
-                    }
+                    message.appendLine("Enabled: ${if (module is SwitchModule) module.isEnabled else "always"}")
                     if (module is Compatible) {
                         message.appendLine("Compatible: ${module.checkCompatibility() ?: "OK"}")
                     }

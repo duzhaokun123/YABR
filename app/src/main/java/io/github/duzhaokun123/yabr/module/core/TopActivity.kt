@@ -18,6 +18,9 @@ object TopActivity: BaseModule(), Core {
 
     /**
      * 不考虑 multi resume, 总是最后一个 resume 的 Activity
+     * 在多窗口下会有问题
+     *
+     * 导致 activity 泄露
      */
     var topActivity: Activity? = null
         private set
