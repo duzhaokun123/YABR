@@ -95,7 +95,7 @@ object ThreePointHook : BaseModule(), Core, DexKitContext {
                 }
             }
         loadClassOrNull("com.bilibili.pegasus.ext.threepoint.ThreePointKt")
-            ?.findMethodOrNull(findSuper = false) { it.paramCount == 8 }
+            ?.findMethodOrNull(findSuper = false) { it.paramCount >= 4 && it.parameterTypes[3] == class_DislikeReason }
             ?.hookBefore {
                 if (hookDislikeReason(it.args[3])) {
                     it.result = null
