@@ -17,7 +17,8 @@ fun Class<*>.findFieldOrNull(findSuper: Boolean = true, filter: (Field) -> Boole
 }
 
 fun Class<*>.findField(findSuper: Boolean = true, filter: (Field) -> Boolean): Field {
-    return findFieldOrNull(findSuper, filter) ?: throw NoSuchFieldException("No field found in ${this.name}")
+    return findFieldOrNull(findSuper, filter)
+        ?: throw NoSuchFieldException("No field found in ${this.name}")
 }
 
 fun Any.getFieldValue(field: Field): Any? {
@@ -43,6 +44,12 @@ fun <T> Any.getFieldValueAs(name: String, findSuper: Boolean = true): T {
     return getFieldValue(name, findSuper) as T
 }
 
+
+@Suppress("UNCHECKED_CAST")
+fun <T> Any.getFieldValueAs(field: Field): T {
+    return getFieldValue(field) as T
+}
+
 @Suppress("UNCHECKED_CAST")
 fun <T> Any.getFieldValueOrNullAs(name: String, findSuper: Boolean = true): T? {
     return getFieldValueOrNull(name, findSuper) as T?
@@ -62,4 +69,15 @@ fun Any.setFieldValueOrNull(name: String, value: Any?, findSuper: Boolean = true
     runCatching {
         setFieldValue(name, value, findSuper)
     }
+}
+
+fun Class<*>.getStaticFieldValue(name: String, findSuper: Boolean = true): Any? {
+    val field = findField(findSuper) { it.name == name }
+    field.isAccessible = true
+    return field.get(null)
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <T> Class<*>.getStaticFieldValueAs(name: String, findSuper: Boolean = true): T {
+    return getStaticFieldValue(name, findSuper) as T
 }

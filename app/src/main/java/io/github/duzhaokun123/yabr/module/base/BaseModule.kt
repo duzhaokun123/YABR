@@ -13,10 +13,10 @@ import java.lang.reflect.Member
 
 abstract class BaseModule {
     val logger = object : Logger {
-        override fun log(
-            level: Logger.Level, message: Any?
+        override fun writeText(
+            level: Logger.Level, text: String
         ) {
-            AndroidLogger.log(level, "[$id] $message")
+            AndroidLogger.writeText(level, "[$id] $text")
         }
     }
     val id: String

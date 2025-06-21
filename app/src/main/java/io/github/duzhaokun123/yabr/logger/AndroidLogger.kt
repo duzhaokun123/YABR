@@ -4,17 +4,14 @@ import android.util.Log
 
 object AndroidLogger : Logger {
     const val TAG = "YABR"
-    override fun log(level: Logger.Level, message: Any?) {
-        if (message is Throwable) {
-            log(level, message.stackTraceToString())
-        } else {
-            when (level) {
-                Logger.Level.VERBOSE -> Log.v(TAG, message.toString())
-                Logger.Level.DEBUG -> Log.d(TAG, message.toString())
-                Logger.Level.INFO -> Log.i(TAG, message.toString())
-                Logger.Level.WARN -> Log.w(TAG, message.toString())
-                Logger.Level.ERROR -> Log.e(TAG, message.toString())
-            }
+
+    override fun writeText(level: Logger.Level, text: String) {
+        when (level) {
+            Logger.Level.VERBOSE -> Log.v(TAG, text)
+            Logger.Level.DEBUG -> Log.d(TAG, text)
+            Logger.Level.INFO -> Log.i(TAG, text)
+            Logger.Level.WARN -> Log.w(TAG, text)
+            Logger.Level.ERROR -> Log.e(TAG, text)
         }
     }
 }

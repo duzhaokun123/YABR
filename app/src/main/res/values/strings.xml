@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="res_inject_success" translatable="false">Resources injection success</string>
+</resources>

@@ -1,11 +1,10 @@
 package io.github.duzhaokun123.yabr.utils
 
 import android.os.Build
-import io.github.duzhaokun123.yabr.module.core.TopActivity
 import java.io.InputStream
 
 fun getResId(name: String): Int {
-    val context = TopActivity.topActivity ?: loaderContext.application
+    val context = loaderContext.application
     return context.resources.getIdentifier(name, "id", context.packageName)
 }
 

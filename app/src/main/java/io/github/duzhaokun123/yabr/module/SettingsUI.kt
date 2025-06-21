@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
-import android.widget.ListView
 import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.Switch
@@ -31,7 +30,7 @@ import io.github.duzhaokun123.yabr.module.base.UISwitch
 import io.github.duzhaokun123.yabr.module.base.dexKitMember
 import io.github.duzhaokun123.yabr.module.base.isEnabled
 import io.github.duzhaokun123.yabr.module.core.SwitchModuleManager
-import io.github.duzhaokun123.yabr.module.core.TopActivity
+import io.github.duzhaokun123.yabr.module.core.ActivityUtils
 import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
 import io.github.duzhaokun123.yabr.utils.Toast
 import io.github.duzhaokun123.yabr.utils.dp
@@ -185,7 +184,7 @@ object SettingsUI : BaseModule(), Core, DexKitContext {
     }
 
     fun showSettings(context: Context? = null) {
-        val context = context ?: TopActivity.topActivity!!
+        val context = context ?: ActivityUtils.topActivity!!
         val scrollView = ScrollView(context)
         val listView = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL

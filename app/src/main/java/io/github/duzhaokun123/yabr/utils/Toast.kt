@@ -3,7 +3,7 @@ package io.github.duzhaokun123.yabr.utils
 import android.os.Handler
 import android.os.Looper
 import io.github.duzhaokun123.yabr.module.core.BiliToast
-import io.github.duzhaokun123.yabr.module.core.TopActivity
+import io.github.duzhaokun123.yabr.module.core.ActivityUtils
 import android.widget.Toast as AndroidToast
 
 object Toast {
@@ -15,7 +15,7 @@ object Toast {
                 return@post
             } else {
                 AndroidToast.makeText(
-                    TopActivity.topActivity ?: loaderContext.application, message, duration
+                    ActivityUtils.topActivity ?: loaderContext.application, message, duration
                 ).show()
             }
         }

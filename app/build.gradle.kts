@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.debug
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -27,10 +25,15 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    androidResources {
+        additionalParameters += arrayOf("--allow-reserved-package-id", "--package-id", "0x25")
+    }
 }
 
 dependencies {
     implementation(libs.androidx.annotation)
+    implementation(kotlin("reflect"))
 
     implementation(projects.loader.base)
     runtimeOnly(projects.loader.xposed)
@@ -44,4 +47,6 @@ dependencies {
     ksp(projects.annotation)
 
     implementation(libs.dexkit)
+    implementation(libs.photoview)
+    implementation(libs.androidx.appcompat)
 }
