@@ -19,6 +19,10 @@ Yet Another BiliRoaming
 [`app/build.gradle.kts`](app/build.gradle.kts) 里的 `runtimeOnly(projects.loader.xxx)` 都是可选的
 按需要修改
 
+## 开发
+
+[模块功能开发](docs/模块功能开发.md)
+
 ## TODO
 
 - 支持加载其他 xposed 模块

@@ -33,7 +33,7 @@ class ModuleActivityProcessor(
                 val className = (module as KSClassDeclaration).qualifiedName!!.asString()
                 logger.info("Found module entry: $className.")
                 if (module.classKind != ClassKind.CLASS) {
-                    logger.error("ModuleActivity must be a class", module)
+                    logger.error("ModuleActivity must be a class, ${module.qualifiedName?.asString()}", module)
                     return@forEach
                 }
                 writer.write("${className}::class,\n")

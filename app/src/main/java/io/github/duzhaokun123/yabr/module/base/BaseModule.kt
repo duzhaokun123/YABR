@@ -28,7 +28,7 @@ abstract class BaseModule {
 
     abstract fun onLoad(): Boolean
 
-    @CallSuper
+//    @CallSuper
     open fun onUnload(): Boolean {
         if (canUnload) {
             unhookers.forEach { it.invoke() }
