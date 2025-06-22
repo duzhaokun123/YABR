@@ -141,3 +141,52 @@ abstract class BaseModule {
  * 非常懒 [BaseModule.onLoad] 后也可能不加载 可能导致问题在 [BaseModule.onLoad] 里没有暴露 也可能导致没有问题
  */
 fun BaseModule.lazyLoadClass(name: String) = lazy { loadClass(name) }
+
+/**
+ * 多个加载 返回 true 全部加载成功 否则 false
+ *
+ * 顺序执行 不会短路
+ */
+fun BaseModule.multiLoadAllSuccess(
+    vararg loadBlocks: () -> Boolean
+): Boolean {
+    var success = true
+    loadBlocks.forEach { loadBlock ->
+        val blockSuccess =
+            runCatching {
+                loadBlock()
+            }.onFailure { t ->
+                logger.w(t)
+            }.getOrDefault(false)
+        if (blockSuccess.not()) {
+            logger.w("Load block failed: $loadBlock")
+            success = false
+        }
+    }
+    return success
+}
+
+/**
+ * 多个加载 返回 true 任何一个加载成功 否则 false
+ *
+ * 顺序执行 不会短路
+ */
+fun BaseModule.multiLoadAnySuccess(
+    vararg loadBlocks: () -> Boolean
+): Boolean {
+    var success = false
+    loadBlocks.forEach { loadBlocks ->
+        val blockSuccess =
+            runCatching {
+                loadBlocks()
+            }.onFailure { t ->
+                logger.w(t)
+            }.getOrDefault(false)
+        if (blockSuccess) {
+            success = true
+        } else {
+            logger.w("Load block failed: $loadBlocks")
+        }
+    }
+    return success
+}

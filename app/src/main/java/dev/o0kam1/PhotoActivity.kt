@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.ProgressBar
 import io.getstream.photoview.PhotoView
 import io.github.duzhaokun123.yabr.R
 import io.github.duzhaokun123.yabr.logger.activityLogger
@@ -17,7 +19,6 @@ import io.github.duzhaokun123.yabr.utils.Http
 import io.github.duzhaokun123.yabr.utils.Toast
 import io.github.duzhaokun123.yabr.utils.readAll
 import io.github.duzhaokun123.yabr.utils.reason
-import io.github.duzhaokun123.yabr.utils.runMainThread
 import io.github.duzhaokun123.yabr.utils.runNewThread
 
 @ModuleActivity
@@ -46,8 +47,9 @@ class PhotoActivity : Activity(), ModuleActivityMeta {
             runCatching {
                 photoData = Http.get(url).readAll()
                 val b = BitmapFactory.decodeByteArray(photoData, 0, photoData.size)
-                runMainThread {
+                runOnUiThread {
                     photoView.setImageBitmap(b)
+                    findViewById<ProgressBar>(R.id.pb).visibility = View.GONE
                 }
             }.onFailure { t ->
                 logger.e("Failed to load cover image")

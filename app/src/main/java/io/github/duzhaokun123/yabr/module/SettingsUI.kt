@@ -1,5 +1,6 @@
 package io.github.duzhaokun123.yabr.module
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.BroadcastReceiver
@@ -24,11 +25,13 @@ import io.github.duzhaokun123.yabr.module.base.Compatible
 import io.github.duzhaokun123.yabr.module.base.Core
 import io.github.duzhaokun123.yabr.module.base.DexKitContext
 import io.github.duzhaokun123.yabr.module.base.SwitchModule
+import io.github.duzhaokun123.yabr.module.base.UIActivity
 import io.github.duzhaokun123.yabr.module.base.UIComplex
 import io.github.duzhaokun123.yabr.module.base.UIEntry
 import io.github.duzhaokun123.yabr.module.base.UISwitch
 import io.github.duzhaokun123.yabr.module.base.dexKitMember
 import io.github.duzhaokun123.yabr.module.base.isEnabled
+import io.github.duzhaokun123.yabr.module.base.multiLoadAllSuccess
 import io.github.duzhaokun123.yabr.module.core.SwitchModuleManager
 import io.github.duzhaokun123.yabr.module.core.ActivityUtils
 import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
@@ -98,7 +101,11 @@ object SettingsUI : BaseModule(), Core, DexKitContext {
 
     private var startSettings = false
 
-    override fun onLoad(): Boolean {
+    override fun onLoad() =
+        multiLoadAllSuccess(::broadcastOpen, ::startActivityOpen, ::minePageOpen)
+
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    fun broadcastOpen(): Boolean {
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(
                 context: Context?, intent: Intent?
@@ -108,12 +115,15 @@ object SettingsUI : BaseModule(), Core, DexKitContext {
             }
         }
         val filter = IntentFilter(ACTION_SETTINGS)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             loaderContext.application.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED)
         } else {
             loaderContext.application.registerReceiver(receiver, filter)
         }
+        return true
+    }
 
+    fun startActivityOpen(): Boolean {
         val class_MainActivity = loadClass("tv.danmaku.bili.MainActivityV2")
         class_MainActivity
             .findMethod { it.name == "onCreate" && it.paramCount == 1 }
@@ -130,6 +140,10 @@ object SettingsUI : BaseModule(), Core, DexKitContext {
                     showSettings()
                 }
             }
+        return true
+    }
+
+    fun minePageOpen(): Boolean {
         method_addSetting?.hookBefore { param ->
             @Suppress("UNCHECKED_CAST")
             val list = param.args[1] as? MutableList<Any>
@@ -183,6 +197,8 @@ object SettingsUI : BaseModule(), Core, DexKitContext {
         return true
     }
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    @Suppress("UNCHECKED_CAST")
     fun showSettings(context: Context? = null) {
         val context = context ?: ActivityUtils.topActivity!!
         val scrollView = ScrollView(context)
@@ -270,6 +286,11 @@ object SettingsUI : BaseModule(), Core, DexKitContext {
                             logger.e(t)
                             Toast.show("创建 ${module.name} 的 UI 失败: ${t.localizedMessage ?: t.message ?: "未知错误"}")
                         }
+                    }
+                }
+                if (module is UIActivity) {
+                    relativeLayout.setOnClickListener {
+                        context.startActivity(Intent(context, module.moduleActivity))
                     }
                 }
                 relativeLayout.setOnLongClickListener {

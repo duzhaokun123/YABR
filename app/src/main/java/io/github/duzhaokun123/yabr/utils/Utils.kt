@@ -20,7 +20,7 @@ fun InputStream.readAll(): ByteArray {
 }
 
 val Throwable.reason: String
-    get() = localizedMessage ?: message ?: toString()
+    get() = "${this.javaClass.name}: ${this.localizedMessage ?: this.message}"
 
 
 fun runNewThread(
@@ -34,4 +34,12 @@ fun runMainThread(
     block: () -> Unit
 ) {
     Toast.handler.post(block)
+}
+
+fun loop(
+    block: () -> Unit
+) {
+    while (true) {
+        block()
+    }
 }

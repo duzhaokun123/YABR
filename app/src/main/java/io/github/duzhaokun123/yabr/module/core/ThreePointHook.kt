@@ -6,6 +6,7 @@ import io.github.duzhaokun123.yabr.module.base.Core
 import io.github.duzhaokun123.yabr.module.base.DexKitContext
 import io.github.duzhaokun123.yabr.module.base.dexKitMember
 import io.github.duzhaokun123.yabr.module.base.lazyLoadClass
+import io.github.duzhaokun123.yabr.module.base.multiLoadAnySuccess
 import io.github.duzhaokun123.yabr.module.core.JsonHelper.getJsonFieldValue
 import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
 import io.github.duzhaokun123.yabr.utils.findMethod
@@ -74,34 +75,40 @@ object ThreePointHook : BaseModule(), Core, DexKitContext {
         }.single().toClass()
     }
 
-    override fun onLoad(): Boolean {
-        class_PegasusParser
-            ?.findMethod { it.name == "convert" && it.paramCount == 1 && it.parameterTypes[0] == Object::class.java }
-            ?.hookAfter {
-                val data = it.result?.getFieldValue("data") ?: return@hookAfter
-                hookPegasusFeedConvert(data)
-            }
-        class_TMIndexApiParser
-            ?.findMethod { it.name == "convert" && it.paramCount == 1 && it.parameterTypes[0] == Object::class.java }
-            ?.hookAfter {
-                val data = it.result?.getFieldValue("data") ?: return@hookAfter
-                hookPegasusFeedConvert(data)
-            }
-        class_CardClickProcessor
-            ?.findMethod(findSuper = false) { it.paramCount == 9 }
-            ?.hookBefore {
-                if (hookDislikeReason(it.args[3])) {
-                    it.result = null
-                }
-            }
-        loadClassOrNull("com.bilibili.pegasus.ext.threepoint.ThreePointKt")
-            ?.findMethodOrNull(findSuper = false) { it.paramCount >= 4 && it.parameterTypes[3] == class_DislikeReason }
-            ?.hookBefore {
-                if (hookDislikeReason(it.args[3])) {
-                    it.result = null
-                }
-            }
+    override fun onLoad() =
+        multiLoadAnySuccess(::hookPegasus1, ::hookPegasus2)
 
+    fun hookPegasus1(): Boolean {
+        class_PegasusParser!!
+            .findMethod { it.name == "convert" && it.paramCount == 1 && it.parameterTypes[0] == Object::class.java }
+            .hookAfter {
+                val data = it.result?.getFieldValue("data") ?: return@hookAfter
+                hookPegasusFeedConvert(data)
+            }
+        loadClass("com.bilibili.pegasus.ext.threepoint.ThreePointKt")
+            .findMethod(findSuper = false) { it.paramCount >= 4 && it.parameterTypes[3] == class_DislikeReason }
+            .hookBefore {
+                if (hookDislikeReason(it.args[3])) {
+                    it.result = null
+                }
+            }
+        return true
+    }
+
+    fun hookPegasus2(): Boolean {
+        class_TMIndexApiParser!!
+            .findMethod { it.name == "convert" && it.paramCount == 1 && it.parameterTypes[0] == Object::class.java }
+            .hookAfter {
+                val data = it.result?.getFieldValue("data") ?: return@hookAfter
+                hookPegasusFeedConvert(data)
+            }
+        class_CardClickProcessor!!
+            .findMethod(findSuper = false) { it.paramCount == 9 }
+            .hookBefore {
+                if (hookDislikeReason(it.args[3])) {
+                    it.result = null
+                }
+            }
         return true
     }
 
