@@ -81,7 +81,7 @@ object ActivityHijack : BaseModule(), Core {
 
         @JvmStatic
         fun getPackageName(): String {
-            return BiliInfo.pmPackageName
+            return loaderContext.application.packageName
         }
     }
 

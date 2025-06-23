@@ -9,6 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "io.github.duzhaokun123.yabr"
+        buildConfigField("Long", "BUILD_TIME", "${System.currentTimeMillis()}L")
     }
 
     buildTypes {

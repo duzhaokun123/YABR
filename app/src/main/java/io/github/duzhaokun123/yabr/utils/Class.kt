@@ -1,6 +1,7 @@
 package io.github.duzhaokun123.yabr.utils
 
 import org.luckypray.dexkit.result.ClassData
+import org.luckypray.dexkit.wrap.DexClass
 
 fun loadClass(name: String): Class<*> {
     return loaderContext.hostClassloader.loadClass(name)
@@ -25,4 +26,8 @@ fun Class<*>.newOrNull(vararg args: Any?): Any? {
 @Suppress("UNCHECKED_CAST")
 fun <T> Class<*>.newAs(vararg args: Any?): T {
     return new(*args) as T
+}
+
+fun DexClass.toClass(): Class<*> {
+    return this.getInstance(loaderContext.hostClassloader)
 }

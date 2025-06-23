@@ -1,4 +1,4 @@
-package io.github.duzhaokun123.yabr.module.tool
+package io.github.duzhaokun123.yabr.module.debug
 
 import android.content.Context
 import android.view.View
@@ -19,7 +19,7 @@ import io.github.duzhaokun123.yabr.utils.loaderContext
 object ImplementationInfo : BaseModule(), Core, UIComplex {
     override val name = "实现信息"
     override val description = "显示当前实现的信息"
-    override val category = UICategory.TOOL
+    override val category = UICategory.DEBUG
 
     override fun onLoad(): Boolean {
         return true

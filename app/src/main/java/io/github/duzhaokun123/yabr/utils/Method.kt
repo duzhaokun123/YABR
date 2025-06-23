@@ -2,6 +2,7 @@ package io.github.duzhaokun123.yabr.utils
 
 import io.github.duzhaokun123.yabr.logger.AndroidLogger
 import org.luckypray.dexkit.result.MethodData
+import org.luckypray.dexkit.wrap.DexMethod
 import java.lang.reflect.Method
 
 fun Class<*>.findMethodOrNull(findSuper: Boolean = true, filter: (Method) -> Boolean): Method? {
@@ -75,6 +76,10 @@ fun Class<*>.findMethodBestMatch(
 }
 
 fun MethodData.toMethod(): Method {
+    return this.getMethodInstance(loaderContext.hostClassloader)
+}
+
+fun DexMethod.toMethod(): Method {
     return this.getMethodInstance(loaderContext.hostClassloader)
 }
 

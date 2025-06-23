@@ -6,6 +6,7 @@ import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.module.base.Core
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.utils.loaderContext
+import androidx.core.content.edit
 
 @ModuleEntry(
     id = "config_store",
@@ -51,6 +52,8 @@ interface ConfigAccessor {
     fun putStringSet(key: String, value: Set<String>)
 
     fun remove(key: String)
+
+    fun clear()
 }
 
 class SharedPreferencesAccessor(
@@ -87,38 +90,44 @@ class SharedPreferencesAccessor(
     }
 
     override fun putString(key: String, value: String) {
-        sharedPreferences.edit()
-            .putString(key, value)
-            .apply()
+        sharedPreferences.edit {
+            putString(key, value)
+        }
     }
 
     override fun putInt(key: String, value: Int) {
-        sharedPreferences.edit()
-            .putInt(key, value)
-            .apply()
+        sharedPreferences.edit {
+            putInt(key, value)
+        }
     }
 
     override fun putBoolean(key: String, value: Boolean) {
-        sharedPreferences.edit()
-            .putBoolean(key, value)
-            .apply()
+        sharedPreferences.edit {
+            putBoolean(key, value)
+        }
     }
 
     override fun putFloat(key: String, value: Float) {
-        sharedPreferences.edit()
-            .putFloat(key, value)
-            .apply()
+        sharedPreferences.edit {
+            putFloat(key, value)
+        }
     }
 
     override fun putStringSet(key: String, value: Set<String>) {
-        sharedPreferences.edit()
-            .putStringSet(key, value)
-            .apply()
+        sharedPreferences.edit {
+            putStringSet(key, value)
+        }
     }
 
     override fun remove(key: String) {
-        sharedPreferences.edit()
-            .remove(key)
-            .apply()
+        sharedPreferences.edit {
+            remove(key)
+        }
+    }
+
+    override fun clear() {
+        sharedPreferences.edit {
+            clear()
+        }
     }
 }

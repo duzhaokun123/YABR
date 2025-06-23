@@ -1,5 +1,6 @@
 package io.github.duzhaokun123.yabr.utils
 
+import org.luckypray.dexkit.wrap.DexField
 import java.lang.reflect.Field
 
 fun Class<*>.findFieldOrNull(findSuper: Boolean = true, filter: (Field) -> Boolean): Field? {
@@ -80,4 +81,8 @@ fun Class<*>.getStaticFieldValue(name: String, findSuper: Boolean = true): Any? 
 @Suppress("UNCHECKED_CAST")
 fun <T> Class<*>.getStaticFieldValueAs(name: String, findSuper: Boolean = true): T {
     return getStaticFieldValue(name, findSuper) as T
+}
+
+fun DexField.toField(): Field {
+    return this.getFieldInstance(loaderContext.hostClassloader)
 }

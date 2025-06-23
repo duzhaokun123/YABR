@@ -56,6 +56,7 @@ object UICategory {
     const val UI = "ui"
     const val ABOUT = "about"
     const val FUN = "fun"
+    const val DEBUG = "debug"
 }
 
 @ModuleEntry(
@@ -213,6 +214,9 @@ object SettingsUI : BaseModule(), Core, DexKitContext {
             val header = when (category) {
                 UICategory.UI -> "界面"
                 UICategory.ABOUT -> "关于"
+                UICategory.FUN -> "娱乐"
+                UICategory.TOOL -> "工具"
+                UICategory.DEBUG -> "调试"
                 else -> category
             }
             val headerView = TextView(context).apply {
@@ -296,6 +300,7 @@ object SettingsUI : BaseModule(), Core, DexKitContext {
                 relativeLayout.setOnLongClickListener {
                     val message = StringBuilder()
                     message.appendLine("ID: ${module.id}")
+                    message.appendLine("Class: ${module.javaClass.name}")
                     message.appendLine("Name: ${module.name}")
                     message.appendLine("Description: ${module.description}")
                     message.appendLine("Implementation: ${module.javaClass.interfaces.joinToString(", ") { it.simpleName }}")

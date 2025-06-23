@@ -1,4 +1,4 @@
-package io.github.duzhaokun123.yabr.module.tool
+package io.github.duzhaokun123.yabr.module.debug
 
 import android.app.Activity
 import android.content.Context
@@ -17,7 +17,7 @@ import kotlin.system.exitProcess
 object RestartApp : BaseModule(), UIComplex {
     override val name = "重启应用"
     override val description = "立即重启应用"
-    override val category = UICategory.TOOL
+    override val category = UICategory.DEBUG
 
     override fun onLoad(): Boolean {
         return true
