@@ -74,7 +74,7 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
         return sv
     }
 
-    lateinit var dexKitBridge: DexKitBridge
+    var dexKitBridge: DexKitBridge? = null
         private set
 
     val dexFindInfo = mutableMapOf<String, DexKitMember<*>>()
@@ -93,14 +93,16 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
             dexkitCache.clear()
             dexkitCache.putString("version", newVersion)
         }
-        dexKitBridge = DexKitBridge.create(loaderContext.application.applicationInfo.sourceDir)
         Main.addOnModuleLoadListener { module ->
             if (module is DexKitContext) {
-                runCatching {
-                    module.onDexKitReady(dexKitBridge)
-                }.onFailure { t ->
-                    module.logger.e("Failed to initialize DexKit context: ${module.id}")
-                    module.logger.e(t)
+                if (module.needDexKitBridge) {
+                    prepareDexKitBridge()
+                    runCatching {
+                        module.onDexKitReady(dexKitBridge!!)
+                    }.onFailure { t ->
+                        module.logger.e("Failed to initialize DexKit context: ${module.id}")
+                        module.logger.e(t)
+                    }
                 }
                 module.javaClass.declaredFields
                     .filter { it.type == DexKitMember::class.java }
@@ -114,7 +116,8 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
                             }
                         }
                         runCatching {
-                            dexKitMember.onBridgeReady(dexKitBridge)
+                            prepareDexKitBridge()
+                            dexKitMember.onBridgeReady(dexKitBridge!!)
                         }.onFailure { t ->
                             module.logger.e("Failed to initialize DexKit member: ${dexKitMember.name}")
                             module.logger.e(t)
@@ -167,6 +170,20 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
                 logger.e("unable to cache ${name} of type ${value.javaClass.name}, no way to serialize it")
             }
         }
+    }
+
+    fun prepareDexKitBridge() {
+        if (dexKitBridge == null) {
+            dexKitBridge = DexKitBridge.create(loaderContext.application.applicationInfo.sourceDir)
+        }
+        Toast.handler.removeCallbacks(closeCallback)
+        Toast.handler.postDelayed(closeCallback, 1000L)
+    }
+
+    val closeCallback = Runnable {
+        dexKitBridge?.close()
+        dexKitBridge = null
+        logger.d("DexKitBridge closed")
     }
 }
 

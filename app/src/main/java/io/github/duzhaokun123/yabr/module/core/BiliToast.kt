@@ -9,13 +9,14 @@ import io.github.duzhaokun123.yabr.module.base.DexKitContext
 import io.github.duzhaokun123.yabr.module.base.dexKitMember
 import io.github.duzhaokun123.yabr.utils.invoke
 import io.github.duzhaokun123.yabr.utils.loaderContext
+import io.github.duzhaokun123.yabr.utils.toMethod
 
 @ModuleEntry(
     id = "bili_toast"
 )
 object BiliToast : BaseModule(), Core, DexKitContext {
     val method_show by dexKitMember(
-        "BiliToast.show",
+        "com.bilibili.droid.ToastHelper.showToast",
     ) { bridge ->
         val showCaller = bridge.findMethod {
             matcher {
@@ -28,7 +29,7 @@ object BiliToast : BaseModule(), Core, DexKitContext {
                 paramCount = 3
                 paramTypes(Context::class.java, String::class.java, null)
             }
-        }.single()
+        }.single().toMethod()
     }
 
     override fun onLoad(): Boolean {

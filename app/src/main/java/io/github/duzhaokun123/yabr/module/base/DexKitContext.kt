@@ -4,6 +4,8 @@ import io.github.duzhaokun123.yabr.module.core.DexKitMember
 import org.luckypray.dexkit.DexKitBridge
 
 interface DexKitContext {
+    val needDexKitBridge: Boolean
+        get() = false
     fun onDexKitReady(bridge: DexKitBridge) {}
 }
 
