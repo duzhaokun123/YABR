@@ -10,6 +10,7 @@ object Toast {
     val handler by lazy { Handler(Looper.getMainLooper()) }
 
     fun show(message: String, duration: Int = AndroidToast.LENGTH_SHORT) {
+        val message = "[YABR] $message"
         handler.post {
             if (BiliToast.showToast(message, duration)) {
                 return@post

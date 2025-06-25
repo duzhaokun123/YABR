@@ -2,14 +2,12 @@ package dev.o0kam1
 
 import android.app.Dialog
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import io.github.duzhaokun123.hooker.base.thisObject
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.R
 import io.github.duzhaokun123.yabr.module.UICategory
@@ -20,7 +18,6 @@ import io.github.duzhaokun123.yabr.module.base.UISwitch
 import io.github.duzhaokun123.yabr.module.base.requireMinSystem
 import io.github.duzhaokun123.yabr.utils.findConstructor
 import io.github.duzhaokun123.yabr.utils.findMethod
-import io.github.duzhaokun123.yabr.utils.paramCount
 import java.util.function.Consumer
 
 @ModuleEntry(
@@ -46,15 +43,16 @@ object WindowBlur : BaseModule(), UISwitch, SwitchModule, Compatible {
                 window.apply {
                     setBackgroundBlurRadius(40)
                     val background = ContextCompat.getDrawable(dialog.context, R.drawable.dialog_background)!!
-                    background.alpha = (255 * 0.50).toInt()
                     setBackgroundDrawable(background)
                     attributes.apply {
                         addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
                     }
                     val blurEnableListener = Consumer<Boolean> { enable: Boolean ->
                         if (enable) {
+                            background.alpha = (255 * 0.50).toInt()
                             setDimAmount(0.2F)
                         } else {
+                            background.alpha = (255 * 1.0).toInt()
                             setDimAmount(0.6F)
                         }
                     }
@@ -71,19 +69,14 @@ object WindowBlur : BaseModule(), UISwitch, SwitchModule, Compatible {
                 }
             }
         Dialog::class.java
-            .findConstructor { it.paramCount == 3
-                    && it.parameterTypes contentEquals arrayOf(Context::class.java, Int::class.javaPrimitiveType, Boolean::class.javaPrimitiveType) }
+            .findConstructor { it.parameterTypes contentEquals arrayOf(Context::class.java, Int::class.javaPrimitiveType, Boolean::class.javaPrimitiveType) }
             .hookBefore {
-                val resId = it.args[1] as Int
-                val createContextThemeWrapper = it.args[2] as Boolean
-                logger.d("$resId $createContextThemeWrapper")
+                logger.d(it.args.joinToString(" "))
                 val newThemeId = R.style.AppTheme_Dialog
-                if (createContextThemeWrapper) {
-                    it.args[1] = newThemeId
-                } else {
-                    val newContext = ContextThemeWrapper(it.args[0] as Context, newThemeId)
-                    it.args[0] = newContext
-                }
+                val newContext = ContextThemeWrapper(it.args[0] as Context, newThemeId)
+                it.args[0] = newContext
+                it.args[1] = newThemeId
+                it.args[2] = false
             }
         return true
     }

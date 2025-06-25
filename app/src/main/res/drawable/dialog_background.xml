@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:shape="rectangle">
-    <corners android:radius="?android:attr/dialogCornerRadius" tools:targetApi="28" />
+    <corners android:radius="28dp" />
     <solid android:color="?android:attr/colorBackgroundFloating" />
 </shape>

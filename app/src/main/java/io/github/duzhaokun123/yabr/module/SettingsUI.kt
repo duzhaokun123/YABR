@@ -203,7 +203,12 @@ object SettingsUI : BaseModule(), Core, DexKitContext {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     @Suppress("UNCHECKED_CAST")
     fun showSettings(context: Context? = null) {
-        var context = context ?: ActivityUtils.topActivity!!
+        var context = context ?: ActivityUtils.topActivity
+        if (context == null) {
+            logger.v("Context is null, skipping settings UI")
+            Toast.show("无法获取当前上下文，无法显示设置界面")
+            return
+        }
 //        context = context.createAppThemeWrapper()
         val scrollView = ScrollView(context)
         val listView = LinearLayout(context).apply {

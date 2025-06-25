@@ -3,6 +3,7 @@ package dev.o0kam1
 import android.content.pm.ActivityInfo
 import android.content.pm.ApplicationInfo
 import android.os.Build
+import android.os.Parcel
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.module.UICategory
 import io.github.duzhaokun123.yabr.module.base.BaseModule
@@ -38,21 +39,21 @@ object PredictiveBack : BaseModule(), UISwitch, SwitchModule, Compatible {
                     privateFlagsExt =
                         privateFlagsExt or (1 shl 3) // PRIVATE_FLAG_EXT_ENABLE_ON_BACK_INVOKED_CALLBACK
                     appInfo.setFieldValue("privateFlagsExt", privateFlagsExt)
-                }.onFailure { t ->
-                    logger.e("Failed to enable predictive back gesture", t)
                 }
             }
         loadClass("android.app.ActivityThread")
             .findMethod { it.name == "handleLaunchActivity" }
             .hookBefore {
                 val activityRecord = it.args[0]!!
-                val activityInfo = activityRecord.getFieldValueAs<ActivityInfo>("activityInfo")
-                var privateFlags = activityInfo.getFieldValueAs<Int>("privateFlags")
-                privateFlags =
-                    privateFlags or (1 shl 2) // PRIVATE_FLAG_ENABLE_ON_BACK_INVOKED_CALLBACK
-                privateFlags =
-                    privateFlags and (1 shl 3).inv() // PRIVATE_FLAG_DISABLE_ON_BACK_INVOKED_CALLBACK
-                activityInfo.setFieldValue("privateFlags", privateFlags)
+                runCatching {
+                    val activityInfo = activityRecord.getFieldValueAs<ActivityInfo>("activityInfo")
+                    var privateFlags = activityInfo.getFieldValueAs<Int>("privateFlags")
+                    privateFlags =
+                        privateFlags or (1 shl 2) // PRIVATE_FLAG_ENABLE_ON_BACK_INVOKED_CALLBACK
+                    privateFlags =
+                        privateFlags and (1 shl 3).inv() // PRIVATE_FLAG_DISABLE_ON_BACK_INVOKED_CALLBACK
+                    activityInfo.setFieldValue("privateFlags", privateFlags)
+                }
             }
         return true
     }
