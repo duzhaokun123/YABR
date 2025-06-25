@@ -116,15 +116,15 @@ abstract class BaseModule {
     }
 
     fun Class<*>.hookAllConstructors(callback: HookCallback): List<Unhooker> {
-        return this.constructors.map { it.hook(callback) }
+        return this.declaredConstructors.map { it.hook(callback) }
     }
 
     fun Class<*>.hookAllConstructorsBefore(callback: (HookCallbackContext) -> Unit): List<Unhooker> {
-        return this.constructors.map { it.hookBefore(callback) }
+        return this.declaredConstructors.map { it.hookBefore(callback) }
     }
 
     fun Class<*>.hookAllConstructorsAfter(callback: (HookCallbackContext) -> Unit): List<Unhooker> {
-        return this.constructors.map { it.hookAfter(callback) }
+        return this.declaredConstructors.map { it.hookAfter(callback) }
     }
 
     fun Result<*>.logError(message: String? = null) {

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme" parent="android:Theme.DeviceDefault" />
+    <style name="AppTheme" parent="android:Theme.DeviceDefault" />
+    <style name="AppTheme.Dialog" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 </resources>

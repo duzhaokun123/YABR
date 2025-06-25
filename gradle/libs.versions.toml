@@ -1,6 +1,7 @@
 [versions]
 agp = "8.10.1"
 appcompat = "1.7.1"
+material = "1.12.0"
 photoview = "1.0.3"
 pine = "0.3.0"
 libxposed = "100"
@@ -13,6 +14,7 @@ smali = "3.0.9"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
 photoview = { module = "io.getstream:photoview", version.ref = "photoview" }
 pine-core = { module = "top.canyie.pine:core", version.ref = "pine" }
 libxposed-api = { module = "io.github.libxposed:api", version.ref = "libxposed" }

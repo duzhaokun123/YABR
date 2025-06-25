@@ -4,7 +4,7 @@ import org.luckypray.dexkit.wrap.DexMethod
 import java.lang.reflect.Constructor
 
 fun Class<*>.findConstructorOrNull(filter: (Constructor<*>) -> Boolean): Constructor<*>? {
-    return constructors.firstOrNull(filter)
+    return declaredConstructors.firstOrNull(filter)
 }
 
 fun Class<*>.findConstructor(filter: (Constructor<*>) -> Boolean): Constructor<*> {

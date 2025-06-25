@@ -6,7 +6,7 @@
             android:allowBackup="false"
             android:label="YABR"
             android:supportsRtl="true"
-            android:theme="@style/Theme"
+            android:theme="@style/AppTheme"
             tools:ignore="MissingApplicationIcon" />
 
 </manifest>

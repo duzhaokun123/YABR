@@ -143,7 +143,7 @@ annotation class ModuleActivity
 
 interface ModuleActivityMeta {
     val theme: Int
-        get() = AppR.style.Theme
+        get() = AppR.style.AppTheme
 
     val orientation: Int
         get() = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED

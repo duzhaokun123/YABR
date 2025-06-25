@@ -34,6 +34,7 @@ import io.github.duzhaokun123.yabr.module.base.isEnabled
 import io.github.duzhaokun123.yabr.module.base.multiLoadAllSuccess
 import io.github.duzhaokun123.yabr.module.core.SwitchModuleManager
 import io.github.duzhaokun123.yabr.module.core.ActivityUtils
+import io.github.duzhaokun123.yabr.utils.Contexts.createAppCompatThemeWrapper
 import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
 import io.github.duzhaokun123.yabr.utils.Toast
 import io.github.duzhaokun123.yabr.utils.dp
@@ -201,7 +202,8 @@ object SettingsUI : BaseModule(), Core, DexKitContext {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     @Suppress("UNCHECKED_CAST")
     fun showSettings(context: Context? = null) {
-        val context = context ?: ActivityUtils.topActivity!!
+        var context = context ?: ActivityUtils.topActivity!!
+//        context = context.createAppCompatThemeWrapper()
         val scrollView = ScrollView(context)
         val listView = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
