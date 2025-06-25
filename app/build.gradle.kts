@@ -50,5 +50,5 @@ dependencies {
     implementation(libs.dexkit)
     implementation(libs.photoview)
     implementation(libs.androidx.appcompat)
-//    implementation(libs.material)
+    implementation(libs.material)
 }

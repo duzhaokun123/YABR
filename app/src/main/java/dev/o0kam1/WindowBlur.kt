@@ -2,11 +2,13 @@ package dev.o0kam1
 
 import android.app.Dialog
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import io.github.duzhaokun123.hooker.base.thisObject
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.R
@@ -39,10 +41,13 @@ object WindowBlur : BaseModule(), UISwitch, SwitchModule, Compatible {
         Dialog::class.java
             .findMethod { it.name == "onStart" }
             .hookAfter {
-                val window = (it.thisObject as Dialog).window!!
+                val dialog = it.thiz as Dialog
+                val window = dialog.window!!
                 window.apply {
                     setBackgroundBlurRadius(40)
-                    setBackgroundDrawableResource(R.drawable.dialog_background)
+                    val background = ContextCompat.getDrawable(dialog.context, R.drawable.dialog_background)!!
+                    background.alpha = (255 * 0.50).toInt()
+                    setBackgroundDrawable(background)
                     attributes.apply {
                         addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
                     }

@@ -35,6 +35,7 @@ import io.github.duzhaokun123.yabr.module.base.multiLoadAllSuccess
 import io.github.duzhaokun123.yabr.module.core.SwitchModuleManager
 import io.github.duzhaokun123.yabr.module.core.ActivityUtils
 import io.github.duzhaokun123.yabr.utils.Contexts.createAppCompatThemeWrapper
+import io.github.duzhaokun123.yabr.utils.Contexts.createAppThemeWrapper
 import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
 import io.github.duzhaokun123.yabr.utils.Toast
 import io.github.duzhaokun123.yabr.utils.dp
@@ -203,7 +204,7 @@ object SettingsUI : BaseModule(), Core, DexKitContext {
     @Suppress("UNCHECKED_CAST")
     fun showSettings(context: Context? = null) {
         var context = context ?: ActivityUtils.topActivity!!
-//        context = context.createAppCompatThemeWrapper()
+//        context = context.createAppThemeWrapper()
         val scrollView = ScrollView(context)
         val listView = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
