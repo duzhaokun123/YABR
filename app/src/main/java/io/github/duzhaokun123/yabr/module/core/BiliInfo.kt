@@ -30,7 +30,9 @@ object BiliInfo : BaseModule(), Core, DexKitContext {
         pmVersionInfo = BiliVersionInfo(
             packageName = packageInfo.packageName,
             versionName = packageInfo.versionName ?: "unknown",
-            versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) packageInfo.longVersionCode else packageInfo.versionCode.toLong()
+            versionCode =
+                @Suppress("DEPRECATION")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) packageInfo.longVersionCode else packageInfo.versionCode.toLong()
         )
         return true
     }
@@ -52,7 +54,8 @@ object BiliInfo : BaseModule(), Core, DexKitContext {
 
     fun loadDexVersionInfo(): Boolean {
         logger.d("Dex version name: $dexVersionName")
-        val versionCode = dexVersionName!!.split(".").map { it.toInt() }.let { it[0] * 1_000_000 + it[1] * 10_000 }
+        val versionCode = dexVersionName!!.split(".").map { it.toInt() }
+            .let { it[0] * 1_000_000 + it[1] * 10_000 }
 
         return true
     }

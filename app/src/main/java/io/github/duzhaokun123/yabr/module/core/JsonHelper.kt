@@ -23,6 +23,7 @@ object JsonHelper : BaseModule(), Core {
 
     fun getJsonField(data: Any, key: String): Field {
         val field = data.javaClass.findFieldOrNull {
+            @Suppress("UNCHECKED_CAST")
             val fastjsonAnnotation = it.getAnnotation(class_JSONField as Class<Annotation>)
             if (fastjsonAnnotation != null) {
                 return@findFieldOrNull fastjsonAnnotation.invokeMethod("name") == key

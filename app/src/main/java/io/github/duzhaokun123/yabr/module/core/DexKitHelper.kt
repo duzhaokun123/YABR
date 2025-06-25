@@ -85,6 +85,7 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
         EarlyUtils.loadLibrary("dexkit")
         val pm = loaderContext.application.packageManager
         val packageInfo = pm.getPackageInfo(loaderContext.application.packageName, 0)
+        @Suppress("DEPRECATION")
         val newVersion =
             "${packageInfo.packageName}_${packageInfo.versionCode}_${BuildConfig.BUILD_TIME}"
         val oldVersion = dexkitCache.getString("version", null)
