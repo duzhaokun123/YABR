@@ -43,7 +43,11 @@ object ActivityHijack : BaseModule(), Core {
             override fun onActivityStopped(activity: Activity) {}
         })
         Parasitics.initForStubActivity(loaderContext.application)
-        return Parasitics::class.java.getStaticFieldValueAs<Boolean>("__stub_hooked")
+        val success = Parasitics::class.java.getStaticFieldValueAs<Boolean>("__stub_hooked")
+        if (success.not()) {
+            Toast.show("Activity 劫持失败\n应用可能不稳定")
+        }
+        return success
     }
 
     object Log {
@@ -87,7 +91,7 @@ object ActivityHijack : BaseModule(), Core {
 
     object ActProxyMgr {
         const val STUB_DEFAULT_ACTIVITY = "tv.danmaku.bili.mod.ModLocalInfoActivity"
-        const val STUB_TRANSLUCENT_ACTIVITY = STUB_DEFAULT_ACTIVITY
+        const val STUB_TRANSLUCENT_ACTIVITY = "com.mall.ui.page.base.TranslucentActivity"
         const val STUB_TOOL_ACTIVITY = STUB_DEFAULT_ACTIVITY
 
         const val ACTIVITY_PROXY_INTENT = "io.github.duzhaokun123.yabr.ACTIVITY_PROXY_INTENT"

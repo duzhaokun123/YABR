@@ -1,8 +1,11 @@
 package dev.o0kam1
 
+import android.app.Activity
+import android.app.Application
 import android.app.Dialog
 import android.content.Context
 import android.os.Build
+import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.WindowManager
@@ -15,9 +18,13 @@ import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Compatible
 import io.github.duzhaokun123.yabr.module.base.SwitchModule
 import io.github.duzhaokun123.yabr.module.base.UISwitch
+import io.github.duzhaokun123.yabr.module.base.multiLoadAllSuccess
+import io.github.duzhaokun123.yabr.module.base.multiLoadAnySuccess
 import io.github.duzhaokun123.yabr.module.base.requireMinSystem
+import io.github.duzhaokun123.yabr.utils.SimpleActivityLifecycleCallbacks
 import io.github.duzhaokun123.yabr.utils.findConstructor
 import io.github.duzhaokun123.yabr.utils.findMethod
+import io.github.duzhaokun123.yabr.utils.loaderContext
 import java.util.function.Consumer
 
 @ModuleEntry(
@@ -32,16 +39,21 @@ object WindowBlur : BaseModule(), UISwitch, SwitchModule, Compatible {
 
     override fun checkCompatibility() = requireMinSystem(Build.VERSION_CODES.S)
 
+    val backgroundBlurRadius = 40
+
     @OptIn(ExperimentalStdlibApi::class)
     @RequiresApi(Build.VERSION_CODES.S)
-    override fun onLoad(): Boolean {
+    override fun onLoad() = multiLoadAllSuccess(::hookDialog, ::hookActivity)
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun hookDialog(): Boolean {
         Dialog::class.java
             .findMethod { it.name == "onStart" }
             .hookAfter {
                 val dialog = it.thiz as Dialog
                 val window = dialog.window!!
                 window.apply {
-                    setBackgroundBlurRadius(40)
+                    setBackgroundBlurRadius(backgroundBlurRadius)
                     val background = ContextCompat.getDrawable(dialog.context, R.drawable.dialog_background)!!
                     setBackgroundDrawable(background)
                     attributes.apply {
@@ -71,13 +83,28 @@ object WindowBlur : BaseModule(), UISwitch, SwitchModule, Compatible {
         Dialog::class.java
             .findConstructor { it.parameterTypes contentEquals arrayOf(Context::class.java, Int::class.javaPrimitiveType, Boolean::class.javaPrimitiveType) }
             .hookBefore {
-                logger.d(it.args.joinToString(" "))
                 val newThemeId = R.style.AppTheme_Dialog
                 val newContext = ContextThemeWrapper(it.args[0] as Context, newThemeId)
                 it.args[0] = newContext
                 it.args[1] = newThemeId
                 it.args[2] = false
             }
+        return true
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun hookActivity(): Boolean {
+        loaderContext.application.registerActivityLifecycleCallbacks(object : SimpleActivityLifecycleCallbacks {
+            override fun onActivityStarted(activity: Activity) { // XXX: 被多次调用 但总比 onActivityPostCreated 不被调用好
+                val a = activity.theme.obtainStyledAttributes(intArrayOf(android.R.attr.windowIsTranslucent))
+                val windowIsTranslucent = a.getBoolean(0, false)
+                a.recycle()
+                if (windowIsTranslucent.not()) return
+                activity.window.apply {
+                    setBackgroundBlurRadius(backgroundBlurRadius)
+                }
+            }
+        })
         return true
     }
 }
