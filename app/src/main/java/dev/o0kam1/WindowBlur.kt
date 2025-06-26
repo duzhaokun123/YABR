@@ -1,11 +1,9 @@
 package dev.o0kam1
 
 import android.app.Activity
-import android.app.Application
 import android.app.Dialog
 import android.content.Context
 import android.os.Build
-import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.WindowManager
@@ -19,7 +17,6 @@ import io.github.duzhaokun123.yabr.module.base.Compatible
 import io.github.duzhaokun123.yabr.module.base.SwitchModule
 import io.github.duzhaokun123.yabr.module.base.UISwitch
 import io.github.duzhaokun123.yabr.module.base.multiLoadAllSuccess
-import io.github.duzhaokun123.yabr.module.base.multiLoadAnySuccess
 import io.github.duzhaokun123.yabr.module.base.requireMinSystem
 import io.github.duzhaokun123.yabr.utils.SimpleActivityLifecycleCallbacks
 import io.github.duzhaokun123.yabr.utils.findConstructor
