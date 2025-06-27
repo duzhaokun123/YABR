@@ -51,4 +51,5 @@ dependencies {
     implementation(libs.photoview)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.unsafe)
 }

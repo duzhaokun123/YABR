@@ -24,7 +24,11 @@ dependencyResolutionManagement {
                 includeGroup("de.robv.android.xposed")
             }
         }
-//        maven("https://jitpack.io")
+        maven("https://jitpack.io") {
+            content {
+                includeGroup("com.github.iamironz")
+            }
+        }
         mavenLocal {
             content {
                 includeGroup("io.github.libxposed")

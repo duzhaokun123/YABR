@@ -1,5 +1,6 @@
 package io.github.duzhaokun123.yabr.utils
 
+import com.ironz.unsafe.UnsafeAndroid
 import org.luckypray.dexkit.result.ClassData
 import org.luckypray.dexkit.wrap.DexClass
 
@@ -30,4 +31,8 @@ fun <T> Class<*>.newAs(vararg args: Any?): T {
 
 fun DexClass.toClass(): Class<*> {
     return this.getInstance(loaderContext.hostClassloader)
+}
+
+fun Class<*>.unsafeNew(): Any {
+    return Unsafe.instance.allocateInstance(this)
 }

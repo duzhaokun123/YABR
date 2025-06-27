@@ -18,7 +18,10 @@ import io.github.duzhaokun123.yabr.module.core.ActivityUtils
 import io.github.duzhaokun123.yabr.utils.Http
 import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
 import io.github.duzhaokun123.yabr.utils.Toast
+import io.github.duzhaokun123.yabr.utils.getFieldValueAs
 import io.github.duzhaokun123.yabr.utils.getJsonFieldValueAs
+import io.github.duzhaokun123.yabr.utils.getJsonFieldValueOrNullAs
+import io.github.duzhaokun123.yabr.utils.invokeMethodAs
 import io.github.duzhaokun123.yabr.utils.loaderContext
 import io.github.duzhaokun123.yabr.utils.readAll
 import io.github.duzhaokun123.yabr.utils.reason
@@ -41,11 +44,31 @@ object Cover : BaseModule(), SwitchModule, UISwitch {
             COVER_ID,
             object : ThreePointCallback {
                 override fun parseData(data: Any): ThreePointItemItemData? {
-                    val cover = data.getJsonFieldValueAs<String>("cover")
-                    return ThreePointItemItemData(
-                        name = "获取封面",
-                        data = cover
-                    )
+                    runCatching {
+                        val cover = data.getJsonFieldValueAs<String>("cover")
+                        return ThreePointItemItemData(
+                            name = "获取封面",
+                            data = cover
+                        )
+                    }
+//                    runCatching {
+//                        val basicInfo = data.invokeMethodAs<Any>("getBasicInfo")
+//                        val cover = basicInfo.invokeMethodAs<String>("getCover")
+//                        return ThreePointItemItemData(
+//                            name = "获取封面",
+//                            data = cover
+//                        )
+//                    }
+                    runCatching {
+                        val basicInfo = data.getFieldValueAs<Any>("c")
+                        val cover = basicInfo.getFieldValueAs<String>("c")
+                        return ThreePointItemItemData(
+                            name = "获取封面",
+                            data = cover
+                        )
+                    }
+                    logger.d("unable get cover for ${data.javaClass}")
+                    return null
                 }
 
                 override fun onClick(data: ThreePointItemItemData) {
@@ -58,42 +81,6 @@ object Cover : BaseModule(), SwitchModule, UISwitch {
                         activity.startActivity(Intent(activity, PhotoActivity::class.java).apply {
                             putExtra(PhotoActivity.URL, cover)
                         })
-//                        val imageView = ImageView(activity)
-//                        var data = byteArrayOf()
-//                        AlertDialog.Builder(activity)
-//                            .setTitle(cover)
-//                            .setView(imageView)
-//                            .setPositiveButton("下载") { _, _ ->
-//                                if (data.isEmpty()) {
-//                                    Toast.show("封面未加载")
-//                                    return@setPositiveButton
-//                                }
-
-//                                }
-//                            }.setNegativeButton("分享") { _, _ ->
-//                                val shareUri = Share.makeShareFileUri(data, "jpeg")
-//                                activity.startActivity(Intent.createChooser(Intent().apply {
-//                                    action = Intent.ACTION_SEND
-//                                    putExtra(Intent.EXTRA_STREAM, shareUri)
-//                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-//                                    setDataAndType(shareUri, activity.contentResolver.getType(shareUri))
-//                                }, "分享封面"))
-//                            }.show().apply {
-//
-//                            }
-//                        runNewThread {
-//                            runCatching {
-//                                data = Http.get(cover).readAll()
-//                                val b = BitmapFactory.decodeByteArray(data, 0, data.size)
-//                                runMainThread {
-//                                    imageView.setImageBitmap(b)
-//                                }
-//                            }.onFailure { t ->
-//                                logger.e("Failed to load cover image")
-//                                logger.e(t)
-//                                Toast.show("封面加载失败: ${t.reason}")
-//                            }
-//                        }
                     }
                 }
             }

@@ -86,3 +86,8 @@ fun <T> Class<*>.getStaticFieldValueAs(name: String, findSuper: Boolean = true):
 fun DexField.toField(): Field {
     return this.getFieldInstance(loaderContext.hostClassloader)
 }
+
+//inline fun <reified T> T.unsafeClone(): T {
+//    val newT = T::class.java.unsafeNew()
+//    Unsafe.instance
+//}

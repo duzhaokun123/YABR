@@ -16,5 +16,5 @@ fun Any.getJsonFieldValueOrNull(key: String): Any? =
     runCatching { getJsonFieldValue(key) }.getOrNull()
 
 @Suppress("UNCHECKED_CAST")
-fun <T> Any.getJsonFieldValueOrNullAs(key: String): T =
-    getJsonFieldValueOrNull(key) as T
+fun <T> Any.getJsonFieldValueOrNullAs(key: String): T? =
+    getJsonFieldValueOrNull(key) as T?

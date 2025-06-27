@@ -40,6 +40,7 @@ interface Logger {
             level,
             when (message) {
                 is Throwable -> message.stackTraceToString()
+                is Array<*> -> message.contentToString()
                 else -> message.toString()
             }
         )

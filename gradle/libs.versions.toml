@@ -11,6 +11,7 @@ ksp = "2.1.21-2.0.1"
 androidxAnnotation = "1.9.1"
 revanced-patcher = "19.3.1"
 smali = "3.0.9"
+unsafe = "0.0.6"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
@@ -19,6 +20,7 @@ photoview = { module = "io.getstream:photoview", version.ref = "photoview" }
 pine-core = { module = "top.canyie.pine:core", version.ref = "pine" }
 libxposed-api = { module = "io.github.libxposed:api", version.ref = "libxposed" }
 dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
+unsafe = { module = "com.github.iamironz:unsafe", version.ref = "unsafe" }
 xposed = { module = "de.robv.android.xposed:api", version = "82" }
 kotlin-ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidxAnnotation" }
