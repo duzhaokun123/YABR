@@ -19,6 +19,7 @@ class PineHookerContext(
     init {
         PineConfig.debug = BuildConfig.DEBUG
         PineConfig.debuggable = BuildConfig.DEBUG
+        PineConfig.libLoader = Pine.LibLoader {}
         EarlyUtils.loadLibrary("pine", context)
     }
 
@@ -32,7 +33,7 @@ class PineHookerContext(
         method: Member,
         callback: HookCallback
     ): Unhooker {
-        val unhook =  Pine.hook(method, object : MethodHook() {
+        val unhook = Pine.hook(method, object : MethodHook() {
             override fun beforeCall(callFrame: Pine.CallFrame) {
                 callback.before(PineHookCallbackContext(callFrame))
             }
