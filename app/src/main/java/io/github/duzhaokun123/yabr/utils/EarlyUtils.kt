@@ -13,19 +13,19 @@ import io.github.duzhaokun123.yabr.Main
 object EarlyUtils {
     fun getProcessName(context: Context?): String {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return android.os.Process.myProcessName()
+            return Process.myProcessName()
         } else {
             if (context == null) {
                 throw RuntimeException("Context is null, cannot get process name")
             }
             val activityManager =
                 context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-            return activityManager.runningAppProcesses.firstOrNull { it.pid == android.os.Process.myPid() }?.processName
+            return activityManager.runningAppProcesses.firstOrNull { it.pid == Process.myPid() }?.processName
                 ?: throw RuntimeException("Failed to get process name for PID ${Process.myPid()}")
         }
     }
 
-    @SuppressLint("DiscouragedPrivateApi")
+    @SuppressLint("DiscouragedPrivateApi", "UnsafeDynamicallyLoadedCode")
     fun loadLibrary(name: String, context: Context? = null) {
         runCatching {
             System.loadLibrary(name)

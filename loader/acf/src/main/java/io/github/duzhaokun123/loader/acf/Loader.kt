@@ -35,7 +35,7 @@ object Loader {
 
         val yabrPath = pm.getApplicationInfo(Main.packageName, 0).sourceDir
 
-        val hookerContext = PineHookerContext()
+        val hookerContext = PineHookerContext(application)
         val processName = EarlyUtils.getProcessName(context)
         val loaderContext = object : LoaderContext {
             override val implementationInfo: ImplementationInfo

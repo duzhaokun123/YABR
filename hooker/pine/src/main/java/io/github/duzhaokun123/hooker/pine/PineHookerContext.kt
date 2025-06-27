@@ -1,6 +1,7 @@
 package io.github.duzhaokun123.hooker.pine
 
 import android.annotation.SuppressLint
+import android.content.Context
 import io.github.duzhaokun123.hooker.base.HookCallback
 import io.github.duzhaokun123.hooker.base.HookerContext
 import io.github.duzhaokun123.hooker.base.ImplementationInfo
@@ -12,11 +13,13 @@ import top.canyie.pine.callback.MethodHook
 import java.lang.reflect.Member
 
 @SuppressLint("UnsafeDynamicallyLoadedCode")
-class PineHookerContext : HookerContext {
+class PineHookerContext(
+    context: Context
+) : HookerContext {
     init {
         PineConfig.debug = BuildConfig.DEBUG
         PineConfig.debuggable = BuildConfig.DEBUG
-        EarlyUtils.loadLibrary("pine")
+        EarlyUtils.loadLibrary("pine", context)
     }
 
     override val implementationInfo: ImplementationInfo

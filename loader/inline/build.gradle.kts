@@ -12,4 +12,5 @@ dependencies {
     compileOnly(projects.loader.base)
     compileOnly(projects.hooker.base)
     implementation(projects.hooker.pine)
+    implementation(projects.hooker.noop)
 }

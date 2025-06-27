@@ -26,6 +26,7 @@
             <option value="$PROJECT_DIR$/loader/xposed" />
             <option value="$PROJECT_DIR$/loader/xposed100" />
             <option value="$PROJECT_DIR$/revanced" />
+            <option value="$PROJECT_DIR$/zygisk" />
           </set>
         </option>
       </GradleProjectSettings>

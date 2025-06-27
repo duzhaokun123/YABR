@@ -1,25 +1,29 @@
 package io.github.duzhaokun123.loader.inline;
 
+import android.app.Application;
+
 @SuppressWarnings("unused")
 public class InlineEntry {
-    static String HOOKER = "pine";
+    static String HOOKER = "noop";
+
+    /**
+     * set application so we needn't wait
+     */
+    public static Application application = null;
 
     /**
      * Inline entry point.
-     *
-     * @param modulePath the path to the module
      */
-    static void entry1(String modulePath) {
-        entry2(modulePath, HOOKER);
+    public static void entry0() {
+        entry1(HOOKER);
     }
 
     /**
      * Inline entry point with hooker.
      *
-     * @param modulePath the path to the module
      * @param hooker the hooker to use
      */
-    static void entry2(String modulePath, String hooker) {
-        InlineEntryKt.entry(modulePath, hooker);
+    public static void entry1(String hooker) {
+        InlineEntryKt.entry(hooker);
     }
 }

@@ -1,0 +1,6 @@
+id=zygisk_yabr
+name=YABR loader
+version=1
+versionCode=1
+author=o0kam1
+description=load yabr to bilibili

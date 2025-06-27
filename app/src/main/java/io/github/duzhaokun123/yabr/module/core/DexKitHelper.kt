@@ -2,8 +2,10 @@ package io.github.duzhaokun123.yabr.module.core
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Environment
 import android.text.SpannableString
 import android.text.Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.Button
@@ -45,6 +47,8 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
     override val description = "DexKit 查找结果"
     override val category = UICategory.DEBUG
 
+    var failsafe = false
+
     override fun onCreateUI(context: Context): View {
         val sv = ScrollView(context)
         val ll = LinearLayout(context).apply {
@@ -52,6 +56,14 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
         }
         sv.addView(ll)
         val tv = TextView(context).apply {
+            if (failsafe) {
+                val text = SpannableString("failsafe mode").apply {
+                    setSpan(ForegroundColorSpan(Color.RED), 0, length, SPAN_INCLUSIVE_EXCLUSIVE)
+                    setSpan(AbsoluteSizeSpan(32, true), 0, length, SPAN_INCLUSIVE_EXCLUSIVE)
+                }
+                append(text)
+                append("\n")
+            }
             dexFindInfo.forEach { (name, value) ->
                 val text = SpannableString("$name:\n\t${value.member}\n\n").apply {
                     if (value.member == null) {
@@ -82,7 +94,15 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
     val dexkitCache by lazy { ConfigStore.ofModule(this) }
 
     override fun onLoad(): Boolean {
-        EarlyUtils.loadLibrary("dexkit")
+        val failsafeFile = loaderContext.application.getExternalFilesDir(null)!!
+            .resolve("yabr_failsafe")
+            .resolve("dexkit")
+        if (failsafeFile.exists()) {
+            logger.w("dexkit failsafe! no load libdexkit.so")
+            failsafe = true
+        } else {
+            EarlyUtils.loadLibrary("dexkit")
+        }
         val pm = loaderContext.application.packageManager
         val packageInfo = pm.getPackageInfo(loaderContext.application.packageName, 0)
         @Suppress("DEPRECATION")

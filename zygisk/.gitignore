@@ -1,0 +1,4 @@
+/build
+*.so
+*.zip
+*.dex

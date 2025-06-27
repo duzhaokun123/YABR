@@ -24,7 +24,7 @@ object LoadEntry {
             "RxposedLoader",
             "LoadEntry: entry called with context=$context, source=$source, argument=$argument"
         )
-        val hookerContext = PineHookerContext()
+        val hookerContext = PineHookerContext(context)
         val loaderContext = object : LoaderContext {
             override val implementationInfo: ImplementationInfo
                 get() = ImplementationInfo(

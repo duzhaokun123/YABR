@@ -4,7 +4,10 @@ import io.github.duzhaokun123.hooker.base.HookCallback
 import io.github.duzhaokun123.hooker.base.HookerContext
 import io.github.duzhaokun123.hooker.base.ImplementationInfo
 import io.github.duzhaokun123.hooker.base.Unhooker
+import java.lang.reflect.Constructor
 import java.lang.reflect.Member
+import java.lang.reflect.Method
+import java.security.InvalidParameterException
 
 object NoOpHookerContext : HookerContext {
     override val implementationInfo: ImplementationInfo
@@ -23,4 +26,15 @@ object NoOpHookerContext : HookerContext {
         }
     }
 
+    override fun invokeOriginal(
+        method: Member,
+        thiz: Any?,
+        vararg args: Any?
+    ): Any? {
+        return when (method) {
+            is Method -> method.invoke(thiz, *args)
+            is Constructor<*> -> method.newInstance(*args)
+            else -> InvalidParameterException("method $method")
+        }
+    }
 }
