@@ -20,6 +20,23 @@ Yet Another BiliRoaming
 [`app/build.gradle.kts`](app/build.gradle.kts) 里的 `runtimeOnly(projects.loader.xxx)` 都是可选的
 按需要修改
 
+[`app/build.gradle.kts`](app/build.gradle.kts) 里的 `runtimeOnly(projects.hooker.xxx)` 也是可选的
+
+但依赖从下表
+
+| 环境                 | 建议 loader | 建议 hooker |
+|---------------------|-------------|-----------|
+| 大多数 legacy xposed | xposed      | xposed    |
+| LSPosed             | xposed*     | xposed*   |
+| Zygisk              | inline      | pine      |
+| ReVanced**          | inline/acf  | pine      |
+| Rxposed             | rxposed     | pine      |
+| 其他注入方式          | inline      | pine      |
+
+*: 虽然 xposed100 可用 但它看起来太丑了
+
+**: ReVanced 兼容已被引入 androidx 破坏
+
 ## 开发
 
 [模块功能开发](docs/模块功能开发.md)

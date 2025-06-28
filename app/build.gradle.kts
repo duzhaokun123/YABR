@@ -44,6 +44,10 @@ dependencies {
     runtimeOnly(projects.loader.rxposed)
 
     implementation(projects.hooker.base)
+    runtimeOnly(projects.hooker.noop)
+    runtimeOnly(projects.hooker.pine)
+    runtimeOnly(projects.hooker.xposed)
+    runtimeOnly(projects.hooker.xposed100)
 
     ksp(projects.annotation)
 

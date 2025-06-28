@@ -12,5 +12,5 @@ dependencies {
     compileOnly(projects.app)
     compileOnly(projects.loader.base)
     compileOnly(projects.hooker.base)
-    implementation(projects.hooker.xposed100)
+    compileOnly(projects.hooker.xposed100)
 }

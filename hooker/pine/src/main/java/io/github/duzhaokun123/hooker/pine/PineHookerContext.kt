@@ -19,14 +19,16 @@ class PineHookerContext(
     init {
         PineConfig.debug = BuildConfig.DEBUG
         PineConfig.debuggable = BuildConfig.DEBUG
-        PineConfig.libLoader = Pine.LibLoader {}
-        EarlyUtils.loadLibrary("pine", context)
+        PineConfig.libLoader = Pine.LibLoader {
+            EarlyUtils.loadLibrary("pine", context)
+        }
     }
 
     override val implementationInfo: ImplementationInfo
         get() = ImplementationInfo(
             name = "Pine",
             version = "0.3.0",
+            description = "https://github.com/canyie/pine"
         )
 
     override fun hookMethod(

@@ -11,6 +11,6 @@ dependencies {
     compileOnly(projects.app)
     compileOnly(projects.loader.base)
     compileOnly(projects.hooker.base)
-    implementation(projects.hooker.pine)
-    implementation(projects.hooker.noop)
+    compileOnly(projects.hooker.pine)
+    compileOnly(projects.hooker.noop)
 }
