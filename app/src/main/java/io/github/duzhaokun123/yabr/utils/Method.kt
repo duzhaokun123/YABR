@@ -90,3 +90,5 @@ fun Class<*>.getDeclaredMethodOrNull(
 ): Method? {
     return runCatching { getDeclaredMethod(name, *parameterTypes) }.getOrNull()
 }
+
+fun Method.invokeStatic(vararg args: Any?): Any? = invoke(null, *args)
