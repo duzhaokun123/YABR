@@ -3,7 +3,7 @@ package io.github.duzhaokun123.yabr.module.core
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Core
-import io.github.duzhaokun123.yabr.module.base.DexKitContext
+import io.github.duzhaokun123.yabr.module.base.DexKitMemberOwner
 import io.github.duzhaokun123.yabr.module.base.dexKitMember
 import io.github.duzhaokun123.yabr.module.base.lazyLoadClass
 import io.github.duzhaokun123.yabr.module.base.multiLoadAnySuccess
@@ -21,7 +21,6 @@ import io.github.duzhaokun123.yabr.utils.setJsonFieldValue
 import io.github.duzhaokun123.yabr.utils.toClass
 import io.github.duzhaokun123.yabr.utils.toMethod
 import io.github.duzhaokun123.yabr.utils.unsafeNew
-import java.lang.reflect.Method
 import java.lang.reflect.Proxy
 
 data class ThreePointItemItemData(
@@ -38,7 +37,7 @@ interface ThreePointCallback {
     id = "three_point_hook",
     targets = [ModuleEntryTarget.MAIN]
 )
-object ThreePointHook : BaseModule(), Core, DexKitContext {
+object ThreePointHook : BaseModule(), Core, DexKitMemberOwner {
     val threePointCallbackMap =
         mutableMapOf<Long, ThreePointCallback>()
 

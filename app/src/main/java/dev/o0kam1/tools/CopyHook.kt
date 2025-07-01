@@ -1,5 +1,6 @@
-package dev.o0kam1
+package dev.o0kam1.tools
 
+import android.R
 import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -16,7 +17,7 @@ import io.github.duzhaokun123.yabr.utils.hookerContext
 import kotlin.reflect.jvm.javaMethod
 
 @ModuleEntry(
-    id = "dev.o0kam1.CopyHook"
+    id = "dev.o0kam1.tools.CopyHook"
 )
 object CopyHook: BaseModule(), UISwitch, SwitchModule {
     override val name = "拦截复制"
@@ -52,7 +53,7 @@ object CopyHook: BaseModule(), UISwitch, SwitchModule {
                 hookerContext.invokeOriginal(ClipboardManager::setPrimaryClip.javaMethod!!, cm, clip)
             }.show()
             .apply {
-                findViewById<TextView>(android.R.id.message).setTextIsSelectable(true)
+                findViewById<TextView>(R.id.message).setTextIsSelectable(true)
             }
     }
 }

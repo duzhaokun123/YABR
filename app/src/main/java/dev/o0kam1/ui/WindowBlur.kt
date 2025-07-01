@@ -1,4 +1,4 @@
-package dev.o0kam1
+package dev.o0kam1.ui
 
 import android.app.Activity
 import android.app.Dialog
@@ -91,7 +91,8 @@ object WindowBlur : BaseModule(), UISwitch, SwitchModule, Compatible {
 
     @RequiresApi(Build.VERSION_CODES.S)
     fun hookActivity(): Boolean {
-        loaderContext.application.registerActivityLifecycleCallbacks(object : SimpleActivityLifecycleCallbacks {
+        loaderContext.application.registerActivityLifecycleCallbacks(object :
+            SimpleActivityLifecycleCallbacks {
             override fun onActivityStarted(activity: Activity) { // XXX: 被多次调用 但总比 onActivityPostCreated 不被调用好
                 val a = activity.theme.obtainStyledAttributes(intArrayOf(android.R.attr.windowIsTranslucent))
                 val windowIsTranslucent = a.getBoolean(0, false)

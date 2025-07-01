@@ -12,6 +12,12 @@ public class InlineEntry {
     public static Application application = null;
 
     /**
+     * name of previous stage loader
+     * maybe null if you don't want set
+     */
+    public static String previousStageLoader = null;
+
+    /**
      * Inline entry point.
      */
     public static void entry0() {

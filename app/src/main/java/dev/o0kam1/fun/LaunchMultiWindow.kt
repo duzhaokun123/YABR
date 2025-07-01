@@ -1,8 +1,7 @@
-package dev.o0kam1
+package dev.o0kam1.`fun`
 
 import android.app.Activity
 import android.app.ActivityOptions
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import io.github.duzhaokun123.module.base.ModuleEntry

@@ -1,35 +1,23 @@
-package dev.o0kam1
+package dev.o0kam1.tools
 
-import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.os.Environment
-import android.widget.ImageView
+import dev.o0kam1.tools.PhotoActivity
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.module.UICategory
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.SwitchModule
 import io.github.duzhaokun123.yabr.module.base.UISwitch
-import io.github.duzhaokun123.yabr.module.core.Share
 import io.github.duzhaokun123.yabr.module.core.ThreePointCallback
 import io.github.duzhaokun123.yabr.module.core.ThreePointHook
 import io.github.duzhaokun123.yabr.module.core.ThreePointItemItemData
 import io.github.duzhaokun123.yabr.module.core.ActivityUtils
-import io.github.duzhaokun123.yabr.utils.Http
 import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
 import io.github.duzhaokun123.yabr.utils.Toast
 import io.github.duzhaokun123.yabr.utils.getFieldValueAs
 import io.github.duzhaokun123.yabr.utils.getJsonFieldValueAs
-import io.github.duzhaokun123.yabr.utils.getJsonFieldValueOrNullAs
-import io.github.duzhaokun123.yabr.utils.invokeMethodAs
-import io.github.duzhaokun123.yabr.utils.loaderContext
-import io.github.duzhaokun123.yabr.utils.readAll
-import io.github.duzhaokun123.yabr.utils.reason
-import io.github.duzhaokun123.yabr.utils.runMainThread
-import io.github.duzhaokun123.yabr.utils.runNewThread
 
 @ModuleEntry(
-    id = "dev.o0kam1.Cover",
+    id = "dev.o0kam1.tools.Cover",
     targets = [ModuleEntryTarget.MAIN]
 )
 object Cover : BaseModule(), SwitchModule, UISwitch {
@@ -79,7 +67,7 @@ object Cover : BaseModule(), SwitchModule, UISwitch {
                         logger.d(cover)
                         val activity = ActivityUtils.topActivity!!
                         activity.startActivity(Intent(activity, PhotoActivity::class.java).apply {
-                            putExtra(PhotoActivity.URL, cover)
+                            putExtra(PhotoActivity.Companion.URL, cover)
                         })
                     }
                 }

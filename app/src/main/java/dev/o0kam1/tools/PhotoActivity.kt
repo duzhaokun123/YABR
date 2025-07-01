@@ -1,8 +1,7 @@
-package dev.o0kam1
+package dev.o0kam1.tools
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
@@ -13,7 +12,6 @@ import android.widget.ProgressBar
 import io.getstream.photoview.PhotoView
 import io.github.duzhaokun123.yabr.R
 import io.github.duzhaokun123.yabr.logger.activityLogger
-import io.github.duzhaokun123.yabr.module.core.ActivityHijack
 import io.github.duzhaokun123.yabr.module.core.ModuleActivity
 import io.github.duzhaokun123.yabr.module.core.ModuleActivityMeta
 import io.github.duzhaokun123.yabr.module.core.Share

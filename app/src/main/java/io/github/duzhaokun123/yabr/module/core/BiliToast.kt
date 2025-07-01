@@ -5,16 +5,15 @@ import android.widget.Toast
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Core
-import io.github.duzhaokun123.yabr.module.base.DexKitContext
+import io.github.duzhaokun123.yabr.module.base.DexKitMemberOwner
 import io.github.duzhaokun123.yabr.module.base.dexKitMember
-import io.github.duzhaokun123.yabr.utils.invoke
 import io.github.duzhaokun123.yabr.utils.loaderContext
 import io.github.duzhaokun123.yabr.utils.toMethod
 
 @ModuleEntry(
     id = "bili_toast"
 )
-object BiliToast : BaseModule(), Core, DexKitContext {
+object BiliToast : BaseModule(), Core, DexKitMemberOwner {
     val method_show by dexKitMember(
         "com.bilibili.droid.ToastHelper.showToast",
     ) { bridge ->

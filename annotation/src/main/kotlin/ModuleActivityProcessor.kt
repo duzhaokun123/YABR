@@ -30,10 +30,10 @@ class ModuleActivityProcessor(
         writer.write("object ModuleActivities {\n")
         writer.write("val activities = listOf(\n")
         symbols.forEach { module ->
-                val className = (module as KSClassDeclaration).qualifiedName!!.asString()
+                val className = (module as KSClassDeclaration).safeQualifiedName
                 logger.info("Found module entry: $className.")
                 if (module.classKind != ClassKind.CLASS) {
-                    logger.error("ModuleActivity must be a class, ${module.qualifiedName?.asString()}", module)
+                    logger.error("ModuleActivity must be a class, ${module.safeQualifiedName}", module)
                     return@forEach
                 }
                 writer.write("${className}::class,\n")

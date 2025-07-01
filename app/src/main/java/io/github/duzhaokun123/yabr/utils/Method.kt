@@ -1,6 +1,5 @@
 package io.github.duzhaokun123.yabr.utils
 
-import io.github.duzhaokun123.yabr.logger.AndroidLogger
 import org.luckypray.dexkit.result.MethodData
 import org.luckypray.dexkit.wrap.DexMethod
 import java.lang.reflect.Method

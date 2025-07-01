@@ -4,7 +4,7 @@ import android.os.Build
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Core
-import io.github.duzhaokun123.yabr.module.base.DexKitContext
+import io.github.duzhaokun123.yabr.module.base.DexKitMemberOwner
 import io.github.duzhaokun123.yabr.module.base.dexKitMember
 import io.github.duzhaokun123.yabr.module.base.multiLoadAllSuccess
 import io.github.duzhaokun123.yabr.utils.loadClass
@@ -19,7 +19,7 @@ data class BiliVersionInfo(
 @ModuleEntry(
     id = "bili_info"
 )
-object BiliInfo : BaseModule(), Core, DexKitContext {
+object BiliInfo : BaseModule(), Core, DexKitMemberOwner {
     override fun onLoad() = multiLoadAllSuccess(::loadPmVersionInfo, ::loadDexVersionInfo)
 
     lateinit var pmVersionInfo: BiliVersionInfo

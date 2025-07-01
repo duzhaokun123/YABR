@@ -64,7 +64,8 @@ object InlineEntryKt {
                 get() = ImplementationInfo(
                     name = "InlineLoader",
                     version = "0.1.0",
-                    description = "stackTrace:\n$stackTrace"
+                    description = "previous stage loader: ${InlineEntry.previousStageLoader}\n" +
+                            "stackTrace:\n$stackTrace"
                 )
             override val hostClassloader: ClassLoader
                 get() = application.classLoader

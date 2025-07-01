@@ -1,4 +1,4 @@
-package dev.o0kam1
+package dev.o0kam1.tools
 
 import android.annotation.SuppressLint
 import android.content.Context

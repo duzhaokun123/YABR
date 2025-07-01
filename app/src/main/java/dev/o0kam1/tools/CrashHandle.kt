@@ -1,4 +1,4 @@
-package dev.o0kam1
+package dev.o0kam1.tools
 
 import android.os.Handler
 import android.os.Looper
@@ -14,7 +14,7 @@ import io.github.duzhaokun123.yabr.utils.loop
 import io.github.duzhaokun123.yabr.utils.reason
 
 @ModuleEntry(
-    id = "dev.o0kam1.CrashHandle",
+    id = "dev.o0kam1.tools.CrashHandle",
     targets = [ModuleEntryTarget.MAIN]
 )
 object CrashHandle : BaseModule(), UISwitch, SwitchModule {

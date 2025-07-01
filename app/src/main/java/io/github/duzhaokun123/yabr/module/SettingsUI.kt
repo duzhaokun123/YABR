@@ -23,7 +23,7 @@ import io.github.duzhaokun123.yabr.Main
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Compatible
 import io.github.duzhaokun123.yabr.module.base.Core
-import io.github.duzhaokun123.yabr.module.base.DexKitContext
+import io.github.duzhaokun123.yabr.module.base.DexKitMemberOwner
 import io.github.duzhaokun123.yabr.module.base.SwitchModule
 import io.github.duzhaokun123.yabr.module.base.UIActivity
 import io.github.duzhaokun123.yabr.module.base.UIComplex
@@ -34,8 +34,6 @@ import io.github.duzhaokun123.yabr.module.base.isEnabled
 import io.github.duzhaokun123.yabr.module.base.multiLoadAllSuccess
 import io.github.duzhaokun123.yabr.module.core.SwitchModuleManager
 import io.github.duzhaokun123.yabr.module.core.ActivityUtils
-import io.github.duzhaokun123.yabr.utils.Contexts.createAppCompatThemeWrapper
-import io.github.duzhaokun123.yabr.utils.Contexts.createAppThemeWrapper
 import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
 import io.github.duzhaokun123.yabr.utils.Toast
 import io.github.duzhaokun123.yabr.utils.dp
@@ -65,7 +63,7 @@ object UICategory {
     id = "settings_ui",
     targets = [ModuleEntryTarget.MAIN]
 )
-object SettingsUI : BaseModule(), Core, DexKitContext {
+object SettingsUI : BaseModule(), Core, DexKitMemberOwner {
     const val START_SETTING_KEY = "biliroaming_start_setting"
     const val SETTINGS_ID = 23232323L
     const val SETTINGS_URI = "bilibili://yabr_settings"

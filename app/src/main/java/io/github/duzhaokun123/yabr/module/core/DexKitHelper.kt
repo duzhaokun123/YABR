@@ -2,7 +2,6 @@ package io.github.duzhaokun123.yabr.module.core
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Environment
 import android.text.SpannableString
 import android.text.Spanned.SPAN_INCLUSIVE_EXCLUSIVE
 import android.text.style.AbsoluteSizeSpan
@@ -18,7 +17,7 @@ import io.github.duzhaokun123.yabr.Main
 import io.github.duzhaokun123.yabr.module.UICategory
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Core
-import io.github.duzhaokun123.yabr.module.base.DexKitContext
+import io.github.duzhaokun123.yabr.module.base.DexKitMemberOwner
 import io.github.duzhaokun123.yabr.module.base.UIComplex
 import io.github.duzhaokun123.yabr.utils.EarlyUtils
 import io.github.duzhaokun123.yabr.utils.Toast
@@ -115,7 +114,7 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
             dexkitCache.putString("version", newVersion)
         }
         Main.addOnModuleLoadListener { module ->
-            if (module is DexKitContext) {
+            if (module is DexKitMemberOwner) {
                 if (module.needDexKitBridge) {
                     prepareDexKitBridge()
                     runCatching {
