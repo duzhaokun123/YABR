@@ -49,6 +49,8 @@ dependencies {
     runtimeOnly(projects.hooker.xposed)
     runtimeOnly(projects.hooker.xposed100)
 
+    compileOnly(projects.stub.bilibili)
+
     ksp(projects.annotation)
 
     implementation(libs.dexkit)

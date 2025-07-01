@@ -10,9 +10,9 @@ import io.github.duzhaokun123.yabr.module.base.Core
 import io.github.duzhaokun123.yabr.module.base.SwitchModule
 import io.github.duzhaokun123.yabr.module.base.isEnabled
 import io.github.duzhaokun123.yabr.utils.Toast
-import io.github.duzhaokun123.yabr.utils.getStaticFieldValueAs
 import io.github.duzhaokun123.yabr.utils.hookerContext
 import io.github.duzhaokun123.yabr.utils.loaderContext
+import io.github.duzhaokun123.yabr.utils.setFieldValue
 
 object Main {
     const val packageName = BuildConfig.APPLICATION_ID
@@ -33,6 +33,12 @@ object Main {
 
         loaderContext = loader
         hookerContext = hooker
+
+        val hostClassLoader = loaderContext.hostClassloader
+        val selfParentClassLoader = this.javaClass.classLoader!!.parent
+        val mergedClassLoader = MergedClassLoader(hostClassLoader, selfParentClassLoader)
+        this.javaClass.classLoader!!.setFieldValue("parent", mergedClassLoader)
+        AndroidLogger.d("after merge class loader")
 
         allModule = ModuleEntries.entries.toList()
         val target =
@@ -133,3 +139,4 @@ object Main {
         onModuleLoadListeners.add(listener)
     }
 }
+
