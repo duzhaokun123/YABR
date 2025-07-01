@@ -4,12 +4,13 @@ import io.github.duzhaokun123.codegen.ModuleEntries
 import io.github.duzhaokun123.hooker.base.HookerContext
 import io.github.duzhaokun123.loader.base.LoaderContext
 import io.github.duzhaokun123.yabr.logger.AndroidLogger
-import io.github.duzhaokun123.yabr.module.base.Core
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Compatible
+import io.github.duzhaokun123.yabr.module.base.Core
 import io.github.duzhaokun123.yabr.module.base.SwitchModule
 import io.github.duzhaokun123.yabr.module.base.isEnabled
 import io.github.duzhaokun123.yabr.utils.Toast
+import io.github.duzhaokun123.yabr.utils.getStaticFieldValueAs
 import io.github.duzhaokun123.yabr.utils.hookerContext
 import io.github.duzhaokun123.yabr.utils.loaderContext
 
@@ -33,11 +34,11 @@ object Main {
         loaderContext = loader
         hookerContext = hooker
 
-        allModule = ModuleEntries.entries
+        allModule = ModuleEntries.entries.toList()
         val target =
             if (":" in loader.processName) loader.processName.drop(loader.processName.indexOf(':') + 1) else ""
         val toLoad =
-            ModuleEntries.entries
+            allModule
                 .map { it to it.metadata }
                 .filter { (_, metadata) ->
                     metadata.targets.isEmpty() || target in metadata.targets

@@ -6,15 +6,19 @@ photoview = "1.0.3"
 pine = "0.3.0"
 libxposed = "100"
 dexkit = "2.0.6"
-kotlin = "2.1.21"
-ksp = "2.1.21-2.0.1"
+kotlin = "2.2.0"
+ksp = "2.2.0-2.0.2"
 androidxAnnotation = "1.9.1"
+preference = "1.2.1"
 revanced-patcher = "19.3.1"
 smali = "3.0.9"
 unsafe = "0.0.6"
+window = "1.4.0"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-preference = { module = "androidx.preference:preference", version.ref = "preference" }
+androidx-window = { module = "androidx.window:window", version.ref = "window" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 photoview = { module = "io.getstream:photoview", version.ref = "photoview" }
 pine-core = { module = "top.canyie.pine:core", version.ref = "pine" }

@@ -18,25 +18,22 @@ class ModuleEntryProcessor(
                 Dependencies(
                     aggregating = true,
                     sources = symbols.map { it.containingFile!! }.toList().toTypedArray()
-                ), packageName, "ModuleEntries"
+                ), packageName, "ModuleEntries", extensionName = "java"
             )
         } catch (e: FileAlreadyExistsException) {
             return emptyList()
         }
         val writer = OutputStreamWriter(out)
-        writer.write("package $packageName\n\n")
-        writer.write("object ModuleEntries {\n")
-        writer.write("val entries = listOf(\n")
+        writer.write("package $packageName;\n\n")
+        writer.write("import io.github.duzhaokun123.yabr.module.base.BaseModule;\n\n")
+        writer.write("public class ModuleEntries {\n")
+        writer.write("\tpublic static BaseModule[] entries = new BaseModule[] {\n")
         symbols.forEach { module ->
-                val className = (module as KSClassDeclaration).safeQualifiedName
+                val className = (module as KSClassDeclaration).qualifiedName!!.asString()
                 logger.info("Found module entry: $className.")
-                if (module.classKind != ClassKind.OBJECT) {
-                    logger.error("ModuleEntry must be an object, ${module.safeQualifiedName}", module)
-                    return@forEach
-                }
-                writer.write("${className},\n")
+                writer.write("\t\t${className}.INSTANCE,\n")
             }
-        writer.write(")\n")
+        writer.write("\t};\n")
         writer.write("}\n")
         writer.flush()
         writer.close()
