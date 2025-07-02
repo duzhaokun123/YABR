@@ -38,7 +38,7 @@ dependencies {
 
     implementation(projects.loader.base)
     runtimeOnly(projects.loader.xposed)
-    runtimeOnly(projects.loader.xposed100)
+//    runtimeOnly(projects.loader.xposed100)
     runtimeOnly(projects.loader.inline)
     runtimeOnly(projects.loader.acf)
     runtimeOnly(projects.loader.rxposed)
@@ -47,7 +47,7 @@ dependencies {
     runtimeOnly(projects.hooker.noop)
     runtimeOnly(projects.hooker.pine)
     runtimeOnly(projects.hooker.xposed)
-    runtimeOnly(projects.hooker.xposed100)
+//    runtimeOnly(projects.hooker.xposed100)
 
     compileOnly(projects.stub.bilibili)
 
