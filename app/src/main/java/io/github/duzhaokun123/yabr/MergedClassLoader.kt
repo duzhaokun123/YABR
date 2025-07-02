@@ -4,7 +4,7 @@ import io.github.duzhaokun123.yabr.logger.AndroidLogger
 
 class MergedClassLoader(
     val hostClassLoader: ClassLoader,
-    val selfParentClassLoader: ClassLoader
+    val selfParentClassLoader: ClassLoader?
 ): ClassLoader() {
     override fun loadClass(name: String): Class<*>? {
         if (name.startsWith("androidx")) {
@@ -12,7 +12,7 @@ class MergedClassLoader(
             return hostClassLoader.loadClass(name)
         }
         runCatching {
-            return selfParentClassLoader.loadClass(name)
+            return selfParentClassLoader?.loadClass(name) ?: throw RuntimeException()
         }
         runCatching {
             return hostClassLoader.loadClass(name)

@@ -11,7 +11,7 @@ object Loader {
     const val TAG = "YABR_zygisk_loader"
 
     lateinit var modulePackageName: String
-    var hookerName: String? = null
+    lateinit var hookerName: String
 
     @JvmStatic
     fun load(arg0: String?, arg1: String?) {
@@ -22,7 +22,7 @@ object Loader {
         }
 
         modulePackageName = arg0
-        hookerName = arg1
+        hookerName = arg1 ?: "pine"
 
         val class_ActivityThread =
             Class.forName("android.app.ActivityThread")
@@ -52,11 +52,8 @@ object Loader {
             DexClassLoader(modulePath, application.cacheDir.path, null, null)
         runCatching {
             val entry = moduleClassloader.loadClass("io.github.duzhaokun123.loader.inline.InlineEntry")
-            if (hookerName == null) {
-                entry.getMethod("entry0").invoke(null)
-            } else {
-                entry.getMethod("entry1").invoke(null, hookerName)
-            }
+            entry.getDeclaredField("previousStageLoader").set(null, "zygisk")
+            entry.getMethod("entry1", String::class.java).invoke(null, hookerName)
         }.onFailure { t ->
             Log.e(TAG, "load module fail", t)
         }

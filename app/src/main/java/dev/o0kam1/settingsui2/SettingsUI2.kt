@@ -69,7 +69,7 @@ object SettingsUI2 : BaseModule() {
             loadClass("androidx.preference.PreferenceFragmentCompat")
                 .findMethod { it.name == "getPreferenceManager" }
                 .returnType
-                .findMethod { it.returnType == PreferenceScreen::class.java && it.paramCount == 1 }
+                .findMethod { it.returnType == loadClass("androidx.preference.PreferenceScreen") && it.paramCount == 1 }
         loadClass("com.bilibili.app.preferences.BiliPreferencesActivity\$BiliPreferencesFragment")
             .findMethod { it.name == "onCreatePreferences" }
             .hookAfter {

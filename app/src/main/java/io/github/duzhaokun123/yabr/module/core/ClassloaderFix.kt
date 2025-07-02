@@ -6,7 +6,6 @@ import io.github.duzhaokun123.yabr.Main
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Core
 import io.github.duzhaokun123.yabr.utils.findMethod
-import io.github.duzhaokun123.yabr.utils.loaderContext
 
 @ModuleEntry(
     id = "classloader_fix",
@@ -20,9 +19,9 @@ object ClassloaderFix : BaseModule(), Core {
                 if (it.result is ListClassLoader) {
                     return@hookAfter
                 }
-                it.result = ListClassLoader(it.result as ClassLoader,
-                    Main::class.java.classLoader,
-                    loaderContext.hostClassloader
+                it.result = ListClassLoader(
+                    it.result as ClassLoader,
+                    Main::class.java.classLoader
                 )
             }
         return true

@@ -35,11 +35,14 @@ object Main {
         hookerContext = hooker
 
         val hostClassLoader = loaderContext.hostClassloader
-        val selfParentClassLoader = this.javaClass.classLoader!!.parent
-        val mergedClassLoader = MergedClassLoader(hostClassLoader, selfParentClassLoader)
-        this.javaClass.classLoader!!.setFieldValue("parent", mergedClassLoader)
-        AndroidLogger.d("after merge class loader")
-
+        if (hostClassLoader != this.javaClass.classLoader) {
+            val selfParentClassLoader = this.javaClass.classLoader?.parent
+            val mergedClassLoader = MergedClassLoader(hostClassLoader, selfParentClassLoader)
+            this.javaClass.classLoader!!.setFieldValue("parent", mergedClassLoader)
+            AndroidLogger.d("merge class loader")
+        } else {
+            AndroidLogger.d("self classloader same as host classloader, no classloader isolation!")
+        }
         allModule = ModuleEntries.entries.toList()
         val target =
             if (":" in loader.processName) loader.processName.drop(loader.processName.indexOf(':') + 1) else ""
