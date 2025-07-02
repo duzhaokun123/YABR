@@ -1,6 +1,7 @@
 package io.github.duzhaokun123.yabr.utils
 
 import org.luckypray.dexkit.result.MethodData
+import java.lang.reflect.Method
 
 fun MethodData.invoke(obj: Any?, vararg args: Any?): Any? {
     return if (this.isMethod) {
@@ -20,12 +21,27 @@ fun Any.invokeMethod(
     return method.invoke(this, *args)
 }
 
+fun Any.invokeMethod(
+    method: Method,
+    vararg args: Any?
+): Any? {
+    return method.invoke(this, *args)
+}
+
 @Suppress("UNCHECKED_CAST")
 fun <T> Any.invokeMethodAs(
     name: String,
     vararg args: Any?,
 ): T {
     return invokeMethod(name, *args) as T
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <T> Any.invokeMethodAs(
+    method: Method,
+    vararg args: Any?,
+): T {
+    return invokeMethod(method, *args) as T
 }
 
 fun Class<*>.invokeStaticMethod(

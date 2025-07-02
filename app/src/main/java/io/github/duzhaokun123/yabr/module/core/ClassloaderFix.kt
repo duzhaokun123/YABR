@@ -6,6 +6,7 @@ import io.github.duzhaokun123.yabr.Main
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Core
 import io.github.duzhaokun123.yabr.utils.findMethod
+import io.github.duzhaokun123.yabr.utils.loaderContext
 
 @ModuleEntry(
     id = "classloader_fix",
@@ -16,7 +17,13 @@ object ClassloaderFix : BaseModule(), Core {
         ContextWrapper::class.java
             .findMethod { it.name == "getClassLoader" }
             .hookAfter {
-                it.result = ListClassLoader(it.result as ClassLoader, Main::class.java.classLoader)
+                if (it.result is ListClassLoader) {
+                    return@hookAfter
+                }
+                it.result = ListClassLoader(it.result as ClassLoader,
+                    Main::class.java.classLoader,
+                    loaderContext.hostClassloader
+                )
             }
         return true
     }
@@ -31,6 +38,10 @@ class ListClassLoader(
                 return it.loadClass(name)
             }
         }
-        throw ClassNotFoundException(name)
+        throw ClassNotFoundException("$name not found in ${classLoaders.joinToString(", ")}")
+    }
+
+    override fun toString(): String {
+        return "ListClassLoader[${classLoaders.joinToString(", ")}]"
     }
 }

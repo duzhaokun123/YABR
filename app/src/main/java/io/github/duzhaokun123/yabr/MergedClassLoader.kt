@@ -8,7 +8,7 @@ class MergedClassLoader(
 ): ClassLoader() {
     override fun loadClass(name: String): Class<*>? {
         if (name.startsWith("androidx")) {
-            AndroidLogger.d("$name")
+//            AndroidLogger.d("$name")
             return hostClassLoader.loadClass(name)
         }
         runCatching {
