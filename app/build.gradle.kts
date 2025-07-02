@@ -15,6 +15,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -30,6 +31,12 @@ android {
     androidResources {
         additionalParameters += arrayOf("--allow-reserved-package-id", "--package-id", "0x25")
     }
+
+    packaging {
+        resources {
+            excludes += "**"
+        }
+    }
 }
 
 dependencies {
@@ -39,13 +46,13 @@ dependencies {
     implementation(projects.loader.base)
     runtimeOnly(projects.loader.xposed)
 //    runtimeOnly(projects.loader.xposed100)
-    runtimeOnly(projects.loader.inline)
-    runtimeOnly(projects.loader.acf)
-    runtimeOnly(projects.loader.rxposed)
+//    runtimeOnly(projects.loader.inline)
+//    runtimeOnly(projects.loader.acf)
+//    runtimeOnly(projects.loader.rxposed)
 
     implementation(projects.hooker.base)
-    runtimeOnly(projects.hooker.noop)
-    runtimeOnly(projects.hooker.pine)
+//    runtimeOnly(projects.hooker.noop)
+//    runtimeOnly(projects.hooker.pine)
     runtimeOnly(projects.hooker.xposed)
 //    runtimeOnly(projects.hooker.xposed100)
 
