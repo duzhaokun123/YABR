@@ -2,9 +2,11 @@ package io.github.duzhaokun123.yabr.module.core
 
 import android.os.Build
 import io.github.duzhaokun123.module.base.ModuleEntry
+import io.github.duzhaokun123.yabr.module.UICategory
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Core
 import io.github.duzhaokun123.yabr.module.base.DexKitMemberOwner
+import io.github.duzhaokun123.yabr.module.base.UIEntry
 import io.github.duzhaokun123.yabr.module.base.dexKitMember
 import io.github.duzhaokun123.yabr.module.base.multiLoadAllSuccess
 import io.github.duzhaokun123.yabr.utils.loadClass
@@ -19,10 +21,14 @@ data class BiliVersionInfo(
 @ModuleEntry(
     id = "bili_info"
 )
-object BiliInfo : BaseModule(), Core, DexKitMemberOwner {
-    override fun onLoad() = multiLoadAllSuccess(::loadPmVersionInfo, ::loadDexVersionInfo)
+object BiliInfo : BaseModule(), Core, DexKitMemberOwner, UIEntry {
+    var pmVersionInfo: BiliVersionInfo? = null
 
-    lateinit var pmVersionInfo: BiliVersionInfo
+    override val name = "Bilibili 版本"
+    override val description by lazy { "${pmVersionInfo?.versionName} (${pmVersionInfo?.versionCode}) ${pmVersionInfo?.packageName}" }
+    override val category = UICategory.ABOUT
+
+    override fun onLoad() = multiLoadAllSuccess(::loadPmVersionInfo, ::loadDexVersionInfo)
 
     fun loadPmVersionInfo(): Boolean {
         val pm = loaderContext.application.packageManager
