@@ -11,6 +11,7 @@ import io.github.duzhaokun123.yabr.module.base.dexKitMember
 import io.github.duzhaokun123.yabr.module.base.multiLoadAllSuccess
 import io.github.duzhaokun123.yabr.utils.loadClass
 import io.github.duzhaokun123.yabr.utils.loaderContext
+import java.io.File
 
 data class BiliVersionInfo(
     val packageName: String,

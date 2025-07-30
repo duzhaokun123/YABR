@@ -8,6 +8,7 @@ import io.github.duzhaokun123.yabr.module.base.dexKitMember
 import io.github.duzhaokun123.yabr.module.base.lazyLoadClass
 import io.github.duzhaokun123.yabr.module.base.multiLoadAnySuccess
 import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
+import io.github.duzhaokun123.yabr.utils.findAllMethods
 import io.github.duzhaokun123.yabr.utils.findMethod
 import io.github.duzhaokun123.yabr.utils.getFieldValue
 import io.github.duzhaokun123.yabr.utils.getFieldValueAs
@@ -99,7 +100,7 @@ object ThreePointHook : BaseModule(), Core, DexKitMemberOwner {
                 hookPegasusFeedConvert(data)
             }
         class_CardClickProcessor!!
-            .findMethod(findSuper = false) { it.paramCount == 9 }
+            .findMethod(findSuper = false) { it.paramCount == 11 }
             .hookBefore {
                 if (hookPegasusDislikeReason(it.args[3])) {
                     it.result = null
