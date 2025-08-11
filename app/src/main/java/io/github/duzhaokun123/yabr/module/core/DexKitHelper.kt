@@ -193,8 +193,12 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
     }
 
     fun prepareDexKitBridge() {
+        logger.d("Preparing DexKitBridge")
         if (dexKitBridge == null) {
+            logger.d("Creating DexKitBridge")
             dexKitBridge = DexKitBridge.create(loaderContext.application.applicationInfo.sourceDir)
+        } else {
+            logger.d("DexKitBridge already exists")
         }
         Toast.handler.removeCallbacks(closeCallback)
         Toast.handler.postDelayed(closeCallback, 1000L)

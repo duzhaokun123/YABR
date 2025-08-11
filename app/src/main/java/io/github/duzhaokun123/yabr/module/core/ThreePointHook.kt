@@ -259,8 +259,7 @@ object ThreePointHook : BaseModule(), Core, DexKitMemberOwner {
         val name = reason.getFieldValueAs<String>("name")
         val data = reason.getJsonFieldValueAs<String?>("extra")
         val threePointItemItemData = ThreePointItemItemData(name, data)
-        callCallback(id, threePointItemItemData)
-        return true
+        return callCallback(id, threePointItemItemData)
     }
 
     private fun parseData(data: Any): List<Pair<Long, ThreePointItemItemData>> {
@@ -275,12 +274,14 @@ object ThreePointHook : BaseModule(), Core, DexKitMemberOwner {
         }
     }
 
-    private fun callCallback(id: Long, data: ThreePointItemItemData) {
+    private fun callCallback(id: Long, data: ThreePointItemItemData): Boolean {
         runCatching {
-            threePointCallbackMap[id]?.onClick(data)
+            threePointCallbackMap[id]!!.onClick(data)
+            return true
         }.onFailure { t ->
             logger.w("ThreePointCallback $id onClick failed")
             logger.w(t)
         }
+        return false
     }
 }
