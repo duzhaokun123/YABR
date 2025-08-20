@@ -53,20 +53,28 @@ plugins {
 }
 
 rootProject.name = "YABR"
+
 include(":app")
 include(":annotation")
+
 include(":loader:base")
 include(":loader:xposed")
 include(":loader:xposed100")
 include(":loader:inline")
 include(":loader:acf")
 include(":loader:rxposed")
+include(":loader:qauxvapi")
+
 include(":hooker:base")
 include(":hooker:xposed")
 include(":hooker:xposed100")
 include(":hooker:pine")
 include(":hooker:noop")
+include(":hooker:qauxvapi")
+
 include(":injector:revanced")
 include(":injector:zygisk")
 include(":injector:xposed")
+
 include(":stub:bilibili")
+include(":stub:qauxvapi")

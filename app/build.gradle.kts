@@ -12,6 +12,15 @@ android {
         buildConfigField("Long", "BUILD_TIME", "${System.currentTimeMillis()}L")
     }
 
+    signingConfigs {
+        getByName("debug") {
+            enableV1Signing = true
+            enableV2Signing = true
+            enableV3Signing = true
+            enableV4Signing = true
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -49,12 +58,14 @@ dependencies {
 //    runtimeOnly(projects.loader.inline)
 //    runtimeOnly(projects.loader.acf)
 //    runtimeOnly(projects.loader.rxposed)
+//    runtimeOnly(projects.loader.qauxvapi)
 
     implementation(projects.hooker.base)
 //    runtimeOnly(projects.hooker.noop)
 //    runtimeOnly(projects.hooker.pine)
     runtimeOnly(projects.hooker.xposed)
 //    runtimeOnly(projects.hooker.xposed100)
+//    runtimeOnly(projects.hooker.qauxvapi)
 
     compileOnly(projects.stub.bilibili)
 
