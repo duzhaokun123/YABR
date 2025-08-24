@@ -2,7 +2,9 @@ package io.github.duzhaokun123.yabr.module.core
 
 import android.app.Activity
 import android.app.Application
+import android.content.ComponentName
 import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import io.github.duzhaokun123.codegen.ModuleActivities
@@ -10,6 +12,7 @@ import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.R as AppR
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Core
+import io.github.duzhaokun123.yabr.module.core.ActivityHijack.ActProxyMgr.STUB_DEFAULT_ACTIVITY
 import io.github.duzhaokun123.yabr.utils.Toast
 import io.github.duzhaokun123.yabr.utils.getStaticFieldValueAs
 import io.github.duzhaokun123.yabr.utils.loaderContext
@@ -112,7 +115,18 @@ object ActivityHijack : BaseModule(), Core {
     object CounterfeitActivityInfoFactory {
         @JvmStatic
         fun makeProxyActivityInfo(className: String, flags: Long): ActivityInfo? {
-            TODO("CounterfeitActivityInfoFactory not implemented yet, do not use androidx")
+            val activityInfo = loaderContext.application.packageManager.getActivityInfo(
+                ComponentName(loaderContext.application, STUB_DEFAULT_ACTIVITY), flags.toInt())
+            activityInfo.apply {
+                targetActivity = null
+                taskAffinity = null
+                descriptionRes = 0
+                name = className
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    splitName = null
+                }
+            }
+            return activityInfo
         }
     }
 
