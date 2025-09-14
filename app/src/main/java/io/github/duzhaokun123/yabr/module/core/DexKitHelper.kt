@@ -10,9 +10,6 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.ScrollView
-import android.widget.Switch
 import android.widget.TextView
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.BuildConfig
@@ -34,13 +31,9 @@ import org.luckypray.dexkit.DexKitBridge
 import org.luckypray.dexkit.wrap.DexClass
 import org.luckypray.dexkit.wrap.DexField
 import org.luckypray.dexkit.wrap.DexMethod
-import java.io.File
 import java.lang.reflect.Constructor
 import java.lang.reflect.Field
 import java.lang.reflect.Method
-import java.util.zip.ZipEntry
-import java.util.zip.ZipFile
-import java.util.zip.ZipOutputStream
 import kotlin.reflect.KProperty
 import kotlin.text.removePrefix
 import kotlin.text.startsWith
@@ -82,10 +75,6 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
             dexkitCache.putString("version", "cleared")
             Toast.show("下次启动清除缓存")
         }
-        rootView.findViewById<Button>(R.id.btn_zip_fix).setOnClickListener {
-            dexkitCache.putBoolean("zip_fix", true)
-            Toast.show("下次启动尝试缓解 dexkit zip 解析问题")
-        }
         return rootView
     }
 
@@ -95,7 +84,6 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
     val dexFindInfo = mutableMapOf<String, DexKitMember<*>>()
 
     val dexkitCache by lazy { ConfigStore.ofModule(this) }
-    var hostApkPathOverride: String? = null
 
     override fun onLoad(): Boolean {
         val failsafeFile = loaderContext.application.getExternalFilesDir(null)!!
@@ -115,22 +103,6 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
         val oldVersion = dexkitCache.getString("version", null)
         if (oldVersion != newVersion) {
             logger.d("DexKit cache version changed $oldVersion -> $newVersion, clearing cache")
-            if (ConfigStore.ofModule(this).getBoolean("zip_fix", false) == true) {
-                logger.d("DexKit zip fix enabled, rebuilding cached apk")
-                val srcZip = ZipFile(File(loaderContext.application.applicationInfo.sourceDir))
-                val dstZipFile = loaderContext.application.cacheDir.resolve("yabr_dexkit_fixed.zip")
-                dstZipFile.delete()
-                val dstZip = ZipOutputStream(dstZipFile.outputStream())
-                srcZip.entries().iterator().forEach { srcEntry ->
-                    if (srcEntry.name.matches("""classes\d*\.dex""".toRegex())) {
-                        dstZip.putNextEntry(ZipEntry(srcEntry.name))
-                        srcZip.getInputStream(srcEntry).copyTo(dstZip)
-                    }
-                }
-                dstZip.close()
-                srcZip.close()
-                hostApkPathOverride = dstZipFile.absolutePath
-            }
             dexkitCache.clear()
             dexkitCache.putString("version", newVersion)
         }
@@ -217,7 +189,7 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
         logger.d("Preparing DexKitBridge")
         if (dexKitBridge == null) {
             logger.d("Creating DexKitBridge")
-            dexKitBridge = DexKitBridge.create(hostApkPathOverride ?: loaderContext.application.applicationInfo.sourceDir)
+            dexKitBridge = DexKitBridge.create(loaderContext.application.applicationInfo.sourceDir)
         } else {
             logger.d("DexKitBridge already exists")
         }
