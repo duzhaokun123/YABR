@@ -219,6 +219,9 @@ object ThreePointHook : BaseModule(), Core, DexKitMemberOwner {
         return true
     }
 
+    /**
+     * @param id 唯一ID 不要和官方重复 也不要和其他模块重复
+     */
     fun addThreePointCallback(
         id: Long, callback: ThreePointCallback
     ) {
