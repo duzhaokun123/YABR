@@ -2,7 +2,9 @@ package dev.o0kam1.tools
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.Menu
@@ -48,6 +50,9 @@ class PhotoActivity : Activity(), ModuleActivityMeta {
                 photoData = Http.get(url).readAll()
                 val b = BitmapFactory.decodeByteArray(photoData, 0, photoData.size)
                 runOnUiThread {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && b.hasGainmap()) {
+                        window.colorMode = ActivityInfo.COLOR_MODE_HDR
+                    }
                     photoView.setImageBitmap(b)
                     findViewById<ProgressBar>(R.id.pb).visibility = View.GONE
                 }
