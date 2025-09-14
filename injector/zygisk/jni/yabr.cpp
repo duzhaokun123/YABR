@@ -44,6 +44,7 @@ public:
                 "load",
                 _env->NewStringUTF("io.github.duzhaokun123.yabr"),
                 nullptr);
+        delete[] cacheDir;
     }
 
 private:
