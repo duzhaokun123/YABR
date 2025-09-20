@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.os.Build
+import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.WindowManager
@@ -36,7 +37,7 @@ object WindowBlur : BaseModule(), UISwitch, SwitchModule, Compatible {
 
     override fun checkCompatibility() = requireMinSystem(Build.VERSION_CODES.S)
 
-    val backgroundBlurRadius = 40
+    val backgroundBlurRadiusDP = 40
 
     @OptIn(ExperimentalStdlibApi::class)
     @RequiresApi(Build.VERSION_CODES.S)
@@ -50,7 +51,7 @@ object WindowBlur : BaseModule(), UISwitch, SwitchModule, Compatible {
                 val dialog = it.thiz as Dialog
                 val window = dialog.window!!
                 window.apply {
-                    setBackgroundBlurRadius(backgroundBlurRadius)
+                    setBackgroundBlurRadius(backgroundBlurRadiusDP.dpToPx(context).toInt())
                     val background = ContextCompat.getDrawable(dialog.context, R.drawable.dialog_background)!!
                     setBackgroundDrawable(background)
                     attributes.apply {
@@ -99,10 +100,14 @@ object WindowBlur : BaseModule(), UISwitch, SwitchModule, Compatible {
                 a.recycle()
                 if (windowIsTranslucent.not()) return
                 activity.window.apply {
-                    setBackgroundBlurRadius(backgroundBlurRadius)
+                    setBackgroundBlurRadius(backgroundBlurRadiusDP.dpToPx(activity).toInt())
                 }
             }
         })
         return true
+    }
+
+    fun Number.dpToPx(context: Context): Float {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat() + 0.5F, context.resources.displayMetrics)
     }
 }
