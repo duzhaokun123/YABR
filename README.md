@@ -14,6 +14,7 @@ Yet Another BiliRoaming
 - 获取封面
 - 全局 Dialog 系统模糊
 - 多窗口支持
+- ... (自己看源码)
 
 ## 编译
 
