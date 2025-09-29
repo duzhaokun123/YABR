@@ -1,11 +1,14 @@
 package io.github.duzhaokun123.yabr.utils
 
-import com.ironz.unsafe.UnsafeAndroid
 import org.luckypray.dexkit.result.ClassData
 import org.luckypray.dexkit.wrap.DexClass
 
 fun loadClass(name: String): Class<*> {
-    return loaderContext.hostClassloader.loadClass(name)
+    var normalName = name.replace('/', '.')
+    if (normalName.endsWith(';')) {
+        normalName = normalName.substring(1, normalName.length - 1)
+    }
+    return loaderContext.hostClassloader.loadClass(normalName)
 }
 
 fun loadClassOrNull(name: String): Class<*>? {

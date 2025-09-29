@@ -33,10 +33,11 @@ object BLRouterOpenUrl: BaseModule(), UIComplex {
     lateinit var method_RouteRequestK_toRouteRequest: Method
 
     override fun onLoad(): Boolean {
+        val class_RouteRequest = loadClass("Lcom/bilibili/lib/blrouter/RouteRequest;")
         method_BLRouter_routeTo = loadClass("com.bilibili.lib.blrouter.BLRouter")
-            .findMethod { it.name == "routeTo" && it.parameterTypes[1] == Context::class.java }
+            .findMethod { it.parameterTypes contentDeepEquals arrayOf(class_RouteRequest, Context::class.java) }
         method_RouteRequestK_toRouteRequest = loadClass("com.bilibili.lib.blrouter.RouteRequestKt")
-            .findMethod { it.name == "toRouteRequest" && it.parameterTypes contentEquals arrayOf(String::class.java) }
+            .findMethod { it.parameterTypes contentEquals arrayOf(String::class.java) }
         return true
     }
 
