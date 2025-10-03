@@ -46,3 +46,9 @@ Yet Another BiliRoaming
 
 - 支持加载其他 xposed 模块
 - 抄更多哔哩漫游的功能
+
+## 下载
+
+github actions
+
+不建议
