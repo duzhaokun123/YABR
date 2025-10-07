@@ -8,7 +8,6 @@ import io.github.duzhaokun123.yabr.module.base.dexKitMember
 import io.github.duzhaokun123.yabr.module.base.lazyLoadClass
 import io.github.duzhaokun123.yabr.module.base.multiLoadAnySuccess
 import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
-import io.github.duzhaokun123.yabr.utils.findAllMethods
 import io.github.duzhaokun123.yabr.utils.findMethod
 import io.github.duzhaokun123.yabr.utils.getFieldValue
 import io.github.duzhaokun123.yabr.utils.getFieldValueAs
@@ -17,12 +16,14 @@ import io.github.duzhaokun123.yabr.utils.loadClass
 import io.github.duzhaokun123.yabr.utils.loaderContext
 import io.github.duzhaokun123.yabr.utils.new
 import io.github.duzhaokun123.yabr.utils.paramCount
+import io.github.duzhaokun123.yabr.utils.setDeclaredMemberPropertyValue
 import io.github.duzhaokun123.yabr.utils.setFieldValue
 import io.github.duzhaokun123.yabr.utils.setJsonFieldValue
 import io.github.duzhaokun123.yabr.utils.toClass
 import io.github.duzhaokun123.yabr.utils.toMethod
-import io.github.duzhaokun123.yabr.utils.unsafeNew
+import io.github.duzhaokun123.yabr.utils.allocateInstance
 import java.lang.reflect.Proxy
+import kotlin.reflect.full.declaredMemberProperties
 
 data class ThreePointItemItemData(
     val name: String,
@@ -178,21 +179,21 @@ object ThreePointHook : BaseModule(), Core, DexKitMemberOwner {
                         return@hookBefore
                     }
                 }
-                val relateDislike = class_RelateDislike!!.unsafeNew()
+                val relateDislike = class_RelateDislike!!.allocateInstance()
                 relateDislike.setFieldValue("a", "YABR") // title
                 relateDislike.setFieldValue("b", " menu") // subtitle
                 relateDislike.setFieldValue("c", " menu") // closedSubtitle
                 val dislikeReasons = mutableListOf<Any>()
                 val datas = parseData(relateCard)
                 datas.forEach { (id, data) ->
-                    val relateReason = class_RelateReasons!!.unsafeNew()
+                    val relateReason = class_RelateReasons!!.allocateInstance()
                     relateReason.setFieldValue("a", id) // id
                     relateReason.setFieldValue("e", data.name) // name
                     dislikeReasons.add(relateReason)
                 }
                 if (dislikeReasons.isEmpty()) return@hookBefore
                 if (dislikeReasons.size == 1) {
-                    val relateReason = class_RelateReasons!!.unsafeNew()
+                    val relateReason = class_RelateReasons!!.allocateInstance()
                     relateReason.setFieldValue("e", "placeholder") // name
                     dislikeReasons.add(relateReason)
                 }

@@ -36,6 +36,6 @@ fun DexClass.toClass(): Class<*> {
     return this.getInstance(loaderContext.hostClassloader)
 }
 
-fun Class<*>.unsafeNew(): Any {
+fun Class<*>.allocateInstance(): Any {
     return Unsafe.instance.allocateInstance(this)
 }
