@@ -16,14 +16,12 @@ import io.github.duzhaokun123.yabr.utils.loadClass
 import io.github.duzhaokun123.yabr.utils.loaderContext
 import io.github.duzhaokun123.yabr.utils.new
 import io.github.duzhaokun123.yabr.utils.paramCount
-import io.github.duzhaokun123.yabr.utils.setDeclaredMemberPropertyValue
 import io.github.duzhaokun123.yabr.utils.setFieldValue
 import io.github.duzhaokun123.yabr.utils.setJsonFieldValue
 import io.github.duzhaokun123.yabr.utils.toClass
 import io.github.duzhaokun123.yabr.utils.toMethod
 import io.github.duzhaokun123.yabr.utils.allocateInstance
 import java.lang.reflect.Proxy
-import kotlin.reflect.full.declaredMemberProperties
 
 data class ThreePointItemItemData(
     val name: String,

@@ -88,6 +88,6 @@ fun DexField.toField(): Field {
 }
 
 //inline fun <reified T> T.unsafeClone(): T {
-//    val newT = T::class.java.unsafeNew()
+//    val newT = T::class.java.allocateInstance()
 //    Unsafe.instance
 //}
