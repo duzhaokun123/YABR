@@ -2,11 +2,10 @@ package io.github.duzhaokun123.yabr.module.debug
 
 import android.app.Activity
 import android.content.Context
-import android.view.View
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.module.UICategory
 import io.github.duzhaokun123.yabr.module.base.BaseModule
-import io.github.duzhaokun123.yabr.module.base.UIComplex
+import io.github.duzhaokun123.yabr.module.base.UIClick
 import io.github.duzhaokun123.yabr.module.core.ActivityUtils
 import io.github.duzhaokun123.yabr.utils.loaderContext
 import kotlin.system.exitProcess
@@ -14,7 +13,7 @@ import kotlin.system.exitProcess
 @ModuleEntry(
     id = "restart_app",
 )
-object RestartApp : BaseModule(), UIComplex {
+object RestartApp : BaseModule(), UIClick {
     override val name = "重启应用"
     override val description = "立即重启应用"
     override val category = UICategory.DEBUG
@@ -35,7 +34,7 @@ object RestartApp : BaseModule(), UIComplex {
         exitProcess(0)
     }
 
-    override fun onCreateUI(context: Context): View {
+    override fun onClick(context: Context) {
         restart()
     }
 }

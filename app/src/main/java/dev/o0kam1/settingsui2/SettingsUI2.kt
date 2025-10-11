@@ -28,6 +28,7 @@ import io.github.duzhaokun123.yabr.module.UICategory
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.SwitchModule
 import io.github.duzhaokun123.yabr.module.base.UIActivity
+import io.github.duzhaokun123.yabr.module.base.UIClick
 import io.github.duzhaokun123.yabr.module.base.UIComplex
 import io.github.duzhaokun123.yabr.module.base.UIEntry
 import io.github.duzhaokun123.yabr.module.base.UISwitch
@@ -175,6 +176,9 @@ class YABRSettings2ListFragment : BasePreferenceFragment() {
             val preference = when (module) {
                 is UISwitch -> Settings2SwitchPreference(requireContext())
                 is UIComplex -> PreferenceScreen(requireContext(), this)
+                is UIClick -> Preference(requireContext()).apply {
+                    widgetLayoutResource = ResourcesCompat.ID_NULL
+                }
                 is UIActivity -> PreferenceScreen(requireContext(), this)
                 else -> Preference(requireContext()).apply {
                     widgetLayoutResource = ResourcesCompat.ID_NULL
@@ -202,6 +206,12 @@ class YABRSettings2ListFragment : BasePreferenceFragment() {
                 preference.invokeMethod("setOnPreferenceClickListener", OnPreferenceClickListener {
                     YABRSettings2UIComplexFragment.showModule = module
                     return@OnPreferenceClickListener false
+                })
+            }
+            if (module is UIClick) {
+                preference.invokeMethod("setOnPreferenceClickListener", OnPreferenceClickListener {
+                    module.onClick(requireContext())
+                    return@OnPreferenceClickListener true
                 })
             }
             if (module is UIActivity) {

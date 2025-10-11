@@ -26,6 +26,7 @@ import io.github.duzhaokun123.yabr.module.base.Core
 import io.github.duzhaokun123.yabr.module.base.DexKitMemberOwner
 import io.github.duzhaokun123.yabr.module.base.SwitchModule
 import io.github.duzhaokun123.yabr.module.base.UIActivity
+import io.github.duzhaokun123.yabr.module.base.UIClick
 import io.github.duzhaokun123.yabr.module.base.UIComplex
 import io.github.duzhaokun123.yabr.module.base.UIEntry
 import io.github.duzhaokun123.yabr.module.base.UISwitch
@@ -295,6 +296,17 @@ object SettingsUI : BaseModule(), Core, DexKitMemberOwner {
                             logger.e("Failed to create UI for module ${module.id}")
                             logger.e(t)
                             Toast.show("创建 ${module.name} 的 UI 失败: ${t.localizedMessage ?: t.message ?: "未知错误"}")
+                        }
+                    }
+                }
+                if (module is UIClick) {
+                    relativeLayout.setOnClickListener {
+                        runCatching {
+                            module.onClick(context)
+                        }.onFailure { t ->
+                            logger.e("Failed to execute click action for module ${module.id}")
+                            logger.e(t)
+                            Toast.show("执行 ${module.name} 的点击操作失败: ${t.localizedMessage ?: t.message ?: "未知错误"}")
                         }
                     }
                 }

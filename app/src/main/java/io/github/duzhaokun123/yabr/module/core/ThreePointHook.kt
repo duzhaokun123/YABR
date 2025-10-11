@@ -224,7 +224,7 @@ object ThreePointHook : BaseModule(), Core, DexKitMemberOwner {
     fun addThreePointCallback(
         id: Long, callback: ThreePointCallback
     ) {
-        threePointCallbackMap.put(id, callback)
+        threePointCallbackMap[id] = callback
     }
 
     fun removeThreePointCallback(id: Long) {
