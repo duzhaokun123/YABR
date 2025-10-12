@@ -42,11 +42,11 @@ android {
         additionalParameters += arrayOf("--allow-reserved-package-id", "--package-id", "0x25")
     }
 
-    packaging {
-        resources {
-            excludes += "**"
-        }
-    }
+//    packaging {
+//        resources {
+//            excludes += "**"
+//        }
+//    }
 }
 
 dependencies {

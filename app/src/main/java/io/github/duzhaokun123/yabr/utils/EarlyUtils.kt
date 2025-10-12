@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Process
 import io.github.duzhaokun123.yabr.Main
+import io.github.duzhaokun123.yabr.logger.AndroidLogger
 
 /**
  * 这些东西应该在 [Main.main] 调用之前也能用
@@ -25,12 +26,13 @@ object EarlyUtils {
         }
     }
 
+    @JvmStatic
     @SuppressLint("DiscouragedPrivateApi", "UnsafeDynamicallyLoadedCode")
     fun loadLibrary(name: String, context: Context? = null) {
         runCatching {
             System.loadLibrary(name)
         }.onFailure { t ->
-//        AndroidLogger.w(t)
+            AndroidLogger.w(t)
             val class_VMRuntime = Class.forName("dalvik.system.VMRuntime")
             val method_getRuntime = class_VMRuntime.getDeclaredMethod("getRuntime")
             method_getRuntime.isAccessible = true
