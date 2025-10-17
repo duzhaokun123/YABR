@@ -6,6 +6,7 @@
  */
 package dev.o0kam1.tools
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -46,6 +47,7 @@ object NotificationChannelManager : BaseModule(), UIComplex {
         return rootView
     }
 
+    @SuppressLint("SetTextI18n")
     private fun populateChannels(context: Context, container: LinearLayout) {
         container.removeAllViews()
         val channels = getAllChannels()
@@ -72,7 +74,10 @@ object NotificationChannelManager : BaseModule(), UIComplex {
             }
 
             val channelInfo = TextView(context).apply {
-                text = "${channel.id}: ${channel.name}" + if (channel.group?.isNotEmpty() == true) "\n组: ${channel.group}" else "" + if (channel.description?.isNotEmpty() == true) "\n描述: ${channel.description}" else ""
+                text = "${channel.id}: ${channel.name}" + 
+                       if (channel.group?.isNotEmpty() == true) "\n组: ${channel.group}" else "" + 
+                       if (channel.description?.isNotEmpty() == true) "\n描述: ${channel.description}" else "" +
+                       if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && channel.parentChannelId?.isNotEmpty() == true) "\n父频道: ${channel.parentChannelId}" else ""
                 textSize = 14f
                 setLineSpacing(4f, 1f)
                 minHeight = (14f * 3 * 1.2f).toInt() // 假设最多3行，1.2倍行高
