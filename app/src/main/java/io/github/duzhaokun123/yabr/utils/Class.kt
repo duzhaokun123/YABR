@@ -3,16 +3,16 @@ package io.github.duzhaokun123.yabr.utils
 import org.luckypray.dexkit.result.ClassData
 import org.luckypray.dexkit.wrap.DexClass
 
-fun loadClass(name: String): Class<*> {
-    var normalName = name.replace('/', '.')
-    if (normalName.endsWith(';')) {
-        normalName = normalName.substring(1, normalName.length - 1)
-    }
-    return loaderContext.hostClassloader.loadClass(normalName)
+fun loadClass(signature: String): Class<*> {
+    runCatching {
+        return DexClass.deserialize(signature).toClass()
+    }.onFailure {
+        return loaderContext.hostClassloader.loadClass(signature)
+    }.getOrThrow()
 }
 
-fun loadClassOrNull(name: String): Class<*>? {
-    return runCatching { loadClass(name) }.getOrNull()
+fun loadClassOrNull(signature: String): Class<*>? {
+    return runCatching { loadClass(signature) }.getOrNull()
 }
 
 fun ClassData.toClass(): Class<*> {

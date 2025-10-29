@@ -92,3 +92,11 @@ fun Class<*>.getDeclaredMethodOrNull(
 }
 
 fun Method.invokeStatic(vararg args: Any?): Any? = invoke(null, *args)
+
+fun loadMethod(signature: String): Method {
+    return DexMethod.deserialize(signature).toMethod()
+}
+
+fun loadMethodOrNull(signature: String): Method? {
+    return runCatching { loadMethod(signature) }.getOrNull()
+}

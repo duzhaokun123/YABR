@@ -91,3 +91,11 @@ fun DexField.toField(): Field {
 //    val newT = T::class.java.allocateInstance()
 //    Unsafe.instance
 //}
+
+fun loadField(signature: String): Field {
+    return DexField.deserialize(signature).toField()
+}
+
+fun loadFieldOrNull(signature: String): Field? {
+    return runCatching { loadField(signature) }.getOrNull()
+}
