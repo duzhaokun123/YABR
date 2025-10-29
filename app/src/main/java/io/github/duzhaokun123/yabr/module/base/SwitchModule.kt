@@ -4,8 +4,11 @@ import io.github.duzhaokun123.yabr.module.core.SwitchModuleManager
 
 interface SwitchModule
 
-val SwitchModule.isEnabled: Boolean
+var SwitchModule.isEnabled: Boolean
     get() = SwitchModuleManager.isEnabled(this as BaseModule)
+    set(value) {
+        SwitchModuleManager.setEnabled(this as BaseModule, value)
+    }
 
 fun SwitchModule.enable() {
     SwitchModuleManager.setEnabled(this as BaseModule, true)
