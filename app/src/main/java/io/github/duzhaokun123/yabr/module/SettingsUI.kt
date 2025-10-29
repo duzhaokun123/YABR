@@ -326,6 +326,7 @@ object SettingsUI : BaseModule(), Core, DexKitMemberOwner {
                     if (module is Compatible) {
                         message.appendLine("Compatible: ${module.checkCompatibility() ?: "OK"}")
                     }
+                    message.appendLine("Hooks: ${module.unhookers.count()}")
                     AlertDialog.Builder(context)
                         .setTitle("Module Info")
                         .setMessage(message.toString())
