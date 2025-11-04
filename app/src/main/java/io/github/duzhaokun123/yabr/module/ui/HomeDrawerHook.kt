@@ -12,8 +12,10 @@ import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.module.UICategory
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Compatible
+import io.github.duzhaokun123.yabr.module.base.DexKitMemberOwner
 import io.github.duzhaokun123.yabr.module.base.SwitchModule
 import io.github.duzhaokun123.yabr.module.base.UISwitch
+import io.github.duzhaokun123.yabr.module.base.dexKitMember
 import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
 import io.github.duzhaokun123.yabr.utils.findMethod
 import io.github.duzhaokun123.yabr.utils.findMethodBestMatch
@@ -24,13 +26,15 @@ import io.github.duzhaokun123.yabr.utils.invokeMethodAs
 import io.github.duzhaokun123.yabr.utils.loadClass
 import io.github.duzhaokun123.yabr.utils.new
 import io.github.duzhaokun123.yabr.utils.newAs
+import io.github.duzhaokun123.yabr.utils.toMethod
+import java.lang.reflect.Modifier
 
 @ModuleEntry(
     id = "home_drawer_hook",
     targets = [ModuleEntryTarget.MAIN]
 )
 @SuppressLint("StaticFieldLeak")
-object HomeDrawerHook : BaseModule(), UISwitch, SwitchModule, Compatible {
+object HomeDrawerHook : BaseModule(), UISwitch, SwitchModule, Compatible, DexKitMemberOwner {
     override val canUnload = false
 
     override val name = "移动我的到侧边栏"
@@ -41,6 +45,61 @@ object HomeDrawerHook : BaseModule(), UISwitch, SwitchModule, Compatible {
     override fun checkCompatibility(): String? {
         return null // TODO: Implement compatibility check
     }
+
+    val method_DrawerLayout_openDrawer
+            by dexKitMember("androidx.drawerlayout.widget.DrawerLayout.openDrawer") { bridge ->
+                bridge.findMethod {
+                    matcher {
+                        declaredClass("androidx.drawerlayout.widget.DrawerLayout")
+                        paramTypes(Int::class.javaPrimitiveType, Boolean::class.javaPrimitiveType)
+                        addInvoke {
+                            declaredClass("androidx.drawerlayout.widget.DrawerLayout")
+                            paramTypes(View::class.java, Boolean::class.javaPrimitiveType)
+                            usingStrings(" is not a sliding drawer")
+                            usingNumbers(1.0F)
+                        }
+                    }
+                }.single().toMethod()
+            }
+
+    val method_DrawerLayout_closeDrawer
+            by dexKitMember("androidx.drawerlayout.widget.DrawerLayout.closeDrawer") { bridge ->
+                bridge.findMethod {
+                    matcher {
+                        declaredClass("androidx.drawerlayout.widget.DrawerLayout")
+                        paramTypes(Int::class.javaPrimitiveType, Boolean::class.javaPrimitiveType)
+                        addInvoke {
+                            declaredClass("androidx.drawerlayout.widget.DrawerLayout")
+                            paramTypes(View::class.java, Boolean::class.javaPrimitiveType)
+                            modifiers(Modifier.PUBLIC)
+                            usingStrings(" is not a sliding drawer")
+                            usingNumbers(0, 4)
+                        }
+                    }
+                }.single().toMethod()
+            }
+
+    val method_DrawerLayout_isDrawerOpen
+            by dexKitMember("androidx.drawerlayout.widget.DrawerLayout.isDrawerOpen") { bridge ->
+                bridge.findMethod {
+                    matcher {
+                        declaredClass("androidx.drawerlayout.widget.DrawerLayout")
+                        paramTypes(Int::class.javaPrimitiveType)
+                        returnType(Boolean::class.javaPrimitiveType!!)
+                        addInvoke {
+                            declaredClass("androidx.drawerlayout.widget.DrawerLayout")
+                            paramTypes(View::class.java)
+                            returnType(Boolean::class.javaPrimitiveType!!)
+                            usingStrings(" is not a drawer")
+                            usingFields {
+                                add {
+                                    type(Float::class.javaPrimitiveType!!)
+                                }
+                            }
+                        }
+                    }
+                }.also { logger.d(it) }.single().toMethod()
+            }
 
     lateinit var drawLayout: ViewGroup
     lateinit var navView: View
@@ -91,8 +150,9 @@ object HomeDrawerHook : BaseModule(), UISwitch, SwitchModule, Compatible {
 
         class_MainActivity.findMethod { it.name == "onBackPressed" }
             .hookBefore {
-                if (drawLayout.invokeMethod("isDrawerOpen", Gravity.START) == true) {
-                    it.result = drawLayout.invokeMethod("closeDrawer", Gravity.START)
+                if (method_DrawerLayout_isDrawerOpen!!.invoke(drawLayout, Gravity.START) == true) {
+                    it.result =
+                        method_DrawerLayout_closeDrawer!!.invoke(drawLayout, Gravity.START, true)
                 }
             }
 
@@ -102,7 +162,7 @@ object HomeDrawerHook : BaseModule(), UISwitch, SwitchModule, Compatible {
                 val id = getResId("avatar_layout")
                 (param.args[0] as View).findViewById<View>(id)?.setOnClickListener {
                     runCatching {
-                        drawLayout.invokeMethod("openDrawer", Gravity.START, true)
+                        method_DrawerLayout_openDrawer!!.invoke(drawLayout, Gravity.START, true)
                     }.logError()
                 }
             }
