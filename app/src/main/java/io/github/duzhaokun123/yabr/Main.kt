@@ -80,9 +80,10 @@ object Main {
     }
 
     fun loadModule(module: BaseModule) {
-        logger.i("Loading module: ${module.id}(${module::class.java.name})[${module.metadata.priority}]")
+        val fullModuleName = "${module.id}(${module::class.java.name})[${module.metadata.priority}]"
+        logger.i("Loading module: $fullModuleName")
         if (module.loaded) {
-            logger.w("Module ${module.id} is already loaded.")
+            logger.w("Module $fullModuleName is already loaded.")
             return
         }
         loadedModule += module
@@ -92,11 +93,13 @@ object Main {
         runCatching {
             module.onLoad()
         }.onFailure {
-            logger.e("Failed to load module: ${module::class.java.name}")
+            logger.e("Failed to load module: $fullModuleName")
             logger.e(it)
         }.onSuccess { r ->
             if (r != true) {
-                logger.w("Module ${module::class.java.name} did not load successfully, but no exception was thrown.")
+                logger.w("Module $fullModuleName did not load successfully, but no exception was thrown.")
+            } else {
+                logger.v("Loaded module: $fullModuleName")
             }
         }
         module.loaded = true
@@ -114,23 +117,26 @@ object Main {
     }
 
     fun unloadModule(module: BaseModule) {
-        logger.i("Unloading module: ${module.id}(${module::class.java.name})")
+        val fullModuleName = "${module.id}(${module::class.java.name})[${module.metadata.priority}]"
+        logger.i("Unloading module: $fullModuleName")
         if (module.canUnload.not()) {
-            logger.w("Module ${module.id} cannot be unloaded.")
+            logger.w("Module $fullModuleName cannot be unloaded.")
             return
         }
         if (module is Core) {
-            logger.w("Core module ${module.id} unloading")
+            logger.w("Core module $fullModuleName unloading")
         }
         loadedModule -= module
         runCatching {
             module.onUnload()
         }.onFailure {
-            logger.e("Failed to unload module: ${module::class.java.name}")
+            logger.e("Failed to unload module: $fullModuleName")
             logger.e(it)
         }.onSuccess { r ->
             if (r != true) {
-                logger.w("Module ${module::class.java.name} did not unload successfully, but no exception was thrown.")
+                logger.w("Module $fullModuleName did not unload successfully, but no exception was thrown.")
+            } else {
+                logger.v("Unloaded module: $fullModuleName")
             }
         }
         module.loaded = false
