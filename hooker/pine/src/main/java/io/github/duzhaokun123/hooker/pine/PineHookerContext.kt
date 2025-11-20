@@ -10,6 +10,7 @@ import io.github.duzhaokun123.yabr.utils.EarlyUtils
 import top.canyie.pine.Pine
 import top.canyie.pine.PineConfig
 import top.canyie.pine.callback.MethodHook
+import java.lang.reflect.Constructor
 import java.lang.reflect.Member
 
 @SuppressLint("UnsafeDynamicallyLoadedCode")
@@ -53,5 +54,13 @@ class PineHookerContext(
         method: Member, thiz: Any?, vararg args: Any?
     ): Any? {
         return Pine.invokeOriginalMethod(method, thiz, *args)
+    }
+
+    override fun <T> newInstanceOriginal(
+        constructor: Constructor<T>,
+        vararg args: Any?
+    ): T {
+        @Suppress("UNCHECKED_CAST")
+        return Pine.invokeOriginalMethod(constructor, null, *args) as T
     }
 }

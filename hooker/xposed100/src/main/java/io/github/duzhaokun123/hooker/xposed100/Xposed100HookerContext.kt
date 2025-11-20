@@ -42,9 +42,18 @@ object Xposed100HookerContext : HookerContext {
     ): Any? {
         return when(method) {
             is Method -> xposedInterface.invokeOrigin(method, thiz, *args)
-            is Constructor<*> -> xposedInterface.newInstanceOrigin(method, thiz, *args)
+            is Constructor<*> ->
+                @Suppress("UNCHECKED_CAST")
+                xposedInterface.invokeOrigin(method as Constructor<Any>, thiz as Any, *args)
             else -> throw IllegalArgumentException("Unsupported member type: ${method.javaClass.name}")
         }
+    }
+
+    override fun <T> newInstanceOriginal(
+        constructor: Constructor<T>,
+        vararg args: Any?
+    ): T {
+        return xposedInterface.newInstanceOrigin(constructor, *args)
     }
 
     fun Int.toPrivilegeType(): String {

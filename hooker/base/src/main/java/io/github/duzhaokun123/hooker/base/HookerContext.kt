@@ -1,5 +1,6 @@
 package io.github.duzhaokun123.hooker.base
 
+import java.lang.reflect.Constructor
 import java.lang.reflect.Member
 
 typealias Unhooker = () -> Unit
@@ -23,6 +24,7 @@ interface HookerContext {
 
     fun hookMethod(method: Member, callback: HookCallback): Unhooker
     fun invokeOriginal(method: Member, thiz: Any?, vararg args: Any?): Any?
+    fun <T> newInstanceOriginal(constructor: Constructor<T>, vararg args: Any?): T
 }
 
 val HookCallbackContext.thisObject: Any?

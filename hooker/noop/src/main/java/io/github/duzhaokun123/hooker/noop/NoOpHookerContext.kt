@@ -33,8 +33,15 @@ object NoOpHookerContext : HookerContext {
     ): Any? {
         return when (method) {
             is Method -> method.invoke(thiz, *args)
-            is Constructor<*> -> method.newInstance(*args)
+            is Constructor<*> -> throw InvalidParameterException("Can not invoke constructor in noop context")
             else -> InvalidParameterException("method $method")
         }
+    }
+
+    override fun <T> newInstanceOriginal(
+        constructor: Constructor<T>,
+        vararg args: Any?
+    ): T {
+        return constructor.newInstance(*args)
     }
 }

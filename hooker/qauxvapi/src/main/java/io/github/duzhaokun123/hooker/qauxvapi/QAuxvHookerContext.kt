@@ -46,8 +46,17 @@ class QAuxvHookerContext : HookerContext {
     ): Any? {
         return when (method) {
             is Method -> hookBridge.invokeOriginalMethod(method, thiz, args)
-            is Constructor<*> -> hookBridge.newInstanceOrigin(method, *args)
+            is Constructor<*> ->
+                @Suppress("UNCHECKED_CAST")
+                hookBridge.invokeOriginalConstructor(method as Constructor<Any>, thiz!!, args)
             else -> throw RuntimeException("Unsupported member type: ${method.javaClass.name}")
         }
+    }
+
+    override fun <T> newInstanceOriginal(
+        constructor: Constructor<T>,
+        vararg args: Any?
+    ): T {
+        return hookBridge.newInstanceOrigin(constructor, *args)
     }
 }
