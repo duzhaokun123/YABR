@@ -7,6 +7,7 @@ import android.webkit.WebView
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.compat.biliroaming.*
 import io.github.duzhaokun123.yabr.module.base.BaseModule
+import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
 import org.apache.http.conn.scheme.HostNameResolver
 import org.apache.http.conn.ssl.SSLSocketFactory
 import java.net.Socket
@@ -21,6 +22,7 @@ import javax.net.ssl.X509TrustManager
 
 @ModuleEntry(
     id = "ssl_unpin",
+    targets = [ModuleEntryTarget.MAIN]
 )
 object SSLUnpin : BaseModule() {
 
