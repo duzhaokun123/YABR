@@ -34,17 +34,6 @@ dependencyResolutionManagement {
                 includeGroup("io.github.libxposed")
             }
         }
-        maven {
-            name = "Revanced Registry"
-            url = uri("https://maven.pkg.github.com/revanced/registry")
-            credentials {
-                username = providers.gradleProperty("gpr.user").getOrElse(System.getenv("GITHUB_ACTOR"))
-                password = providers.gradleProperty("gpr.key").getOrElse(System.getenv("GITHUB_TOKEN"))
-            }
-            content {
-                includeGroup("app.revanced")
-            }
-        }
     }
 }
 
@@ -72,7 +61,6 @@ include(":hooker:pine")
 include(":hooker:noop")
 include(":hooker:qauxvapi")
 
-include(":injector:revanced")
 include(":injector:zygisk")
 include(":injector:xposed")
 

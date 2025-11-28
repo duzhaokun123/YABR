@@ -10,8 +10,6 @@ kotlin = "2.2.21"
 ksp = "2.3.3"
 androidxAnnotation = "1.9.1"
 preference = "1.2.1"
-revanced-patcher = "19.3.1"
-smali = "3.0.9"
 unsafe = "0.0.6"
 
 [libraries]
@@ -26,8 +24,6 @@ unsafe = { module = "com.github.iamironz:unsafe", version.ref = "unsafe" }
 xposed = { module = "de.robv.android.xposed:api", version = "82" }
 kotlin-ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidxAnnotation" }
-revanced-patcher = { module = " app.revanced:revanced-patcher", version.ref = "revanced-patcher" }
-smali = { module = "com.android.tools.smali:smali", version.ref = "smali" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.9.0" }
 
 [plugins]

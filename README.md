@@ -30,13 +30,10 @@ Yet Another BiliRoaming
 | 大多数 legacy xposed | xposed      | xposed    |
 | LSPosed             | xposed*     | xposed*   |
 | Zygisk              | inline      | pine      |
-| ReVanced**          | inline/acf  | pine      |
 | Rxposed             | rxposed     | pine      |
 | 其他注入方式          | inline      | pine      |
 
 *: 虽然 xposed100 可用 但它看起来太丑了
-
-**: ReVanced 兼容已被引入 androidx 破坏
 
 ## 开发
 
