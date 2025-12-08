@@ -81,10 +81,13 @@ object ThreePointHook : BaseModule(), Core, DexKitMemberOwner {
                 val data = it.result?.getFieldValue("data") ?: return@hookAfter
                 hookPegasusFeedConvert(data)
             }
+        val class_DislikeRequestRecord = loadClass("Lcom/bilibili/pegasus/data/card/DislikeRequestRecord;")
+        val class_DislikeRequestRecord_Dislike = loadClass($$"Lcom/bilibili/pegasus/data/card/DislikeRequestRecord$Dislike;")
         loadClass("com.bilibili.pegasus.ext.threepoint.ThreePointKt")
-            .findMethod(findSuper = false) { it.paramCount >= 4 && it.parameterTypes[3] == class_DislikeReason }
+            .findMethod(findSuper = false) { it.paramCount >= 4 && it.parameterTypes[3] == class_DislikeRequestRecord }
             .hookBefore {
-                if (hookPegasusDislikeReason(it.args[3])) {
+                val dislikeRequestRecord = it.args[3]
+                if (class_DislikeRequestRecord_Dislike.isInstance(dislikeRequestRecord) && hookPegasusDislikeReason(dislikeRequestRecord!!.getFieldValue("a"))) {
                     it.result = null
                 }
             }
