@@ -1,5 +1,6 @@
-import com.android.build.api.dsl.ApplicationDefaultConfig
+import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
@@ -8,7 +9,6 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinBasePlugin
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.serialization) apply false
@@ -27,18 +27,18 @@ subprojects {
         extensions.configure(CommonExtension::class) {
             compileSdk = androidCompileSdkVersion
 
-            defaultConfig {
-                minSdk = androidMinSdkVersion
-                if (this is ApplicationDefaultConfig) {
+            if (this is ApplicationExtension) {
+                defaultConfig {
+                    minSdk = androidMinSdkVersion
                     targetSdk = androidTargetSdkVersion
                     versionCode = androidVersionCode
                     versionName = androidVersionName
                 }
             }
-
-            compileOptions {
-                sourceCompatibility = defaultJavaJvmTarget
-                targetCompatibility = defaultJavaJvmTarget
+            if (this is LibraryExtension) {
+                defaultConfig {
+                    minSdk = androidMinSdkVersion
+                }
             }
         }
     }
