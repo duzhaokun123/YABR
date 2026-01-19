@@ -21,7 +21,7 @@ object BiliToast : BaseModule(), Core, DexKitMemberOwner {
             matcher {
                 usingStrings("main.lessonmodel.enterdetail.change-pswd-success.click")
             }
-        }.first()
+        }.single()
         bridge.findMethod {
             matcher {
                 addCaller(showCaller.descriptor)

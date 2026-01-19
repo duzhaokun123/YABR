@@ -26,12 +26,12 @@ Yet Another BiliRoaming
 但依赖从下表
 
 | 环境                 | 建议 loader | 建议 hooker |
-|---------------------|-------------|-----------|
-| 大多数 legacy xposed | xposed      | xposed    |
-| LSPosed             | xposed*     | xposed*   |
-| Zygisk              | inline      | pine      |
-| Rxposed             | rxposed     | pine      |
-| 其他注入方式          | inline      | pine      |
+|----------------------|-------------|-------------|
+| 大多数 legacy xposed | xposed      | xposed      |
+| LSPosed              | xposed*     | xposed*     |
+| Zygisk               | inline      | pine        |
+| Rxposed              | rxposed     | pine        |
+| 其他注入方式         | inline      | pine        |
 
 *: 虽然 xposed100 可用 但它看起来太丑了
 
