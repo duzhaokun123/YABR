@@ -101,7 +101,7 @@ object ActivityHijack : BaseModule(), Core {
 
         @JvmStatic
         fun isModuleProxyActivity(name: String): Boolean {
-            return ModuleActivities.activities.find { it.qualifiedName == name } != null
+            return ModuleActivities.activities.find { it == name } != null
         }
 
         @JvmStatic

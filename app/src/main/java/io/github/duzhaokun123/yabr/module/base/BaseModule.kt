@@ -190,3 +190,9 @@ fun BaseModule.multiLoadAnySuccess(
     }
     return success
 }
+
+/**
+ * 跳过加载 适用于不需要加载的模块
+ * 比 true 语义更好
+ */
+fun BaseModule.loadSkip() = true

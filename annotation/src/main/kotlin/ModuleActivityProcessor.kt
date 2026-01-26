@@ -1,9 +1,7 @@
 import com.google.devtools.ksp.containingFile
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
-import com.google.devtools.ksp.validate
 import java.io.OutputStreamWriter
-import java.io.Writer
 
 class ModuleActivityProcessor(
     val codeGenerator: CodeGenerator,
@@ -28,15 +26,15 @@ class ModuleActivityProcessor(
         val writer = OutputStreamWriter(out)
         writer.write("package $packageName\n\n")
         writer.write("object ModuleActivities {\n")
-        writer.write("val activities = listOf(\n")
+        writer.write("val activities = listOf<String>(\n")
         symbols.forEach { module ->
-                val className = (module as KSClassDeclaration).safeQualifiedName
+                val className = (module as KSClassDeclaration).qualifiedName?.asString()
                 logger.info("Found module entry: $className.")
                 if (module.classKind != ClassKind.CLASS) {
-                    logger.error("ModuleActivity must be a class, ${module.safeQualifiedName}", module)
+                    logger.error("ModuleActivity must be a class, $className", module)
                     return@forEach
                 }
-                writer.write("${className}::class,\n")
+                writer.write("\"\"\"$className\"\"\",\n")
             }
         writer.write(")\n")
         writer.write("}\n")

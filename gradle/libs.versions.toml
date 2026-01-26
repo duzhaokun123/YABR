@@ -1,6 +1,7 @@
 [versions]
 agp = "9.0.0"
 appcompat = "1.7.1"
+composeBom = "2026.01.00"
 material = "1.13.0"
 photoview = "1.0.3"
 pine = "0.3.0"
@@ -11,10 +12,16 @@ ksp = "2.3.4"
 androidxAnnotation = "1.9.1"
 preference = "1.2.1"
 unsafe = "0.0.6"
+aboutLibraries = "14.0.0-b02"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-compose-adaptive = { module = "androidx.compose.material3.adaptive:adaptive" }
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 androidx-preference = { module = "androidx.preference:preference", version.ref = "preference" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui" }
+androidx-compose-activity = { module = "androidx.activity:activity-compose" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 photoview = { module = "io.getstream:photoview", version.ref = "photoview" }
 pine-core = { module = "top.canyie.pine:core", version.ref = "pine" }
@@ -25,6 +32,8 @@ xposed = { module = "de.robv.android.xposed:api", version = "82" }
 kotlin-ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidxAnnotation" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.9.0" }
+aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutLibraries" }
+aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -32,3 +41,5 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+aboutLibraries-android = { id = "com.mikepenz.aboutlibraries.plugin.android", version.ref = "aboutLibraries" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
