@@ -7,32 +7,22 @@ import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Core
 import io.github.duzhaokun123.yabr.module.base.DexKitMemberOwner
 import io.github.duzhaokun123.yabr.module.base.dexKitMember
+import io.github.duzhaokun123.yabr.utils.findMethod
+import io.github.duzhaokun123.yabr.utils.loadClass
 import io.github.duzhaokun123.yabr.utils.loaderContext
 import io.github.duzhaokun123.yabr.utils.toMethod
+import java.lang.reflect.Method
 
 @ModuleEntry(
     id = "bili_toast"
 )
-object BiliToast : BaseModule(), Core, DexKitMemberOwner {
-    val method_show by dexKitMember(
-        "com.bilibili.droid.ToastHelper.showToast",
-    ) { bridge ->
-        val showCaller = bridge.findMethod {
-            matcher {
-                usingStrings("main.lessonmodel.enterdetail.change-pswd-success.click")
-            }
-        }.single()
-        bridge.findMethod {
-            matcher {
-                addCaller(showCaller.descriptor)
-                paramCount = 3
-                paramTypes(Context::class.java, String::class.java, null)
-            }
-        }.single().toMethod()
-    }
+object BiliToast : BaseModule(), Core {
+    lateinit var method_show: Method
 
     override fun onLoad(): Boolean {
-        return method_show != null
+        method_show = loadClass("com.bilibili.droid.ToastHelper")
+            .findMethod { it.parameterTypes contentEquals arrayOf(Context::class.java, String::class.java, Int::class.javaPrimitiveType) }
+        return true
     }
 
     fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) : Boolean {
