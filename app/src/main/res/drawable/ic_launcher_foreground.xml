@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Y letter -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M22,32 L28,32 L34,44 L40,32 L46,32 L36,50 L36,62 L30,62 L30,50 Z" />
+    
+    <!-- A letter -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M48,62 L54,38 L60,38 L66,62 L60,62 L59,56 L55,56 L54,62 Z M56,46 L55,52 L58,52 L57,46 Z" />
+    
+    <!-- B letter -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M68,38 L76,38 Q80,38 82,40 Q84,42 84,45 Q84,48 82,49 Q84,51 84,54 Q84,58 82,60 Q79,62 75,62 L68,62 Z M74,43 L74,48 L76,48 Q77,48 78,47 Q78,47 78,46 Q78,44 77,44 Q77,43 75,43 Z M74,53 L74,58 L76,58 Q78,58 78,57 Q79,56 79,55 Q79,54 78,53 Q78,53 76,53 Z" />
+    
+    <!-- R letter -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M86,38 L94,38 Q98,38 100,41 Q102,43 102,46 Q102,50 100,52 Q98,54 94,54 L92,54 L100,62 L93,62 L86,54 L86,62 L86,62 Z M92,43 L92,49 L94,49 Q96,49 96,48 Q97,47 97,46 Q97,45 96,44 Q96,43 94,43 Z" />
+</vector>

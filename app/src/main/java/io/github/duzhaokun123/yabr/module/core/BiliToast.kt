@@ -5,12 +5,9 @@ import android.widget.Toast
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Core
-import io.github.duzhaokun123.yabr.module.base.DexKitMemberOwner
-import io.github.duzhaokun123.yabr.module.base.dexKitMember
 import io.github.duzhaokun123.yabr.utils.findMethod
 import io.github.duzhaokun123.yabr.utils.loadClass
 import io.github.duzhaokun123.yabr.utils.loaderContext
-import io.github.duzhaokun123.yabr.utils.toMethod
 import java.lang.reflect.Method
 
 @ModuleEntry(
@@ -27,7 +24,7 @@ object BiliToast : BaseModule(), Core {
 
     fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) : Boolean {
         return runCatching {
-            method_show!!.invoke(null, loaderContext.application, message, duration)
+            method_show.invoke(null, loaderContext.application, message, duration)
             true
         }.getOrDefault(false)
     }

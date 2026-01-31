@@ -4,9 +4,10 @@
 
     <application
             android:allowBackup="false"
+            android:icon="@drawable/ic_launcher"
             android:label="YABR"
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
-            tools:ignore="DataExtractionRules,MissingApplicationIcon" />
+            tools:ignore="DataExtractionRules" />
 
 </manifest>
