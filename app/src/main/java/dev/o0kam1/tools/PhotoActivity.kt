@@ -27,6 +27,7 @@ import io.github.duzhaokun123.yabr.utils.runNewThread
 class PhotoActivity : Activity(), ModuleActivityMeta {
     companion object {
         const val URL = "url"
+        const val TITLE = "title"
     }
 
     val logger = activityLogger
@@ -37,7 +38,7 @@ class PhotoActivity : Activity(), ModuleActivityMeta {
         super.onCreate(savedInstanceState)
         actionBar?.setDisplayHomeAsUpEnabled(true)
         setContentView(R.layout.activity_photo)
-        setTitle("图片")
+        setTitle(intent.getStringExtra(TITLE) ?: "图片")
         val url = intent.getStringExtra(URL)
         if (url == null) {
             Toast.show("url is null")

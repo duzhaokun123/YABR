@@ -1,16 +1,15 @@
 package dev.o0kam1.tools
 
 import android.content.Intent
-import dev.o0kam1.tools.PhotoActivity
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.module.UICategory
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.SwitchModule
 import io.github.duzhaokun123.yabr.module.base.UISwitch
+import io.github.duzhaokun123.yabr.module.core.ActivityUtils
 import io.github.duzhaokun123.yabr.module.core.ThreePointCallback
 import io.github.duzhaokun123.yabr.module.core.ThreePointHook
 import io.github.duzhaokun123.yabr.module.core.ThreePointItemItemData
-import io.github.duzhaokun123.yabr.module.core.ActivityUtils
 import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
 import io.github.duzhaokun123.yabr.utils.Toast
 import io.github.duzhaokun123.yabr.utils.getFieldValueAs
@@ -34,9 +33,10 @@ object Cover : BaseModule(), SwitchModule, UISwitch {
                 override fun parseData(data: Any): ThreePointItemItemData? {
                     runCatching {
                         val cover = data.getJsonFieldValueAs<String>("cover")
+                        val title = data.getJsonFieldValueAs<String>("title")
                         return ThreePointItemItemData(
                             name = "获取封面",
-                            data = cover
+                            data = "$cover\n$title"
                         )
                     }
 //                    runCatching {
@@ -52,7 +52,7 @@ object Cover : BaseModule(), SwitchModule, UISwitch {
                         val cover = basicInfo.getFieldValueAs<String>("c")
                         return ThreePointItemItemData(
                             name = "获取封面",
-                            data = cover
+                            data = "$cover\n"
                         )
                     }
                     logger.d("unable get cover for ${data.javaClass}")
@@ -60,14 +60,17 @@ object Cover : BaseModule(), SwitchModule, UISwitch {
                 }
 
                 override fun onClick(data: ThreePointItemItemData) {
-                    val cover = data.data
-                    if (cover == null) {
+                    val data = data.data
+                    if (data == null) {
                         Toast.show("封面获取失败")
                     } else {
-                        logger.d(cover)
+                        logger.d(data)
+                        val cover = data.substringBefore("\n")
+                        val title = data.substringAfter("\n")
                         val activity = ActivityUtils.topActivity!!
                         activity.startActivity(Intent(activity, PhotoActivity::class.java).apply {
-                            putExtra(PhotoActivity.Companion.URL, cover)
+                            putExtra(PhotoActivity.URL, cover)
+                            putExtra(PhotoActivity.TITLE, title)
                         })
                     }
                 }
