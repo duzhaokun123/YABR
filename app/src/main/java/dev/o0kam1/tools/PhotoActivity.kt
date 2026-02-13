@@ -38,7 +38,7 @@ class PhotoActivity : Activity(), ModuleActivityMeta {
         super.onCreate(savedInstanceState)
         actionBar?.setDisplayHomeAsUpEnabled(true)
         setContentView(R.layout.activity_photo)
-        setTitle(intent.getStringExtra(TITLE) ?: "图片")
+        setTitle(intent.getStringExtra(TITLE)?.takeIf { it.isNotBlank() } ?: "图片")
         val url = intent.getStringExtra(URL)
         if (url == null) {
             Toast.show("url is null")

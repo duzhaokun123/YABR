@@ -50,9 +50,10 @@ object Cover : BaseModule(), SwitchModule, UISwitch {
                     runCatching {
                         val basicInfo = data.getFieldValueAs<Any>("c")
                         val cover = basicInfo.getFieldValueAs<String>("c")
+                        val title = basicInfo.getFieldValueAs<String>("a")
                         return ThreePointItemItemData(
                             name = "获取封面",
-                            data = "$cover\n"
+                            data = "$cover\n$title"
                         )
                     }
                     logger.d("unable get cover for ${data.javaClass}")
