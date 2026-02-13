@@ -1,7 +1,7 @@
 [versions]
-agp = "9.0.0"
+agp = "9.0.1"
 appcompat = "1.7.1"
-composeBom = "2026.01.01"
+composeBom = "2026.02.00"
 material = "1.13.0"
 photoview = "1.0.3"
 pine = "0.3.0"
