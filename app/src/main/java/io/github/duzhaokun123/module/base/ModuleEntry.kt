@@ -5,4 +5,5 @@ annotation class ModuleEntry(
     val id: String,
     val targets: Array<String> = [],
     val priority: Int = 10,
+    val dependencies: Array<String> = [],
 )

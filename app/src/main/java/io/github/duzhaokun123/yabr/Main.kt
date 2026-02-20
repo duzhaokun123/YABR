@@ -51,18 +51,19 @@ object Main {
                 .map { it to it.metadata }
                 .filter { (_, metadata) ->
                     metadata.targets.isEmpty() || target in metadata.targets
-                }.sortedBy { (_, metadata) ->
-                    metadata.priority
                 }
-        currentProcessModule = toLoad.map { it.first }
+        
+        val sortedToLoad = topologicalSort(toLoad)
+        
+        currentProcessModule = sortedToLoad.map { it.first }
         val coreModules =
-            toLoad
+            sortedToLoad
                 .filter { (module, _) -> module is Core }
                 .map { it.first }
         val otherModules =
-            toLoad
+            sortedToLoad
                 .map { it.first }
-                .minus(coreModules)
+                .minus(coreModules.toSet())
 
         logger.i("loading core modules...")
         coreModules.forEach {
@@ -140,6 +141,46 @@ object Main {
             }
         }
         module.loaded = false
+    }
+
+    private fun topologicalSort(modules: List<Pair<BaseModule, io.github.duzhaokun123.module.base.ModuleEntry>>): List<Pair<BaseModule, io.github.duzhaokun123.module.base.ModuleEntry>> {
+        val result = mutableListOf<Pair<BaseModule, io.github.duzhaokun123.module.base.ModuleEntry>>()
+        
+        val groupedByPriority = modules.groupBy { it.second.priority }.toSortedMap()
+        
+        for ((priority, groupModules) in groupedByPriority) {
+            val visited = mutableSetOf<String>()
+            val visiting = mutableSetOf<String>()
+            val groupModuleMap = groupModules.associateBy { it.first.id }
+
+            fun visit(moduleId: String) {
+                if (moduleId in visited) return
+                if (moduleId in visiting) {
+                    logger.w("Circular dependency detected involving module: $moduleId in priority group $priority")
+                    return
+                }
+                
+                val modulePair = groupModuleMap[moduleId]
+                if (modulePair != null) {
+                    visiting.add(moduleId)
+                    for (dep in modulePair.second.dependencies) {
+                        // Only resolve dependencies within the same priority group
+                        if (groupModuleMap.containsKey(dep)) {
+                            visit(dep)
+                        }
+                    }
+                    result.add(modulePair)
+                    visiting.remove(moduleId)
+                    visited.add(moduleId)
+                }
+            }
+
+            for (modulePair in groupModules) {
+                visit(modulePair.first.id)
+            }
+        }
+
+        return result
     }
 
     private val onModuleLoadListeners = mutableListOf<(BaseModule) -> Unit>()
