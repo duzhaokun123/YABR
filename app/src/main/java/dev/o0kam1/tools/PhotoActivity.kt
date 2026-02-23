@@ -1,6 +1,8 @@
 package dev.o0kam1.tools
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.BitmapFactory
@@ -106,6 +108,18 @@ class PhotoActivity : Activity(), ModuleActivityMeta {
                             Toast.show("图片保存失败: ${t.reason}")
                         }
                     }
+                }
+                true
+            }
+            R.id.copy_link -> {
+                val url = intent.getStringExtra(URL)
+                if (url != null) {
+                    val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText("url", url)
+                    clipboard.setPrimaryClip(clip)
+                    Toast.show("已复制链接")
+                } else {
+                    Toast.show("链接为空")
                 }
                 true
             }

@@ -8,4 +8,8 @@
             android:id="@+id/save"
             android:showAsAction="ifRoom"
             android:title="保存到相册" />
+    <item
+            android:id="@+id/copy_link"
+            android:showAsAction="never"
+            android:title="复制链接" />
 </menu>
