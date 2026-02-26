@@ -30,7 +30,7 @@ jobs:
         run: ./gradlew :app:assembleRelease
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: YABR-${{ matrix.os }}
           path: app/build/outputs/apk/
