@@ -12,7 +12,7 @@ android {
 
 dependencies {
     compileOnly(libs.xposed)
-    compileOnly(projects.app)
+    compileOnly(projects.core)
     compileOnly(projects.loader.base)
     compileOnly(projects.hooker.base)
     compileOnly(projects.hooker.xposed)

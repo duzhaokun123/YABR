@@ -13,5 +13,5 @@ android {
 dependencies {
     implementation(projects.hooker.base)
     implementation(libs.pine.core)
-    compileOnly(projects.app)
+    compileOnly(projects.core)
 }

@@ -8,7 +8,7 @@ android {
 
 dependencies {
     compileOnly(libs.libxposed.api)
-    compileOnly(projects.app)
+    compileOnly(projects.core)
     compileOnly(projects.loader.base)
     compileOnly(projects.hooker.base)
     compileOnly(projects.hooker.xposed100)

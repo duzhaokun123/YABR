@@ -45,6 +45,8 @@ rootProject.name = "YABR"
 
 include(":app")
 include(":annotation")
+include(":core")
+include(":modules")
 
 include(":loader:base")
 include(":loader:xposed")

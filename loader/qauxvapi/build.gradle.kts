@@ -7,7 +7,7 @@ android {
 }
 
 dependencies {
-    compileOnly(projects.app)
+    compileOnly(projects.core)
     compileOnly(projects.loader.base)
     compileOnly(projects.hooker.base)
     compileOnly(projects.stub.qauxvapi)

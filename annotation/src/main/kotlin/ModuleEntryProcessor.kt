@@ -9,10 +9,12 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import java.io.OutputStreamWriter
+import kotlin.io.FileAlreadyExistsException
 
 class ModuleEntryProcessor(
     val codeGenerator: CodeGenerator,
-    val logger: KSPLogger
+    val logger: KSPLogger,
+    val className: String
 ) : SymbolProcessor {
     val packageName = "io.github.duzhaokun123.codegen"
 
@@ -26,7 +28,7 @@ class ModuleEntryProcessor(
                 Dependencies(
                     aggregating = true,
                     sources = symbols.map { it.containingFile!! }.toList().toTypedArray()
-                ), packageName, "ModuleEntries", extensionName = "java"
+                ), packageName, className, extensionName = "java"
             )
         } catch (e: FileAlreadyExistsException) {
             return emptyList()
@@ -34,7 +36,7 @@ class ModuleEntryProcessor(
         val writer = OutputStreamWriter(out)
         writer.write("package $packageName;\n\n")
         writer.write("import io.github.duzhaokun123.yabr.module.base.BaseModule;\n\n")
-        writer.write("public class ModuleEntries {\n")
+        writer.write("public class $className {\n")
         writer.write("\tpublic static BaseModule[] entries = new BaseModule[] {\n")
         symbols.forEach { module ->
                 val className = (module as KSClassDeclaration).qualifiedName!!.asString()
@@ -46,13 +48,14 @@ class ModuleEntryProcessor(
         writer.flush()
         writer.close()
         out.close()
-        logger.info("Module entries generated in $packageName.ModuleEntries")
+        logger.info("Module entries generated in $packageName.$className")
         return symbols.toList()
     }
 }
 
 class ModuleEntryProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
-        return ModuleEntryProcessor(environment.codeGenerator, environment.logger)
+        val className = environment.options["classname"] ?: "ModuleEntries"
+        return ModuleEntryProcessor(environment.codeGenerator, environment.logger, className)
     }
 }
