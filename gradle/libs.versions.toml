@@ -6,12 +6,12 @@ material = "1.13.0"
 photoview = "1.0.3"
 pine = "0.3.0"
 dexkit = "2.0.7"
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 ksp = "2.3.6"
 androidxAnnotation = "1.9.1"
 preference = "1.2.1"
 unsafe = "0.0.6"
-aboutLibraries = "14.0.0-b02"
+aboutLibraries = "14.0.0-b03"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
