@@ -46,7 +46,6 @@ No test suite exists in this project.
 - Only framework packages (`io.github.duzhaokun123.yabr.*`) are allowed as cross-module imports
 
 ### Dependency Quirk
-- `io.github.libxposed:api` must be installed to **mavenLocal** — it is NOT on any public Maven repo
 - `de.robv.android.xposed:api` comes from `https://api.xposed.info` (custom Maven repo declared in `settings.gradle.kts`)
 
 ## UI Interfaces for Modules
