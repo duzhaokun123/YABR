@@ -9,6 +9,7 @@ on:
 
 jobs:
   build_matrix:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest, macos-15-intel ]
