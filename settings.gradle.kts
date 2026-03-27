@@ -29,11 +29,6 @@ dependencyResolutionManagement {
                 includeGroup("com.github.iamironz")
             }
         }
-//        mavenLocal {
-//            content {
-//                includeGroup("io.github.libxposed")
-//            }
-//        }
     }
 }
 
