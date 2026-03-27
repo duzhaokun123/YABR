@@ -139,6 +139,10 @@ class YABRSettings2Fragment : BasePreferenceFragment() {
             Main.allModule
                 .filter { it is UIEntry }
                 .groupBy { (it as UIEntry).category }
+                .entries.sortedBy { 
+                    val index = UICategory.ORDER.indexOf(it.key)
+                    if (index == -1) Int.MAX_VALUE else index 
+                }
         uiModule.forEach { (category, modules) ->
             val preference = Preference(requireContext()).apply {
                 title = when (category) {

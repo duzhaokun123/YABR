@@ -58,6 +58,8 @@ object UICategory {
     const val ABOUT = "about"
     const val FUN = "fun"
     const val DEBUG = "debug"
+
+    val ORDER = listOf(TOOL, UI, FUN, DEBUG, ABOUT)
 }
 
 @ModuleEntry(
@@ -216,6 +218,10 @@ object SettingsUI : BaseModule(), Core, DexKitMemberOwner {
         scrollView.addView(listView, MATCH_PARENT, WRAP_CONTENT)
         val uiModule = (Main.allModule
             .filter { it is UIEntry } as List<UIEntry>).groupBy { it.category }
+            .entries.sortedBy { 
+                val index = UICategory.ORDER.indexOf(it.key)
+                if (index == -1) Int.MAX_VALUE else index 
+            }
         uiModule.forEach { (category, modules) ->
             logger.d("UI Category: $category")
             val header = when (category) {
