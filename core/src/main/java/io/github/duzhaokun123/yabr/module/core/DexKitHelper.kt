@@ -28,16 +28,20 @@ import io.github.duzhaokun123.yabr.utils.toConstructor
 import io.github.duzhaokun123.yabr.utils.toField
 import io.github.duzhaokun123.yabr.utils.toMethod
 import org.luckypray.dexkit.DexKitBridge
+import org.luckypray.dexkit.DexKitCacheBridge
+import org.luckypray.dexkit.annotations.DexKitExperimentalApi
 import org.luckypray.dexkit.wrap.DexClass
 import org.luckypray.dexkit.wrap.DexField
 import org.luckypray.dexkit.wrap.DexMethod
 import java.lang.reflect.Constructor
 import java.lang.reflect.Field
 import java.lang.reflect.Method
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KProperty
 import kotlin.text.removePrefix
 import kotlin.text.startsWith
 
+@OptIn(DexKitExperimentalApi::class)
 @ModuleEntry(
     id = "dexkit_helper",
     priority = 2,
@@ -78,7 +82,7 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
         return rootView
     }
 
-    var dexKitBridge: DexKitBridge? = null
+    var dexKitRecyclableBridge: DexKitCacheBridge.RecyclableBridge? = null
         private set
 
     val dexFindInfo = mutableMapOf<String, DexKitMember<*>>()
@@ -111,7 +115,9 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
                 if (module.needDexKitBridge) {
                     prepareDexKitBridge()
                     runCatching {
-                        module.onDexKitReady(dexKitBridge!!)
+                        dexKitRecyclableBridge!!.withBridge { dexKitBridge ->
+                            module.onDexKitReady(dexKitBridge)
+                        }
                     }.onFailure { t ->
                         module.logger.e("Failed to initialize DexKit context: ${module.id}")
                         module.logger.e(t)
@@ -130,7 +136,9 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
                         }
                         runCatching {
                             prepareDexKitBridge()
-                            dexKitMember.onBridgeReady(dexKitBridge!!)
+                            dexKitRecyclableBridge!!.withBridge { dexKitBridge ->
+                                dexKitMember.onBridgeReady(dexKitBridge)
+                            }
                         }.onFailure { t ->
                             module.logger.e("Failed to initialize DexKit member: ${dexKitMember.name}")
                             module.logger.e(t)
@@ -186,21 +194,59 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
     }
 
     fun prepareDexKitBridge() {
-        logger.d("Preparing DexKitBridge")
-        if (dexKitBridge == null) {
-            logger.d("Creating DexKitBridge")
-            dexKitBridge = DexKitBridge.create(loaderContext.application.applicationInfo.sourceDir)
-        } else {
-            logger.d("DexKitBridge already exists")
+        if (dexKitRecyclableBridge != null) {
+            logger.w("DexKitBridge already prepared")
+            return
         }
-        Toast.handler.removeCallbacks(closeCallback)
-        Toast.handler.postDelayed(closeCallback, 1000L)
+        logger.d("Preparing DexKitBridge")
+        DexKitCacheBridge.idleTimeoutMillis = 1_000L
+        DexKitCacheBridge.addListener(object : DexKitCacheBridge.CacheBridgeListener() {
+            override fun onBridgeCreated(appTag: String) {
+                logger.d("DexKitBridge created")
+            }
+
+            override fun onBridgeReleased(appTag: String) {
+                logger.d("DexKitBridge released")
+            }
+
+            override fun onBridgeDestroyed(appTag: String) {
+               logger.d("DexKitBridge destroyed")
+            }
+        })
+        DexKitCacheBridge.init(MemoryCache)
+        dexKitRecyclableBridge = DexKitCacheBridge.create("bili", loaderContext.application.applicationInfo.sourceDir)
     }
 
-    val closeCallback = Runnable {
-        dexKitBridge?.close()
-        dexKitBridge = null
-        logger.d("DexKitBridge closed")
+    object MemoryCache : DexKitCacheBridge.Cache {
+        private val values = ConcurrentHashMap<String, String>()
+        private val lists = ConcurrentHashMap<String, List<String>>()
+
+        override fun getString(key: String, default: String?): String? =
+            values[key] ?: default
+
+        override fun putString(key: String, value: String) {
+            values[key] = value
+        }
+
+        override fun getStringList(key: String, default: List<String>?): List<String>? =
+            lists[key] ?: default
+
+        override fun putStringList(key: String, value: List<String>) {
+            lists[key] = value
+        }
+
+        override fun remove(key: String) {
+            values.remove(key)
+            lists.remove(key)
+        }
+
+        override fun getAllKeys(): Collection<String> =
+            values.keys + lists.keys
+
+        override fun clearAll() {
+            values.clear()
+            lists.clear()
+        }
     }
 }
 
