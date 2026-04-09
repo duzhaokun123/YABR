@@ -11,7 +11,7 @@ ksp = "2.3.6"
 androidxAnnotation = "1.10.0"
 preference = "1.2.1"
 unsafe = "0.0.6"
-aboutLibraries = "14.0.0"
+aboutLibraries = "14.0.1"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
@@ -29,7 +29,7 @@ unsafe = { module = "com.github.iamironz:unsafe", version.ref = "unsafe" }
 xposed = { module = "de.robv.android.xposed:api", version = "82" }
 kotlin-ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidxAnnotation" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.10.0" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.11.0" }
 aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutLibraries" }
 aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
 
