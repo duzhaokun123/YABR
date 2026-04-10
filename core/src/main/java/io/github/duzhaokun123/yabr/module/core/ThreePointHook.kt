@@ -1,9 +1,18 @@
 package io.github.duzhaokun123.yabr.module.core
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.EditText
+import androidx.core.widget.addTextChangedListener
 import io.github.duzhaokun123.module.base.ModuleEntry
+import io.github.duzhaokun123.yabr.core.R
+import io.github.duzhaokun123.yabr.module.UICategory
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Core
 import io.github.duzhaokun123.yabr.module.base.DexKitMemberOwner
+import io.github.duzhaokun123.yabr.module.base.UIComplex
 import io.github.duzhaokun123.yabr.module.base.dexKitMember
 import io.github.duzhaokun123.yabr.module.base.lazyLoadClass
 import io.github.duzhaokun123.yabr.module.base.multiLoadAnySuccess
@@ -37,9 +46,10 @@ interface ThreePointCallback {
     id = "three_point_hook",
     targets = [ModuleEntryTarget.MAIN]
 )
-object ThreePointHook : BaseModule(), Core, DexKitMemberOwner {
+object ThreePointHook : BaseModule(), Core, DexKitMemberOwner, UIComplex {
     val threePointCallbackMap =
         mutableMapOf<Long, ThreePointCallback>()
+    val config by lazy { ConfigStore.ofModule(this) }
 
     val class_PegasusParser by dexKitMember(
         "com.bilibili.pegasus.request.PegasusParser",
@@ -236,6 +246,9 @@ object ThreePointHook : BaseModule(), Core, DexKitMemberOwner {
 
     private fun hookPegasusFeedConvert(data: Any) {
         data.getJsonFieldValueAs<ArrayList<Any>>("items").forEach { item ->
+            config.getString("pegasus_three_point_version").takeUnless { it.isNullOrEmpty() }?.let {
+                item.setJsonFieldValue("three_point_v", it)
+            }
             val threePoint = item.getJsonFieldValueAs<MutableList<Any>?>("three_point_v2")
             val reasons = mutableListOf<Any>()
             val threePointItem = class_ThreePointItem.new()
@@ -288,5 +301,22 @@ object ThreePointHook : BaseModule(), Core, DexKitMemberOwner {
             logger.w(t)
         }
         return false
+    }
+
+    override val name = "三点菜单注入配置"
+    override val description = "配置三点菜单注入"
+    override val category = UICategory.DEBUG
+
+    @SuppressLint("InflateParams")
+    override fun onCreateUI(context: Context): View {
+        val view = LayoutInflater.from(context).inflate(R.layout.module_threepointhook, null)
+        val etPegasusThreePontVersion = view.findViewById<EditText>(R.id.et_pegasus_three_point_version)
+        etPegasusThreePontVersion.setText(config.getString("pegasus_three_point_version"))
+        etPegasusThreePontVersion.addTextChangedListener(
+            afterTextChanged = { editable ->
+                config.putString("pegasus_three_point_version", editable.toString())
+            }
+        )
+        return view
     }
 }
