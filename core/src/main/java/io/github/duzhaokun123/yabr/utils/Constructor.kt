@@ -17,3 +17,11 @@ val Constructor<*>.paramCount: Int
 fun DexMethod.toConstructor(): Constructor<*> {
     return this.getConstructorInstance(loaderContext.hostClassloader)
 }
+
+fun loadConstructor(signature: String): Constructor<*> {
+    return DexMethod.deserialize(signature).toConstructor()
+}
+
+fun loadConstructorOrNull(signature: String): Constructor<*>? {
+    return runCatching { loadConstructor(signature) }.getOrNull()
+}
