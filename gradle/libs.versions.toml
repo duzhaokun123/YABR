@@ -11,7 +11,7 @@ ksp = "2.3.7"
 androidxAnnotation = "1.10.0"
 preference = "1.2.1"
 unsafe = "0.0.6"
-aboutLibraries = "14.0.1"
+aboutLibraries = "14.1.0"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
