@@ -28,12 +28,12 @@ Yet Another BiliRoaming
 | 环境                 | 建议 loader | 建议 hooker |
 |----------------------|-------------|-------------|
 | 大多数 legacy xposed | xposed      | xposed      |
-| LSPosed              | xposed*     | xposed*     |
+| LSPosed              | libxposed*  | libxposed*  |
 | Zygisk               | inline      | pine        |
 | Rxposed              | rxposed     | pine        |
 | 其他注入方式         | inline      | pine        |
 
-*: 虽然 xposed100 可用 但它看起来太丑了
+*: 未充分测试
 
 ## 开发
 
@@ -46,6 +46,6 @@ Yet Another BiliRoaming
 
 ## 下载
 
-github actions
+[github actions](https://github.com/duzhaokun123/YABR/actions/workflows/build.yml)
 
 不建议
