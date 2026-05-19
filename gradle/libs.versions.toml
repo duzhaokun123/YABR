@@ -27,6 +27,7 @@ pine-core = { module = "top.canyie.pine:core", version.ref = "pine" }
 dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
 unsafe = { module = "com.github.iamironz:unsafe", version.ref = "unsafe" }
 xposed = { module = "de.robv.android.xposed:api", version = "82" }
+libxposed-api = { module = "io.github.libxposed:api", version = "101.0.1" }
 kotlin-ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidxAnnotation" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.11.0" }
