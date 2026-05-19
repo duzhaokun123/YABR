@@ -93,7 +93,7 @@ class PhotoActivity : Activity(), ModuleActivityMeta {
                 runNewThread {
                     val file =
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                            ?.resolve("BiliBili")
+                            ?.resolve("bili")
                             ?.resolve("${System.currentTimeMillis()}.jpeg") // 可能不是 jpeg 猜的
                     if (file == null) {
                         Toast.show("无法获取存储目录")
