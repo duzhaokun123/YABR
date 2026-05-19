@@ -9,7 +9,6 @@ import io.github.duzhaokun123.hooker.libxposed.LibXposedHookerContext
 import io.github.duzhaokun123.loader.base.ImplementationInfo
 import io.github.duzhaokun123.loader.base.LoaderContext
 import io.github.duzhaokun123.yabr.Main
-import io.github.duzhaokun123.yabr.utils.EarlyUtils
 import io.github.libxposed.api.XposedModule
 import io.github.libxposed.api.XposedModuleInterface
 
@@ -26,7 +25,7 @@ class LibXposedInit : XposedModule() {
     override fun onPackageReady(param: XposedModuleInterface.PackageReadyParam) {
         if (param.isFirstPackage.not()) return
 
-        log(Log.INFO, "YABR", "LibXposedInit: ${param.packageName} ($processName)")
+        log(Log.INFO, "LibXposedInit", "${param.packageName} ($processName)")
 
         if ((frameworkProperties and PROP_CAP_SYSTEM) != 0L) {
             frameworkPropertiesTypes.add("PROP_CAP_SYSTEM")

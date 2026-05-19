@@ -1,6 +1,7 @@
 package io.github.duzhaokun123.hooker.libxposed
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import io.github.duzhaokun123.hooker.base.HookCallback
 import io.github.duzhaokun123.hooker.base.HookerContext
@@ -17,6 +18,7 @@ class LibXposedHookerContext(
     private val xposed: XposedInterface
 ) : HookerContext {
     val frameworkPropertiesTypes = mutableListOf<String>()
+
     init {
         if ((xposed.frameworkProperties and XposedInterface.PROP_CAP_SYSTEM) != 0L) {
             frameworkPropertiesTypes.add("PROP_CAP_SYSTEM")
@@ -28,6 +30,7 @@ class LibXposedHookerContext(
             frameworkPropertiesTypes.add("PROP_RT_API_PROTECTION")
         }
     }
+
     override val implementationInfo: ImplementationInfo
         get() = ImplementationInfo(
             name = "LibXposed",
@@ -40,38 +43,56 @@ class LibXposedHookerContext(
         method: Member,
         callback: HookCallback
     ): Unhooker {
-        val handle = xposed.hook(method as Executable).intercept { chain ->
-            val invoker = when (val executable = chain.executable) {
-                is Method -> xposed.getInvoker(executable)
-                    .setType(XposedInterface.Invoker.Type.ORIGIN)
-                is Constructor<*> -> xposed.getInvoker(executable)
-                    .setType(XposedInterface.Invoker.Type.ORIGIN)
-                else -> throw IllegalArgumentException("Unsupported executable: ${executable.javaClass.name}")
-            }
+        val handle = xposed.hook(method as Executable)
+            .setExceptionMode(XposedInterface.ExceptionMode.PASSTHROUGH)
+            .intercept { chain ->
+                val invoker = when (val executable = chain.executable) {
+                    is Method -> xposed
+                        .getInvoker(executable)
+                        .setType(XposedInterface.Invoker.Type.ORIGIN)
 
-            val context = LibXposedHookCallbackContext(chain, invoker)
-            callback.before(context)
+                    is Constructor<*> -> xposed
+                        .getInvoker(executable)
+                        .setType(XposedInterface.Invoker.Type.ORIGIN)
 
-            if (context.shouldSkipOriginal()) {
+                    else -> throw IllegalArgumentException("Unsupported executable: ${executable.javaClass.name}")
+                }
+
+                val context = LibXposedHookCallbackContext(chain, invoker)
+                runCatching {
+                    callback.before(context)
+                }.onFailure { e ->
+                    xposed.log(
+                        Log.WARN, "LibXposedHookerContext", "Failed to execute before callback", e
+                    )
+                }
+
+                if (context.shouldSkipOriginal()) {
+                    context.throwIfNeeded()
+                    return@intercept context.result
+                }
+
+                try {
+                    val result = chain.proceedWith(chain.thisObject, context.args)
+                    context.result = result
+                } catch (t: Throwable) {
+                    context.throwable = t
+                }
+
+                runCatching {
+                    callback.after(context)
+                }.onFailure { e ->
+                    xposed.log(
+                        Log.WARN, "LibXposedHookerContext", "Failed to execute after callback", e
+                    )
+                }
+                if (context.shouldSkipOriginal()) {
+                    context.throwIfNeeded()
+                    return@intercept context.result
+                }
                 context.throwIfNeeded()
-                return@intercept context.result
+                context.result
             }
-
-            try {
-                val result = chain.proceedWith(chain.thisObject, context.args)
-                context.result = result
-            } catch (t: Throwable) {
-                context.throwable = t
-            }
-
-            callback.after(context)
-            if (context.shouldSkipOriginal()) {
-                context.throwIfNeeded()
-                return@intercept context.result
-            }
-            context.throwIfNeeded()
-            context.result
-        }
         return {
             handle.unhook()
         }
@@ -83,12 +104,16 @@ class LibXposedHookerContext(
         vararg args: Any?
     ): Any? {
         return when (method) {
-            is Method -> xposed.getInvoker(method)
+            is Method -> xposed
+                .getInvoker(method)
                 .setType(XposedInterface.Invoker.Type.ORIGIN)
                 .invoke(thiz, *args)
-            is Constructor<*> -> xposed.getInvoker(method)
+
+            is Constructor<*> -> xposed
+                .getInvoker(method)
                 .setType(XposedInterface.Invoker.Type.ORIGIN)
                 .newInstance(*args)
+
             else -> throw IllegalArgumentException("Unsupported member type: ${method.javaClass.name}")
         }
     }
@@ -97,7 +122,8 @@ class LibXposedHookerContext(
         constructor: Constructor<T>,
         vararg args: Any?
     ): T {
-        return xposed.getInvoker(constructor)
+        return xposed
+            .getInvoker(constructor)
             .setType(XposedInterface.Invoker.Type.ORIGIN)
             .newInstance(*args)
     }
