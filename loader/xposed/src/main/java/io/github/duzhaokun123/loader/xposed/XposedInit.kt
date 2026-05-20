@@ -40,7 +40,7 @@ class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
             override val modulePath: String
                 get() = startupParam.modulePath
         }
-        val hookerContext = XposedHookerContext(lpparam)
+        val hookerContext = XposedHookerContext()
 
         XposedHelpers.findAndHookMethod(
             Instrumentation::class.java, "callApplicationOnCreate",

@@ -25,15 +25,17 @@ Yet Another BiliRoaming
 
 但依赖从下表
 
-| 环境                 | 建议 loader | 建议 hooker |
-|----------------------|-------------|-------------|
-| 大多数 legacy xposed | xposed      | xposed      |
-| LSPosed              | libxposed*  | libxposed*  |
-| Zygisk               | inline      | pine        |
-| Rxposed              | rxposed     | pine        |
-| 其他注入方式         | inline      | pine        |
+| 环境                 | 建议 loader | 建议 hooker            |
+|----------------------|-------------|----------------------|
+| 大多数 legacy xposed | xposed      | xposed               |
+| LSPosed              | libxposed*  | libxposed*, xposed** |
+| Zygisk               | inline      | pine                 |
+| Rxposed              | rxposed     | pine                 |
+| 其他注入方式         | inline      | pine                 |
 
 *: 未充分测试
+
+**: 是的 可以在这么工作
 
 ## 开发
 

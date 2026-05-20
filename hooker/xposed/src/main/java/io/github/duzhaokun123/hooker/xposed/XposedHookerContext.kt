@@ -2,7 +2,6 @@ package io.github.duzhaokun123.hooker.xposed
 
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
-import de.robv.android.xposed.callbacks.XC_LoadPackage
 import io.github.duzhaokun123.hooker.base.HookCallback
 import io.github.duzhaokun123.hooker.base.HookerContext
 import io.github.duzhaokun123.hooker.base.ImplementationInfo
@@ -10,9 +9,7 @@ import io.github.duzhaokun123.hooker.base.Unhooker
 import java.lang.reflect.Constructor
 import java.lang.reflect.Member
 
-class XposedHookerContext(
-    val lpparam: XC_LoadPackage.LoadPackageParam
-) : HookerContext {
+class XposedHookerContext : HookerContext {
     val xposedTag = XposedBridge::class.java.getField("TAG").get(null)
 
     override val implementationInfo: ImplementationInfo
