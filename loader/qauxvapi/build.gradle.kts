@@ -7,9 +7,8 @@ android {
 }
 
 dependencies {
+    api(projects.loader.base)
     compileOnly(projects.core)
-    compileOnly(projects.loader.base)
-    compileOnly(projects.hooker.base)
     compileOnly(projects.stub.qauxvapi)
     compileOnly(projects.hooker.qauxvapi)
 }

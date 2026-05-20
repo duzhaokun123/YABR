@@ -7,5 +7,5 @@ android {
 }
 
 dependencies {
-    implementation(projects.hooker.base)
+    api(projects.hooker.base)
 }

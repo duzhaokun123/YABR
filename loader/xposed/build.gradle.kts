@@ -11,9 +11,8 @@ android {
 }
 
 dependencies {
+    api(projects.loader.base)
     compileOnly(libs.xposed)
     compileOnly(projects.core)
-    compileOnly(projects.loader.base)
-    compileOnly(projects.hooker.base)
     compileOnly(projects.hooker.xposed)
 }

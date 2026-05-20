@@ -12,10 +12,9 @@ android {
 }
 
 dependencies {
-    compileOnly(libs.libxposed.api)
+    api(projects.loader.base)
     compileOnly(projects.core)
-    compileOnly(projects.loader.base)
-    compileOnly(projects.hooker.base)
+    compileOnly(libs.libxposed.api)
     compileOnly(projects.hooker.libxposed)
-    implementation(libs.androidx.annotation)
+    compileOnly(libs.androidx.annotation)
 }

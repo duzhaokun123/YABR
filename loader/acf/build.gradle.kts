@@ -7,9 +7,8 @@ android {
 }
 
 dependencies {
+    api(projects.loader.base)
     compileOnly(projects.core)
-    compileOnly(projects.loader.base)
-    compileOnly(projects.hooker.base)
     compileOnly(projects.hooker.pine)
-    implementation(libs.androidx.annotation)
+    compileOnly(libs.androidx.annotation)
 }

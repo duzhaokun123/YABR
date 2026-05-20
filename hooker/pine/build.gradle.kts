@@ -11,7 +11,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.hooker.base)
+    api(projects.hooker.base)
     implementation(libs.pine.core)
     compileOnly(projects.core)
 }

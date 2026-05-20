@@ -11,7 +11,7 @@ android {
 }
 
 dependencies {
+    api(projects.hooker.base)
     compileOnly(libs.libxposed.api)
-    implementation(projects.hooker.base)
-    implementation(libs.androidx.annotation)
+    compileOnly(libs.androidx.annotation)
 }
