@@ -1,18 +1,14 @@
 package io.github.duzhaokun123.yabr.module.core
 
 import io.github.duzhaokun123.module.base.ModuleEntry
-import io.github.duzhaokun123.yabr.logger.AndroidLogger
 import io.github.duzhaokun123.yabr.module.base.BaseModule
 import io.github.duzhaokun123.yabr.module.base.Core
 import io.github.duzhaokun123.yabr.module.base.DexKitMemberOwner
 import io.github.duzhaokun123.yabr.module.base.dexKitMember
 import io.github.duzhaokun123.yabr.module.base.lazyLoadClass
-import io.github.duzhaokun123.yabr.utils.findField
 import io.github.duzhaokun123.yabr.utils.findFieldOrNull
 import io.github.duzhaokun123.yabr.utils.invokeMethod
-import io.github.duzhaokun123.yabr.utils.loadClass
 import io.github.duzhaokun123.yabr.utils.loadConstructor
-import io.github.duzhaokun123.yabr.utils.loadMethod
 import io.github.duzhaokun123.yabr.utils.toMethod
 import java.lang.reflect.Field
 
@@ -25,7 +21,7 @@ object JsonHelper : BaseModule(), Core, DexKitMemberOwner {
     val class_JSONField by lazyLoadClass("com.alibaba.fastjson.annotation.JSONField")
     val class_SerializedName by lazyLoadClass("com.google.gson.annotations.SerializedName")
 
-    val method_Goon_toJson by dexKitMember(
+    val method_Gson_toJson by dexKitMember(
         "com.google.gson.Gson.toJson",
     ) { bridge ->
         bridge.findMethod {
@@ -71,6 +67,6 @@ object JsonHelper : BaseModule(), Core, DexKitMemberOwner {
     }
 
     fun gsonToString(any: Any): String? {
-        return method_Goon_toJson!!.invoke(gson, any) as String?
+        return method_Gson_toJson!!.invoke(gson, any) as String?
     }
 }

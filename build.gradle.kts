@@ -20,7 +20,7 @@ val defaultJavaJvmTarget by extra(JavaVersion.VERSION_11)
 val defaultKotlinJvmTarget by extra(11)
 val androidCompileSdkVersion by extra(36)
 val androidTargetSdkVersion by extra(36)
-val androidMinSdkVersion by extra(23)
+val androidMinSdkVersion by extra(26)
 val androidVersionCode by extra(1)
 val androidVersionName by extra("1.0")
 
