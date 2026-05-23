@@ -91,7 +91,7 @@ object CardJson : BaseModule() {
             .findMethod { it.name == "isKotlinClass" }
             .hookBefore {
                 val clazz = it.args[0] as Class<*>
-                it.result = clazz.declaredAnnotations.any { it.toString().startsWith("@kotlin.Metadata(") }
+                it.result = clazz.declaredAnnotations.any { (it as java.lang.annotation.Annotation).annotationType().name == kotlin.Metadata::class.java.name }
             }
         Class.forName("tools.jackson.module.kotlin.KotlinNamesAnnotationIntrospector")
             .findMethod { it.name == "findImplicitPropertyName" }
