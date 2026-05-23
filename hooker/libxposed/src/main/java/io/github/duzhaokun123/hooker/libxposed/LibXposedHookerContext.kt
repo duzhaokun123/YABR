@@ -73,7 +73,7 @@ class LibXposedHookerContext(
                 }
 
                 try {
-                    val result = chain.proceedWith(chain.thisObject, context.args)
+                    val result = chain.proceed(context.args)
                     context.result = result
                 } catch (t: Throwable) {
                     context.throwable = t
@@ -86,12 +86,9 @@ class LibXposedHookerContext(
                         Log.WARN, "LibXposedHookerContext", "Failed to execute after callback", e
                     )
                 }
-                if (context.shouldSkipOriginal()) {
-                    context.throwIfNeeded()
-                    return@intercept context.result
-                }
+
                 context.throwIfNeeded()
-                context.result
+                return@intercept context.result
             }
         return {
             handle.unhook()
