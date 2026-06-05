@@ -35,7 +35,7 @@ object BLRouterOpenUrl: BaseModule(), UIComplex {
     override fun onLoad(): Boolean {
         val class_RouteRequest = loadClass("Lcom/bilibili/lib/blrouter/RouteRequest;")
         method_BLRouter_routeTo = loadClass("com.bilibili.lib.blrouter.BLRouter")
-            .findMethod { it.parameterTypes contentDeepEquals arrayOf(class_RouteRequest, Context::class.java) }
+            .findMethod { it.parameterTypes contentEquals arrayOf(Context::class.java, class_RouteRequest) }
         method_RouteRequestK_toRouteRequest = loadClass("com.bilibili.lib.blrouter.RouteRequestKt")
             .findMethod { it.parameterTypes contentEquals arrayOf(String::class.java) }
         return true
@@ -49,7 +49,7 @@ object BLRouterOpenUrl: BaseModule(), UIComplex {
         btn_open.setOnClickListener {
             runCatching {
                 val routeRequest = method_RouteRequestK_toRouteRequest.invokeStatic(et_url.text.toString())
-                val routeResponse = method_BLRouter_routeTo.invokeStatic(routeRequest, context)
+                val routeResponse = method_BLRouter_routeTo.invokeStatic(context, routeRequest)
                 tv_response.text = routeResponse.toString()
                 Toast.show("已处理 ${et_url.text}")
             }.onFailure { t ->
