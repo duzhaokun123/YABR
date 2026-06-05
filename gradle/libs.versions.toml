@@ -2,6 +2,7 @@
 agp = "9.2.1"
 appcompat = "1.7.1"
 composeBom = "2026.05.01"
+drawerlayout = "1.2.0"
 jacksonBom = "3.1.4"
 material = "1.14.0"
 photoview = "1.0.3"
@@ -19,6 +20,7 @@ androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "a
 androidx-compose-adaptive = { module = "androidx.compose.material3.adaptive:adaptive" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+androidx-drawerlayout = { module = "androidx.drawerlayout:drawerlayout", version.ref = "drawerlayout" }
 androidx-preference = { module = "androidx.preference:preference", version.ref = "preference" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }
 androidx-compose-activity = { module = "androidx.activity:activity-compose" }

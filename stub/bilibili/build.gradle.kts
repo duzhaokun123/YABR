@@ -8,4 +8,5 @@ android {
 
 dependencies {
     api(libs.androidx.preference)
+    api(libs.androidx.drawerlayout)
 }

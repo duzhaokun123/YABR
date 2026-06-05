@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import io.github.duzhaokun123.hooker.base.HookCallbackContext
+import io.github.duzhaokun123.hooker.base.Unhooker
 import io.github.duzhaokun123.hooker.base.thisObject
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.module.UICategory
@@ -15,7 +18,6 @@ import io.github.duzhaokun123.yabr.module.base.Compatible
 import io.github.duzhaokun123.yabr.module.base.DexKitMemberOwner
 import io.github.duzhaokun123.yabr.module.base.SwitchModule
 import io.github.duzhaokun123.yabr.module.base.UISwitch
-import io.github.duzhaokun123.yabr.module.base.dexKitMember
 import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
 import io.github.duzhaokun123.yabr.utils.findMethod
 import io.github.duzhaokun123.yabr.utils.findMethodBestMatch
@@ -25,9 +27,6 @@ import io.github.duzhaokun123.yabr.utils.invokeMethod
 import io.github.duzhaokun123.yabr.utils.invokeMethodAs
 import io.github.duzhaokun123.yabr.utils.loadClass
 import io.github.duzhaokun123.yabr.utils.new
-import io.github.duzhaokun123.yabr.utils.newAs
-import io.github.duzhaokun123.yabr.utils.toMethod
-import java.lang.reflect.Modifier
 
 @ModuleEntry(
     id = "home_drawer_hook",
@@ -39,69 +38,14 @@ object HomeDrawerHook : BaseModule(), UISwitch, SwitchModule, Compatible, DexKit
 
     override val name = "移动我的到侧边栏"
     override val description =
-        "移动后，可以点击首页的头像或者在空白地方左划打开侧边栏\n关闭时，需要重启两次客户端才能复原。如果无法还原，请重启手机。"
+        "移动后，可以点击首页的头像或者在空白地方左划打开侧边栏"
     override val category = UICategory.UI
 
     override fun checkCompatibility(): String? {
         return null // TODO: Implement compatibility check
     }
 
-    val method_DrawerLayout_openDrawer
-            by dexKitMember("androidx.drawerlayout.widget.DrawerLayout.openDrawer") { bridge ->
-                bridge.findMethod {
-                    matcher {
-                        declaredClass("androidx.drawerlayout.widget.DrawerLayout")
-                        paramTypes(Int::class.javaPrimitiveType, Boolean::class.javaPrimitiveType)
-                        addInvoke {
-                            declaredClass("androidx.drawerlayout.widget.DrawerLayout")
-                            paramTypes(View::class.java, Boolean::class.javaPrimitiveType)
-                            usingStrings(" is not a sliding drawer")
-                            usingNumbers(1.0F)
-                        }
-                    }
-                }.single().toMethod()
-            }
-
-    val method_DrawerLayout_closeDrawer
-            by dexKitMember("androidx.drawerlayout.widget.DrawerLayout.closeDrawer") { bridge ->
-                bridge.findMethod {
-                    matcher {
-                        declaredClass("androidx.drawerlayout.widget.DrawerLayout")
-                        paramTypes(Int::class.javaPrimitiveType, Boolean::class.javaPrimitiveType)
-                        addInvoke {
-                            declaredClass("androidx.drawerlayout.widget.DrawerLayout")
-                            paramTypes(View::class.java, Boolean::class.javaPrimitiveType)
-                            modifiers(Modifier.PUBLIC)
-                            usingStrings(" is not a sliding drawer")
-                            usingNumbers(0, 4)
-                        }
-                    }
-                }.single().toMethod()
-            }
-
-    val method_DrawerLayout_isDrawerOpen
-            by dexKitMember("androidx.drawerlayout.widget.DrawerLayout.isDrawerOpen") { bridge ->
-                bridge.findMethod {
-                    matcher {
-                        declaredClass("androidx.drawerlayout.widget.DrawerLayout")
-                        paramTypes(Int::class.javaPrimitiveType)
-                        returnType(Boolean::class.javaPrimitiveType!!)
-                        addInvoke {
-                            declaredClass("androidx.drawerlayout.widget.DrawerLayout")
-                            paramTypes(View::class.java)
-                            returnType(Boolean::class.javaPrimitiveType!!)
-                            usingStrings(" is not a drawer")
-                            usingFields {
-                                add {
-                                    type(Float::class.javaPrimitiveType!!)
-                                }
-                            }
-                        }
-                    }
-                }.also { logger.d(it) }.single().toMethod()
-            }
-
-    lateinit var drawLayout: ViewGroup
+    lateinit var drawerLayout: DrawerLayout
     lateinit var navView: View
 
 
@@ -113,8 +57,8 @@ object HomeDrawerHook : BaseModule(), UISwitch, SwitchModule, Compatible, DexKit
                 val self = param.thisObject as Activity
                 val view = self.findViewById<ViewGroup>(android.R.id.content).getChildAt(0)
                 (view.parent as ViewGroup).removeViewInLayout(view)
-                drawLayout = loadClass("androidx.drawerlayout.widget.DrawerLayout").newAs(self)
-                drawLayout.addView(view, 0, view.layoutParams)
+                drawerLayout = DrawerLayout(self)
+                drawerLayout.addView(view, 0, view.layoutParams)
 
                 val homeFragment =
                     loadClass("tv.danmaku.bili.ui.main2.mine.HomeUserCenterFragment").new()
@@ -125,34 +69,28 @@ object HomeDrawerHook : BaseModule(), UISwitch, SwitchModule, Compatible, DexKit
                     .invokeMethod("commit")
                 fragmentManager.invokeMethod("executePendingTransactions")
 
-                self.setContentView(drawLayout)
+                self.setContentView(drawerLayout)
             }
+        var createUnhooker: Unhooker? = null
         val createHooker: (HookCallbackContext) -> Unit = { param ->
             val self = param.thisObject as Activity
             val fragmentManager = self.invokeMethod("getSupportFragmentManager")!!
             navView = fragmentManager.invokeMethod("findFragmentByTag", "home")!!
                 .invokeMethodAs("getView")!!
-            val layoutParams =
-                loadClass("androidx.drawerlayout.widget.DrawerLayout\$LayoutParams").newAs<ViewGroup.LayoutParams>(
-                    ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
-                    )
-                )
-            layoutParams.javaClass.fields[0].set(layoutParams, Gravity.START)
-            (navView.parent as? ViewGroup ?: drawLayout).addView(navView, 1, layoutParams)
+            val layoutParams = DrawerLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.START)
+            (navView.parent as? ViewGroup ?: drawerLayout).addView(navView, 1, layoutParams)
+            createUnhooker?.invoke()
         }
 
-        (class_MainActivity.getDeclaredMethodOrNull("onPostCreate", Bundle::class.java)
-            ?: class_MainActivity.getDeclaredMethodOrNull("onStart"))
-            ?.hookAfter(createHooker)
+        createUnhooker = (class_MainActivity.getDeclaredMethodOrNull("onPostCreate", Bundle::class.java)
+            ?: class_MainActivity.getDeclaredMethod("onStart"))
+            .hookAfter(createHooker)
 
 
         class_MainActivity.findMethod { it.name == "onBackPressed" }
             .hookBefore {
-                if (method_DrawerLayout_isDrawerOpen!!.invoke(drawLayout, Gravity.START) == true) {
-                    it.result =
-                        method_DrawerLayout_closeDrawer!!.invoke(drawLayout, Gravity.START, true)
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    it.result = drawerLayout.closeDrawer(GravityCompat.START)
                 }
             }
 
@@ -162,7 +100,7 @@ object HomeDrawerHook : BaseModule(), UISwitch, SwitchModule, Compatible, DexKit
                 val id = getResId("avatar_layout")
                 (param.args[0] as View).findViewById<View>(id)?.setOnClickListener {
                     runCatching {
-                        method_DrawerLayout_openDrawer!!.invoke(drawLayout, Gravity.START, true)
+                        drawerLayout.openDrawer(GravityCompat.START)
                     }.logError()
                 }
             }
