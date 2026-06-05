@@ -18,13 +18,13 @@ object BiliToast : BaseModule(), Core {
 
     override fun onLoad(): Boolean {
         method_show = loadClass("com.bilibili.droid.ToastHelper")
-            .findMethod { it.parameterTypes contentEquals arrayOf(Context::class.java, String::class.java, Int::class.javaPrimitiveType) }
+            .findMethod { it.parameterTypes contentEquals arrayOf(Context::class.java, Int::class.javaPrimitiveType, String::class.java) }
         return true
     }
 
     fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) : Boolean {
         return runCatching {
-            method_show.invoke(null, loaderContext.application, message, duration)
+            method_show.invoke(null, loaderContext.application, duration, message)
             true
         }.getOrDefault(false)
     }
