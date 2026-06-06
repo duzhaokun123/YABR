@@ -7,6 +7,9 @@ on:
     branches: [ main, master, develop ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build_matrix:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
@@ -27,11 +30,14 @@ jobs:
           build-scan-publish: false
           build-scan-terms-of-use-url: 'https://gradle.com/terms-of-service'
           build-scan-terms-of-use-agree: 'yes'
+          dependency-graph: ${{ matrix.os == 'ubuntu-latest' && github.event_name == 'push' && 'generate-and-submit' || 'disabled' }}
+          dependency-graph-continue-on-failure: true
 
       - name: Build Debug
         run: ./gradlew :app:assembleDebug
 
       - name: Build Release
+        if: ${{ github.event_name != 'pull_request' }}
         run: ./gradlew :app:assembleRelease
 
       - name: Upload Artifacts
