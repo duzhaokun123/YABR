@@ -214,7 +214,10 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
             }
         })
         DexKitCacheBridge.init(MemoryCache)
-        dexKitRecyclableBridge = DexKitCacheBridge.create("bili", loaderContext.application.applicationInfo.sourceDir)
+        dexKitRecyclableBridge = DexKitCacheBridge.create("bili", loaderContext.application.classLoader)
+        dexKitRecyclableBridge!!.withBridge { bridge ->
+            logger.d("dexNum: ${bridge.getDexNum()}")
+        }
     }
 
     object MemoryCache : DexKitCacheBridge.Cache {
