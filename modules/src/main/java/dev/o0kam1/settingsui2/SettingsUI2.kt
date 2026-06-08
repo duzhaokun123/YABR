@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceScreen
+import androidx.preference.PreferenceScreen as AndroidXPreferenceScreen
 import com.bilibili.app.preferences.settings2.Settings2SwitchPreference
 import com.bilibili.lib.ui.BaseFragment
 import com.bilibili.lib.ui.BasePreferenceFragment
@@ -38,11 +39,8 @@ import io.github.duzhaokun123.yabr.module.base.isEnabled
 import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
 import io.github.duzhaokun123.yabr.utils.findMethod
 import io.github.duzhaokun123.yabr.utils.invokeMethod
-import io.github.duzhaokun123.yabr.utils.invokeMethodAs
 import io.github.duzhaokun123.yabr.utils.loadClass
 import io.github.duzhaokun123.yabr.utils.loaderContext
-import io.github.duzhaokun123.yabr.utils.paramCount
-import java.lang.reflect.Method
 import java.lang.reflect.Proxy
 
 @ModuleEntry(
@@ -54,7 +52,6 @@ object SettingsUI2 : BaseModule() {
 
     lateinit var class_OnPreferenceClickListener: Class<*>
     lateinit var class_OnPreferenceChangeListener: Class<*>
-    lateinit var method_PreferenceManager_createPreferenceScreen: Method
 
     override fun onLoad(): Boolean {
         val class_Preference = loadClass("androidx.preference.Preference")
@@ -66,11 +63,6 @@ object SettingsUI2 : BaseModule() {
             class_Preference
                 .findMethod { it.name == "setOnPreferenceChangeListener" }
                 .parameterTypes[0]
-        method_PreferenceManager_createPreferenceScreen =
-            loadClass("androidx.preference.PreferenceFragmentCompat")
-                .findMethod { it.name == "getPreferenceManager" }
-                .returnType
-                .findMethod { it.returnType == loadClass("androidx.preference.PreferenceScreen") && it.paramCount == 1 }
         loadClass("com.bilibili.app.preferences.BiliPreferencesActivity\$BiliPreferencesFragment")
             .findMethod { it.name == "onCreatePreferences" }
             .hookAfter {
@@ -118,13 +110,11 @@ object SettingsUI2 : BaseModule() {
 
     fun PreferenceScreen(
         context: Context,
-        preferenceFragment: PreferenceFragmentCompat
-    ): PreferenceScreen {
-        return preferenceFragment
-            .invokeMethodAs<Any>("getPreferenceManager")
-            .invokeMethodAs<PreferenceScreen>(
-                method_PreferenceManager_createPreferenceScreen, context
-            )
+        _preferenceFragment: PreferenceFragmentCompat
+    ): AndroidXPreferenceScreen {
+        return AndroidXPreferenceScreen::class.java
+            .getConstructor(Context::class.java, AttributeSet::class.java)
+            .newInstance(context, null)
     }
 }
 
@@ -245,4 +235,3 @@ class YABRSettings2UIComplexFragment : BaseFragment() {
         }
     }
 }
-
