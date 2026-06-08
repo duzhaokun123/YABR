@@ -40,16 +40,14 @@ import io.github.duzhaokun123.yabr.utils.Toast
 import io.github.duzhaokun123.yabr.utils.dp
 import io.github.duzhaokun123.yabr.utils.findMethod
 import io.github.duzhaokun123.yabr.utils.getFieldValue
-import io.github.duzhaokun123.yabr.utils.getFieldValueAs
 import io.github.duzhaokun123.yabr.utils.getFieldValueOrNullAs
 import io.github.duzhaokun123.yabr.utils.loadClass
 import io.github.duzhaokun123.yabr.utils.loaderContext
 import io.github.duzhaokun123.yabr.utils.new
 import io.github.duzhaokun123.yabr.utils.paramCount
 import io.github.duzhaokun123.yabr.utils.setFieldValue
-import io.github.duzhaokun123.yabr.utils.toClass
 import io.github.duzhaokun123.yabr.utils.toMethod
-import java.lang.reflect.Constructor
+import java.lang.reflect.Method
 import java.lang.reflect.Proxy
 
 object UICategory {
@@ -79,10 +77,15 @@ object SettingsUI : BaseModule(), Core, DexKitMemberOwner {
     val method_addSetting by dexKitMember(
         "tv.danmaku.bili.ui.main2.mine.HomeUserCenterFragment.addSetting"
     ) { bridge ->
+        val class_HomeUserCenterFragment = loadClass("tv.danmaku.bili.ui.main2.mine.HomeUserCenterFragment")
         bridge.findMethod {
             matcher {
-                declaredClass(loadClass("tv.danmaku.bili.ui.main2.mine.HomeUserCenterFragment"))
-                paramTypes(Context::class.java, java.util.List::class.java, null)
+                declaredClass(class_HomeUserCenterFragment)
+                paramTypes(
+                    class_HomeUserCenterFragment,
+                    loadClass("tv.danmaku.bili.ui.main2.api.AccountMine")
+                )
+                usingStrings("activity://main/preference")
             }
         }.single().toMethod()
     }
@@ -90,17 +93,13 @@ object SettingsUI : BaseModule(), Core, DexKitMemberOwner {
     val class_SettingsRouter by dexKitMember(
         "SettingsRouter"
     ) { bridge ->
-        val class_UperHotMineSolution =
-            bridge.findClass {
-                matcher {
-                    usingStrings("UperHotMineSolution")
-                }
-            }.single().interfaces.single()
-        bridge.findClass {
+        bridge.findMethod {
             matcher {
-                addFieldForType(class_UperHotMineSolution.name)
+                paramTypes(class_MenuGroupItem)
+                returnType(loadClass("com.bilibili.lib.homepage.mine.IMinePageInfo"))
+                usingStrings("bilibili://main/drawer/upper-hot", "bilibili://main/drawer/upper-upload")
             }
-        }.single().toClass()
+        }.single().toMethod().declaringClass
     }
 
     private var startSettings = false
@@ -150,8 +149,10 @@ object SettingsUI : BaseModule(), Core, DexKitMemberOwner {
     fun minePageOpen(): Boolean {
         method_addSetting?.hookBefore { param ->
             @Suppress("UNCHECKED_CAST")
-            val list = param.args[1] as? MutableList<Any>
-                ?: param.args[1]?.getFieldValueAs<MutableList<Any>>("moreSectionList")!!
+            val list = param.args.getOrNull(1) as? MutableList<Any>
+                ?: param.args.getOrNull(1)?.getFieldValueOrNullAs<MutableList<Any>>("moreSectionList")
+                ?: param.args.getOrNull(1)?.getFieldValueOrNullAs<MutableList<Any>>("sectionListV2")
+                ?: return@hookBefore
             val itemList = list.lastOrNull()?.let {
                 if (it.javaClass != class_MenuGroupItem)
                     it.getFieldValueOrNullAs<MutableList<Any>>("itemList")
@@ -174,30 +175,37 @@ object SettingsUI : BaseModule(), Core, DexKitMemberOwner {
             }
             itemList.add(item)
         }
-        class_SettingsRouter?.hookAllConstructorsBefore { param ->
-            if (param.args[1] != SETTINGS_URI) return@hookAllConstructorsBefore
-            val routerType = (param.method as Constructor<*>).parameterTypes[3]
-            param.args[3] = Proxy.newProxyInstance(
-                routerType.classLoader,
-                arrayOf(routerType)
-            ) { _, method, _ ->
-                val returnType = method.returnType
-                return@newProxyInstance Proxy.newProxyInstance(
-                    returnType.classLoader,
-                    arrayOf(returnType)
-                ) { _, method, args ->
-                    return@newProxyInstance when (method.returnType) {
-                        Boolean::class.javaPrimitiveType -> false
-                        else -> {
-                            if (method.parameterTypes.isNotEmpty() && method.parameterTypes[0].name == "android.app.Activity") {
-                                showSettings(args[0] as Context)
+        class_SettingsRouter?.findMethod { it.paramCount == 1 && it.parameterTypes[0] == class_MenuGroupItem }
+            ?.hookAfter { param ->
+                val item = param.args[0] ?: return@hookAfter
+                if (item.getFieldValue("uri") != SETTINGS_URI) return@hookAfter
+                val pageInfoType = (param.method as Method).returnType
+                param.result = Proxy.newProxyInstance(
+                    pageInfoType.classLoader,
+                    arrayOf(pageInfoType)
+                ) { _, method, _ ->
+                    return@newProxyInstance when (method.returnType.name) {
+                        "com.bilibili.lib.homepage.mine.IMineMenuItemSolution" ->
+                            Proxy.newProxyInstance(
+                                method.returnType.classLoader,
+                                arrayOf(method.returnType)
+                            ) { _, solutionMethod, args ->
+                                return@newProxyInstance when (solutionMethod.returnType) {
+                                    Boolean::class.javaPrimitiveType -> false
+                                    else -> {
+                                        if (solutionMethod.name == "a" && args?.firstOrNull() is Context) {
+                                            showSettings(args[0] as Context)
+                                        }
+                                        null
+                                    }
+                                }
                             }
-                            null
-                        }
+
+                        "boolean" -> false
+                        else -> null
                     }
                 }
             }
-        }
         return true
     }
 
