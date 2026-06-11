@@ -46,6 +46,7 @@ Yet Another BiliRoaming
 - 支持加载其他 xposed 模块
 - 抄更多哔哩漫游的功能
 - 统一数据类(gson, fastjson, kotlin data class, grpc)访问修改器
+- ThreePointHook 的回调使用原始数据的克隆 并另外提供修改方法
 
 ## 下载
 
