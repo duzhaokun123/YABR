@@ -71,7 +71,7 @@ object HomeDrawerHook : BaseModule(), UISwitch, SwitchModule, Compatible, DexKit
 
                 self.setContentView(drawerLayout)
             }
-        var createUnhooker: Unhooker? = null
+
         val createHooker: (HookCallbackContext) -> Unit = { param ->
             val self = param.thisObject as Activity
             val fragmentManager = self.invokeMethod("getSupportFragmentManager")!!
@@ -79,10 +79,9 @@ object HomeDrawerHook : BaseModule(), UISwitch, SwitchModule, Compatible, DexKit
                 .invokeMethodAs("getView")!!
             val layoutParams = DrawerLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.START)
             (navView.parent as? ViewGroup ?: drawerLayout).addView(navView, 1, layoutParams)
-            createUnhooker?.invoke()
         }
 
-        createUnhooker = (class_MainActivity.getDeclaredMethodOrNull("onPostCreate", Bundle::class.java)
+        (class_MainActivity.getDeclaredMethodOrNull("onPostCreate", Bundle::class.java)
             ?: class_MainActivity.getDeclaredMethod("onStart"))
             .hookAfter(createHooker)
 
