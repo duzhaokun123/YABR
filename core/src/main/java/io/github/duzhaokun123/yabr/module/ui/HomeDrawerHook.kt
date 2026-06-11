@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import io.github.duzhaokun123.hooker.base.HookCallbackContext
-import io.github.duzhaokun123.hooker.base.Unhooker
 import io.github.duzhaokun123.hooker.base.thisObject
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.module.UICategory
