@@ -44,9 +44,7 @@ object JsonHelper : BaseModule(), Core, DexKitMemberOwner {
             if (fastjsonAnnotation != null) {
                 return@findFieldOrNull fastjsonAnnotation.invokeMethod("name") == key
             }
-            val gsonAnnotation = it.annotations.find {
-                (it as java.lang.annotation.Annotation).annotationType().name == class_SerializedName.name
-            }
+            val gsonAnnotation = it.getAnnotation(class_SerializedName as Class<Annotation>)
             if (gsonAnnotation != null) {
                 return@findFieldOrNull gsonAnnotation.invokeMethod("value") == key
             }
