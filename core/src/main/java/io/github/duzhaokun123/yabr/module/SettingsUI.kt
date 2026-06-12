@@ -40,12 +40,13 @@ import io.github.duzhaokun123.yabr.utils.Toast
 import io.github.duzhaokun123.yabr.utils.dp
 import io.github.duzhaokun123.yabr.utils.findMethod
 import io.github.duzhaokun123.yabr.utils.getFieldValue
-import io.github.duzhaokun123.yabr.utils.getFieldValueOrNullAs
+import io.github.duzhaokun123.yabr.utils.getJsonFieldValue
+import io.github.duzhaokun123.yabr.utils.getJsonFieldValueAs
 import io.github.duzhaokun123.yabr.utils.loadClass
 import io.github.duzhaokun123.yabr.utils.loaderContext
 import io.github.duzhaokun123.yabr.utils.new
 import io.github.duzhaokun123.yabr.utils.paramCount
-import io.github.duzhaokun123.yabr.utils.setFieldValue
+import io.github.duzhaokun123.yabr.utils.setJsonFieldValue
 import io.github.duzhaokun123.yabr.utils.toMethod
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy
@@ -72,7 +73,7 @@ object SettingsUI : BaseModule(), Core, DexKitMemberOwner {
 
     override val canUnload = false
 
-    val class_MenuGroupItem by lazy { loadClass("com.bilibili.lib.homepage.mine.MenuGroup\$Item") }
+    val class_MenuGroupItem by lazy { loadClass($$"com.bilibili.lib.homepage.mine.MenuGroup$Item") }
 
     val method_addSetting by dexKitMember(
         "tv.danmaku.bili.ui.main2.mine.HomeUserCenterFragment.addSetting"
@@ -147,36 +148,26 @@ object SettingsUI : BaseModule(), Core, DexKitMemberOwner {
     }
 
     fun minePageOpen(): Boolean {
-        method_addSetting?.hookBefore { param ->
-            @Suppress("UNCHECKED_CAST")
-            val list = param.args.getOrNull(1) as? MutableList<Any>
-                ?: param.args.getOrNull(1)?.getFieldValueOrNullAs<MutableList<Any>>("moreSectionList")
-                ?: param.args.getOrNull(1)?.getFieldValueOrNullAs<MutableList<Any>>("sectionListV2")
-                ?: return@hookBefore
-            val itemList = list.lastOrNull()?.let {
-                if (it.javaClass != class_MenuGroupItem)
-                    it.getFieldValueOrNullAs<MutableList<Any>>("itemList")
-                else
-                    list
-            } ?: list
-            itemList.forEach {
-                if (it.getFieldValue("id") == SETTINGS_ID) return@hookBefore
-            }
+        method_addSetting!!.hookBefore { param ->
+            val list = param.args[1]!!.getJsonFieldValueAs<MutableList<Any>>("sections_v2")
+            val itemList = list.last().getJsonFieldValueAs<MutableList<Any>>("items")
+            if (itemList.any { it.getJsonFieldValue("id") == SETTINGS_ID }) return@hookBefore
             val item = class_MenuGroupItem.new()
             item.apply {
-                setFieldValue("id", SETTINGS_ID)
-                setFieldValue("title", "YABR 设置")
-                setFieldValue(
+                setJsonFieldValue("id", SETTINGS_ID)
+                setJsonFieldValue("title", "YABR 设置")
+                setJsonFieldValue(
                     "icon",
                     "https://i0.hdslb.com/bfs/album/276769577d2a5db1d9f914364abad7c5253086f6.png"
                 )
-                setFieldValue("uri", SETTINGS_URI)
-                setFieldValue("visible", 1)
+                setJsonFieldValue("uri", SETTINGS_URI)
+                setJsonFieldValue("display", 1)
             }
             itemList.add(item)
         }
-        class_SettingsRouter?.findMethod { it.paramCount == 1 && it.parameterTypes[0] == class_MenuGroupItem }
-            ?.hookAfter { param ->
+        // TODO: 使用 BLRouter 注册路由
+        class_SettingsRouter!!.findMethod { it.paramCount == 1 && it.parameterTypes[0] == class_MenuGroupItem }
+            .hookAfter { param ->
                 val item = param.args[0] ?: return@hookAfter
                 if (item.getFieldValue("uri") != SETTINGS_URI) return@hookAfter
                 val pageInfoType = (param.method as Method).returnType
