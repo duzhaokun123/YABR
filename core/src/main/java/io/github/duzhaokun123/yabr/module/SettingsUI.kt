@@ -10,6 +10,8 @@ import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -39,15 +41,16 @@ import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
 import io.github.duzhaokun123.yabr.utils.Toast
 import io.github.duzhaokun123.yabr.utils.dp
 import io.github.duzhaokun123.yabr.utils.findMethod
-import io.github.duzhaokun123.yabr.utils.getFieldValue
 import io.github.duzhaokun123.yabr.utils.getJsonFieldValue
 import io.github.duzhaokun123.yabr.utils.getJsonFieldValueAs
+import io.github.duzhaokun123.yabr.utils.invokeStatic
 import io.github.duzhaokun123.yabr.utils.loadClass
 import io.github.duzhaokun123.yabr.utils.loaderContext
 import io.github.duzhaokun123.yabr.utils.new
 import io.github.duzhaokun123.yabr.utils.paramCount
 import io.github.duzhaokun123.yabr.utils.setJsonFieldValue
 import io.github.duzhaokun123.yabr.utils.toMethod
+import java.lang.reflect.Array as ReflectArray
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy
 
@@ -89,18 +92,6 @@ object SettingsUI : BaseModule(), Core, DexKitMemberOwner {
                 usingStrings("activity://main/preference")
             }
         }.single().toMethod()
-    }
-
-    val class_SettingsRouter by dexKitMember(
-        "SettingsRouter"
-    ) { bridge ->
-        bridge.findMethod {
-            matcher {
-                paramTypes(class_MenuGroupItem)
-                returnType(loadClass("com.bilibili.lib.homepage.mine.IMinePageInfo"))
-                usingStrings("bilibili://main/drawer/upper-hot", "bilibili://main/drawer/upper-upload")
-            }
-        }.single().toMethod().declaringClass
     }
 
     private var startSettings = false
@@ -165,39 +156,131 @@ object SettingsUI : BaseModule(), Core, DexKitMemberOwner {
             }
             itemList.add(item)
         }
-        // TODO: 使用 BLRouter 注册路由
-        class_SettingsRouter!!.findMethod { it.paramCount == 1 && it.parameterTypes[0] == class_MenuGroupItem }
-            .hookAfter { param ->
-                val item = param.args[0] ?: return@hookAfter
-                if (item.getFieldValue("uri") != SETTINGS_URI) return@hookAfter
-                val pageInfoType = (param.method as Method).returnType
-                param.result = Proxy.newProxyInstance(
-                    pageInfoType.classLoader,
-                    arrayOf(pageInfoType)
-                ) { _, method, _ ->
-                    return@newProxyInstance when (method.returnType.name) {
-                        "com.bilibili.lib.homepage.mine.IMineMenuItemSolution" ->
-                            Proxy.newProxyInstance(
-                                method.returnType.classLoader,
-                                arrayOf(method.returnType)
-                            ) { _, solutionMethod, args ->
-                                return@newProxyInstance when (solutionMethod.returnType) {
-                                    Boolean::class.javaPrimitiveType -> false
-                                    else -> {
-                                        if (solutionMethod.name == "a" && args?.firstOrNull() is Context) {
-                                            showSettings(args[0] as Context)
-                                        }
-                                        null
-                                    }
-                                }
-                            }
+        // TODO: 注册路由提升为框架功能
+        // TODO: 延迟加载提升为框架功能
+        Handler(Looper.getMainLooper()).postDelayed({
+            registerSettingsRoute()
+        }, 1000)
+        return true
+    }
 
-                        "boolean" -> false
-                        else -> null
+    private fun registerSettingsRoute() {
+        val class_BridgeCentral = loadClass("com.bilibili.lib.blrouter.internal.incubating.BridgeCentral")
+        val class_BRouter = loadClass("com.bilibili.lib.brouter.api.BRouter")
+        val class_BRouterCore = loadClass("Lcom/bilibili/lib/brouter/core/BRouterCore;")
+        val class_DirectStartActionResult = loadClass($$"com.bilibili.lib.brouter.api.DirectStart$ActionResult")
+        val class_kotlinPair = loadClass("kotlin.Pair")
+        val class_Provider = loadClass("javax.inject.Provider")
+        val class_LegacyRouteSupport = loadClass("com.bilibili.lib.brouter.api.internal.base.LegacyRouteSupport")
+        val class_RouteHandlerFactory = loadClass("com.bilibili.lib.brouter.api.RouteHandlerFactory")
+        val class_RouteTargetHandler = loadClass("com.bilibili.lib.brouter.api.RouteTargetHandler")
+        val class_RouteTargetKClassTarget = loadClass($$"com.bilibili.lib.brouter.api.RouteTarget$KClassTarget")
+
+        // void d(
+        //     RouteTarget target,
+        //     String routeName,
+        //     String desc,
+        //     String routeType,
+        //     List<String> routeRules,
+        //     Provider<List<BRouteInterceptor>> interceptors,
+        //     Provider<RouteHandlerFactory> handler,
+        //     Pair<String, String>[] attributes
+        // )
+        val method_LegacyRouteSupport_dynamicRegisterRoutes = class_LegacyRouteSupport
+            .findMethod { it.paramCount == 8 }
+        val method_RouteHandlerFactory_create = class_RouteHandlerFactory
+            .findMethod { it.returnType == class_RouteTargetHandler }
+        val method_RouteTargetHandler_handle = class_RouteTargetHandler
+            .findMethod { it.returnType == Object::class.java }
+
+        val bRouter = class_BridgeCentral
+            .findMethod { it.returnType == class_BRouter }
+            .invokeStatic()
+        val legacyRouteSupport = class_BRouterCore
+            .findMethod { it.returnType == class_LegacyRouteSupport }
+            .invoke(bRouter)
+
+        fun defaultProxyMethod(proxy: Any, method: Method, args: Array<Any?>?): Any? {
+            return when (method.name) {
+                "toString" -> "YABRSettingsRouteProxy"
+                "hashCode" -> System.identityHashCode(proxy)
+                "equals" -> proxy === args?.getOrNull(0)
+                else -> null
+            }
+        }
+
+        val routeTarget = Proxy.newProxyInstance(
+            loaderContext.hostClassloader, arrayOf(class_RouteTargetKClassTarget)
+        ) { proxy, method, args ->
+            when (method.name) {
+                // ```kotlin
+                // public interface FunctionTarget extends RouteTarget {
+                //     @NotNull
+                //     com.bilibili.lib.brouter.api.FunctionWrapper invoke();
+                // }
+                // ```
+                // FIXME: 这个实现不正确
+                "invoke" -> SettingsUI::class
+                else -> defaultProxyMethod(proxy, method, args)
+            }
+        }
+
+        val interceptorsProvider = Proxy.newProxyInstance(
+            loaderContext.hostClassloader, arrayOf(class_Provider)
+        ) { proxy, method, args ->
+            when (method.name) {
+                "get" -> emptyList<Any>()
+                else -> defaultProxyMethod(proxy, method, args)
+            }
+        }
+
+        val routeTargetHandler = Proxy.newProxyInstance(
+            loaderContext.hostClassloader, arrayOf(class_RouteTargetHandler)
+        ) { proxy, method, args ->
+            when (method.name) {
+                method_RouteTargetHandler_handle.name -> {
+                    showSettings()
+                    class_DirectStartActionResult.new(null)
+                }
+                else -> defaultProxyMethod(proxy, method, args)
+            }
+        }
+
+        val routeHandlerFactory = Proxy.newProxyInstance(
+            loaderContext.hostClassloader, arrayOf(class_RouteHandlerFactory)
+        ) { proxy, method, args ->
+            when (method.name) {
+                method_RouteHandlerFactory_create.name -> {
+                    if (args[1].toString().contains("DirectStart")) {
+                        routeTargetHandler
+                    } else {
+                        null
                     }
                 }
+                else -> defaultProxyMethod(proxy, method, args)
             }
-        return true
+        }
+
+        val handlerProvider = Proxy.newProxyInstance(
+            loaderContext.hostClassloader, arrayOf(class_Provider)
+        ) { proxy, method, args ->
+            when (method.name) {
+                "get" -> routeHandlerFactory
+                else -> defaultProxyMethod(proxy, method, args)
+            }
+        }
+
+        method_LegacyRouteSupport_dynamicRegisterRoutes.invoke(
+            legacyRouteSupport,
+            routeTarget,
+            "yabr_settings",
+            "YABR Settings",
+            "action",
+            listOf(SETTINGS_URI),
+            interceptorsProvider,
+            handlerProvider,
+            ReflectArray.newInstance(class_kotlinPair, 0)
+        )
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
