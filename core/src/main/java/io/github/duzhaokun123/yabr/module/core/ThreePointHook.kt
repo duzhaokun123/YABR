@@ -252,15 +252,15 @@ object ThreePointHook : BaseModule(), Core, DexKitMemberOwner, UIComplex {
             val threePoint = item.getJsonFieldValueAs<MutableList<Any>?>("three_point_v2")
             val reasons = mutableListOf<Any>()
             val threePointItem = class_ThreePointItem.new()
-            threePointItem.setFieldValue("title", "YABR")
-            threePointItem.setFieldValue("subtitle", "  menu")
-            threePointItem.setFieldValue("type", "dislike")
-            threePointItem.setFieldValue("reasons", reasons)
+            threePointItem.setJsonFieldValue("title", "YABR")
+            threePointItem.setJsonFieldValue("subtitle", "  menu")
+            threePointItem.setJsonFieldValue("type", "dislike")
+            threePointItem.setJsonFieldValue("reasons", reasons)
             parseData(item).forEach { (id, data) ->
                 val dislikeReason = class_DislikeReason.new()
-                dislikeReason.setFieldValue("id", id)
-                dislikeReason.setFieldValue("name", data.name)
-                dislikeReason.setFieldValue("extra", data.data)
+                dislikeReason.setJsonFieldValue("id", id)
+                dislikeReason.setJsonFieldValue("name", data.name)
+                dislikeReason.setJsonFieldValue("extra", data.data)
                 reasons.add(dislikeReason)
             }
             if (reasons.isEmpty()) return
