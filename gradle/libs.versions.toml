@@ -6,6 +6,7 @@ drawerlayout = "1.2.0"
 jacksonBom = "3.2.0"
 material = "1.14.0"
 photoview = "1.0.3"
+subsamplingScaleImageView = "3.10.0"
 pine = "0.3.0"
 dexkit = "2.2.0"
 kotlin = "2.4.0"
@@ -28,6 +29,7 @@ jackson-bom = { module = "tools.jackson:jackson-bom", version.ref = "jacksonBom"
 jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 photoview = { module = "io.getstream:photoview", version.ref = "photoview" }
+subsamplingscaleimageview = { module = "com.davemorrissey.labs:subsampling-scale-image-view-androidx", version.ref = "subsamplingScaleImageView" }
 pine-core = { module = "top.canyie.pine:core", version.ref = "pine" }
 dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
 unsafe = { module = "com.github.iamironz:unsafe", version.ref = "unsafe" }

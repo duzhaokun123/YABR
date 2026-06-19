@@ -13,7 +13,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
-import io.getstream.photoview.PhotoView
+import com.davemorrissey.labs.subscaleview.ImageSource
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import dev.o0kam1.modules.R
 import io.github.duzhaokun123.yabr.logger.activityLogger
 import io.github.duzhaokun123.yabr.module.core.ModuleActivity
@@ -47,7 +48,7 @@ class PhotoActivity : Activity(), ModuleActivityMeta {
             finish()
             return
         }
-        val photoView = findViewById<PhotoView>(R.id.photo_view)
+        val photoView = findViewById<SubsamplingScaleImageView>(R.id.photo_view)
         runNewThread {
             runCatching {
                 photoData = Http.get(url).readAll()
@@ -56,7 +57,7 @@ class PhotoActivity : Activity(), ModuleActivityMeta {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && b.hasGainmap()) {
                         window.colorMode = ActivityInfo.COLOR_MODE_HDR
                     }
-                    photoView.setImageBitmap(b)
+                    photoView.setImage(ImageSource.bitmap(b))
                     findViewById<ProgressBar>(R.id.pb).visibility = View.GONE
                 }
             }.onFailure { t ->
@@ -78,6 +79,7 @@ class PhotoActivity : Activity(), ModuleActivityMeta {
                 finish()
                 true
             }
+
             R.id.share -> {
                 val shareUri = Share.makeShareFileUri(photoData, "jpeg")
                 startActivity(Intent.createChooser(Intent().apply {
@@ -111,6 +113,7 @@ class PhotoActivity : Activity(), ModuleActivityMeta {
                 }
                 true
             }
+
             R.id.copy_link -> {
                 val url = intent.getStringExtra(URL)
                 if (url != null) {
@@ -123,6 +126,7 @@ class PhotoActivity : Activity(), ModuleActivityMeta {
                 }
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

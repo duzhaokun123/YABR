@@ -28,7 +28,7 @@ dependencies {
 
     implementation(kotlin("reflect"))
     implementation(libs.dexkit)
-    implementation(libs.photoview)
+    implementation(libs.subsamplingscaleimageview)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.kotlinx.serialization.json)
