@@ -2,9 +2,7 @@ package io.github.duzhaokun123.loader.libxposed
 
 import android.app.Application
 import android.app.Instrumentation
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import io.github.duzhaokun123.hooker.libxposed.LibXposedHookerContext
 import io.github.duzhaokun123.loader.base.ImplementationInfo
 import io.github.duzhaokun123.loader.base.LoaderContext
@@ -12,7 +10,6 @@ import io.github.duzhaokun123.yabr.Main
 import io.github.libxposed.api.XposedModule
 import io.github.libxposed.api.XposedModuleInterface
 
-@RequiresApi(Build.VERSION_CODES.O)
 class LibXposedInit : XposedModule() {
     lateinit var processName: String
     lateinit var application: Application
@@ -61,5 +58,10 @@ class LibXposedInit : XposedModule() {
                 Main.main(loaderContext, hookerContext)
                 return@intercept chain.proceed()
             }
+    }
+
+    override fun onHotReloading(param: XposedModuleInterface.HotReloadingParam): Boolean {
+        log(Log.INFO, "LibXposedInit", "onHotReloading")
+        return false
     }
 }

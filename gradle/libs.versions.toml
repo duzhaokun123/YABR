@@ -28,7 +28,6 @@ androidx-compose-activity = { module = "androidx.activity:activity-compose" }
 jackson-bom = { module = "tools.jackson:jackson-bom", version.ref = "jacksonBom" }
 jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
-photoview = { module = "io.getstream:photoview", version.ref = "photoview" }
 subsamplingscaleimageview = { module = "com.davemorrissey.labs:subsampling-scale-image-view-androidx", version.ref = "subsamplingScaleImageView" }
 pine-core = { module = "top.canyie.pine:core", version.ref = "pine" }
 dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
