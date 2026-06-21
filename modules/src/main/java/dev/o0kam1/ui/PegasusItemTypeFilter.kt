@@ -27,11 +27,11 @@ data class PegasusHolderInfo(
 )
 
 @ModuleEntry(
-    id = "dev.o0kam1.ui.PegasusItemFilter",
+    id = "dev.o0kam1.ui.PegasusItemTypeFilter",
     targets = [ModuleEntryTarget.MAIN]
 )
-object PegasusItemFilter : BaseModule(), SwitchModule, UIComplex {
-    override val name = "首页卡片过滤"
+object PegasusItemTypeFilter : BaseModule(), SwitchModule, UIComplex {
+    override val name = "首页卡片类型过滤"
     override val description = "移除指定类型卡片"
     override val category = UICategory.UI
 
@@ -75,9 +75,9 @@ object PegasusItemFilter : BaseModule(), SwitchModule, UIComplex {
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         val sw = Switch(context).apply {
             text = "启用首页卡片过滤"
-            isChecked = this@PegasusItemFilter.isEnabled
+            isChecked = this@PegasusItemTypeFilter.isEnabled
             setOnCheckedChangeListener { _, isChecked ->
-                this@PegasusItemFilter.isEnabled = isChecked
+                this@PegasusItemTypeFilter.isEnabled = isChecked
                 if (isChecked && pegasusHolderTypes.isEmpty()) {
                     Toast.show("刷新首页以获取数据")
                 }
