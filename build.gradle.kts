@@ -2,6 +2,7 @@ import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.api.AndroidBasePlugin
+import org.gradle.internal.extensions.core.extra
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinBasePlugin
@@ -18,8 +19,8 @@ plugins {
 
 val defaultJavaJvmTarget by extra(JavaVersion.VERSION_11)
 val defaultKotlinJvmTarget by extra(11)
-val androidCompileSdkVersion by extra(36)
-val androidTargetSdkVersion by extra(36)
+val androidCompileSdkVersion by extra(37)
+val androidTargetSdkVersion by extra(37)
 val androidMinSdkVersion by extra(26)
 val androidVersionCode by extra(1)
 val androidVersionName by extra("1.0")

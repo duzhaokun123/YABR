@@ -1,13 +1,10 @@
 package io.github.duzhaokun123.hooker.libxposed
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import io.github.duzhaokun123.hooker.base.HookCallbackContext
 import io.github.libxposed.api.XposedInterface
 import java.lang.reflect.Member
 import java.lang.reflect.Constructor
 
-@RequiresApi(Build.VERSION_CODES.O)
 class LibXposedHookCallbackContext(
     private val chain: XposedInterface.Chain,
     private val invoker: XposedInterface.Invoker<*, *>
@@ -41,7 +38,7 @@ class LibXposedHookCallbackContext(
     override fun invokeOriginal(thiz: Any?, vararg args: Any?): Any? {
         return when (chain.executable) {
             is Constructor<*> -> (invoker as XposedInterface.CtorInvoker<Any>).newInstance(*args)
-            else -> (invoker as XposedInterface.Invoker<Any, *>).invoke(thiz, *args)
+            else -> invoker.invoke(thiz, *args)
         }
     }
 
