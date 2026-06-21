@@ -140,6 +140,7 @@ class YABRSettings2Fragment : BasePreferenceFragment() {
                     UICategory.UI -> "界面"
                     UICategory.ABOUT -> "关于"
                     UICategory.FUN -> "娱乐"
+                    UICategory.AI_SLOP -> "纯 AI 造的玩意 (是的这破坏分类规则 但为什么不试试呢)"
                     UICategory.DEBUG -> "调试"
                     else -> category
                 }

@@ -60,8 +60,9 @@ object UICategory {
     const val ABOUT = "about"
     const val FUN = "fun"
     const val DEBUG = "debug"
+    const val AI_SLOP = "ai_slop"
 
-    val ORDER = listOf(TOOL, UI, FUN, DEBUG, ABOUT)
+    val ORDER = listOf(TOOL, UI, FUN, AI_SLOP, DEBUG, ABOUT)
 }
 
 @ModuleEntry(
@@ -310,6 +311,7 @@ object SettingsUI : BaseModule(), Core, DexKitMemberOwner {
                 UICategory.UI -> "界面"
                 UICategory.ABOUT -> "关于"
                 UICategory.FUN -> "娱乐"
+                UICategory.AI_SLOP -> "纯 AI 造的玩意 (是的这破坏分类规则 但为什么不试试呢)"
                 UICategory.TOOL -> "工具"
                 UICategory.DEBUG -> "调试"
                 else -> category
