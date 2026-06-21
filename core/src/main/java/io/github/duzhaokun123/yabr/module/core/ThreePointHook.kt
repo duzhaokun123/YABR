@@ -42,6 +42,9 @@ interface ThreePointCallback {
     fun onClick(data: ThreePointItemItemData)
 }
 
+/**
+ * TODO: 使用 [PegasusHook] 进行主页修改
+ */
 @ModuleEntry(
     id = "three_point_hook",
     targets = [ModuleEntryTarget.MAIN]
@@ -60,29 +63,11 @@ object ThreePointHook : BaseModule(), Core, DexKitMemberOwner, UIComplex {
             }
         }.single().toClass()
     }
-    val class_TMIndexApiParser by dexKitMember(
-        "com.bilibili.pegasus.api.TMIndexApiParser",
-    ) { bridge ->
-        bridge.findClass {
-            matcher {
-                usingStrings("TMIndexApiParser", "card_type is empty")
-            }
-        }.single().toClass()
-    }
     val class_ThreePointItem by lazyLoadClass("com.bilibili.app.comm.list.common.data.ThreePointItem")
     val class_DislikeReason by lazyLoadClass("com.bilibili.app.comm.list.common.data.DislikeReason")
-    val class_CardClickProcessor by dexKitMember(
-        "com.bilibili.pegasus.card.base.CardClickProcessor",
-    ) { bridge ->
-        bridge.findClass {
-            matcher {
-                usingStrings("handleWatchLaterClicked, createType = ")
-            }
-        }.single().toClass()
-    }
 
     override fun onLoad() =
-        multiLoadAnySuccess(::hookPegasus1, ::hookPegasus2, ::hookTheseus)
+        multiLoadAnySuccess(::hookPegasus1, ::hookTheseus)
 
     fun hookPegasus1(): Boolean {
         class_PegasusParser!!
@@ -98,23 +83,6 @@ object ThreePointHook : BaseModule(), Core, DexKitMemberOwner, UIComplex {
             .hookBefore {
                 val dislikeRequestRecord = it.args[3]
                 if (class_DislikeRequestRecord_Dislike.isInstance(dislikeRequestRecord) && hookPegasusDislikeReason(dislikeRequestRecord!!.getFieldValue("a"))) {
-                    it.result = null
-                }
-            }
-        return true
-    }
-
-    fun hookPegasus2(): Boolean {
-        class_TMIndexApiParser!!
-            .findMethod { it.name == "convert" && it.paramCount == 1 && it.parameterTypes[0] == Object::class.java }
-            .hookAfter {
-                val data = it.result?.getFieldValue("data") ?: return@hookAfter
-                hookPegasusFeedConvert(data)
-            }
-        class_CardClickProcessor!!
-            .findMethod(findSuper = false) { it.paramCount == 11 }
-            .hookBefore {
-                if (hookPegasusDislikeReason(it.args[3])) {
                     it.result = null
                 }
             }
