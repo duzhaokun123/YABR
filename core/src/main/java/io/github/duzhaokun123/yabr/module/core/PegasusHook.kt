@@ -34,11 +34,11 @@ object PegasusHook: BaseModule(), Core, DexKitMemberOwner {
             .findMethod { it.name == "convert" && it.paramCount == 1 && it.parameterTypes[0] == Object::class.java }
             .hookAfter {
                 val data = it.result?.getFieldValue("data") ?: return@hookAfter
-                interceptors.forEach { (id, nterceptor) ->
+                interceptors.forEach { (id, interceptor) ->
                     runCatching {
-                        nterceptor(data)
+                        interceptor(data)
                     }.onFailure { e ->
-                        logger.e("nterceptor($id) error: ", e)
+                        logger.e("interceptor($id) error: ", e)
                     }
                 }
             }

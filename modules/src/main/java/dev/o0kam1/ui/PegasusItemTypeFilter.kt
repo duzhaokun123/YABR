@@ -19,6 +19,7 @@ import io.github.duzhaokun123.yabr.utils.ModuleEntryTarget
 import io.github.duzhaokun123.yabr.utils.Toast
 import io.github.duzhaokun123.yabr.utils.getJsonFieldValueAs
 import io.github.duzhaokun123.yabr.utils.loadMethod
+import io.github.duzhaokun123.yabr.utils.setJsonFieldValue
 
 data class PegasusHolderInfo(
     val type: String,
@@ -46,12 +47,25 @@ object PegasusItemTypeFilter : BaseModule(), SwitchModule, UIComplex {
         PegasusHook.addInterceptFirst(id) { data ->
             val toRemove = config.getStringSet("remove") ?: emptySet()
             val items = data.getJsonFieldValueAs<MutableList<Any>>("items")
+            var count = 0
             items.removeAll { item ->
                 val itemClass = item.javaClass
                 val type = method_PegasusHolderData_getHolderType.invoke(item) as String
                 val bizType = method_PegasusHolderData_getBizType.invoke(item)
                 pegasusHolderTypes[type] = PegasusHolderInfo(type, bizType, itemClass.name)
-                type in toRemove
+                val remove = type in toRemove
+                if (remove) count++
+                remove
+            }
+            if (config.getBoolean("show_count", false) == true) {
+                val configData = data.getJsonFieldValueAs<Any>("config")
+                val toastConfig = configData.getJsonFieldValueAs<Any>("toast")
+                var toastMessage = toastConfig.getJsonFieldValueAs<String?>("toast_message") ?: ""
+                toastMessage = toastMessage.trim().removeSuffix("\n")
+                if (toastMessage.isNotEmpty()) toastMessage += "\n"
+                toastMessage += "PegasusItemTypeFilter removed $count"
+                toastConfig.setJsonFieldValue("toast_message", toastMessage)
+                toastConfig.setJsonFieldValue("has_toast", true)
             }
         }
         return true
@@ -104,6 +118,13 @@ object PegasusItemTypeFilter : BaseModule(), SwitchModule, UIComplex {
         ll.addView(TextView(context).apply {
             @SuppressLint("SetTextI18n")
             text = "显然如果所有类型都被过滤导致加载内容为空集首页加载会出错"
+        })
+        ll.addView(Switch(context).apply {
+            text = "显示过滤计数"
+            isChecked = config.getBoolean("show_count", false) == true
+            setOnCheckedChangeListener { _, isChecked ->
+                config.putBoolean("show_count", isChecked)
+            }
         })
 
         return ll
