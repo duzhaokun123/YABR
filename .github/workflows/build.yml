@@ -24,6 +24,7 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
         with:
@@ -35,10 +36,14 @@ jobs:
 
       - name: Build Debug
         run: ./gradlew :app:assembleDebug
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Release
         if: ${{ github.event_name != 'pull_request' }}
         run: ./gradlew :app:assembleRelease
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7

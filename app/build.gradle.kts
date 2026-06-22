@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.aboutLibraries.android)
 }
 
 android {
@@ -58,4 +59,10 @@ dependencies {
     runtimeOnly(projects.hooker.xposed)
     runtimeOnly(projects.hooker.libxposed)
 //    runtimeOnly(projects.hooker.qauxvapi)
+}
+
+aboutLibraries {
+    collect {
+        gitHubApiToken = findProperty("gpr.key")?.toString() ?: System.getenv("GITHUB_TOKEN")
+    }
 }
