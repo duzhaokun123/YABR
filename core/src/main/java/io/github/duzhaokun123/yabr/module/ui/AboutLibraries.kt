@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
+import com.mikepenz.aboutlibraries.ui.compose.variant.LibraryBadges
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.core.R
 import io.github.duzhaokun123.yabr.module.UICategory
@@ -72,14 +73,18 @@ class AboutLibrariesActivity : ComponentActivity(), ModuleActivityMeta {
                             }
                         )
                     }
-                ) {  innerPadding ->
+                ) { innerPadding ->
                     val libraries by produceLibraries(R.raw.aboutlibraries)
-                    LibrariesContainer(libraries, Modifier.padding(innerPadding),
-                        showAuthor = true,
-                        showDescription = true,
-                        showVersion = true,
-                        showLicenseBadges = true,
-                        showFundingBadges = true)
+                    LibrariesContainer(
+                        libraries, Modifier.padding(innerPadding),
+                        badges = LibraryBadges(
+                            version = true,
+                            author = true,
+                            description = true,
+                            license = true,
+                            funding = true
+                        )
+                    )
                 }
             }
         }
