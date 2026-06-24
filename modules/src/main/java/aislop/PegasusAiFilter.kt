@@ -32,6 +32,8 @@ import kotlinx.serialization.json.buildJsonObject
 import java.io.BufferedReader
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executors
 
 @ModuleEntry(
     id = "aislop.PegasusAiFilter",
@@ -66,17 +68,62 @@ object PegasusAiFilter : BaseModule(), SwitchModule, UIComplex {
     }
 
     // 缓存 ai 判断结果 避免重复请求 key 为卡片标识文本
-    private val decisionCache = mutableMapOf<String, Boolean>()
+    private val decisionCache = java.util.concurrent.ConcurrentHashMap<String, Boolean>()
+
+    private val executor = Executors.newCachedThreadPool()
 
     override fun onLoad(): Boolean {
         PegasusHook.addInterceptFirst(id) { data ->
             val items = data.getJsonFieldValueAs<MutableList<Any>>("items")
             var count = 0
-            items.removeAll { item ->
-                val remove = shouldRemove(item)
-                if (remove) count++
-                remove
+
+            // 准备所有卡片文本并发送并发请求
+            data class ItemInfo(val index: Int, val cardText: String)
+            val itemsToCheck = mutableListOf<ItemInfo>()
+            val cardTexts = mutableListOf<String>()
+
+            items.forEachIndexed { index, item ->
+                val rawJson = JsonHelper.gsonToString(item) ?: return@forEachIndexed
+                if (rawJson.isBlank()) return@forEachIndexed
+                val cardText = runCatching {
+                    json.parseToJsonElement(rawJson).clean().toString()
+                }.getOrDefault(rawJson)
+                if (!decisionCache.containsKey(cardText)) {
+                    itemsToCheck.add(ItemInfo(index, cardText))
+                    cardTexts.add(cardText)
+                }
             }
+
+            // 并发发送所有AI请求
+            val futures = cardTexts.map { cardText ->
+                CompletableFuture.supplyAsync({ askAi(cardText) }, executor)
+            }
+
+            // 等待所有请求完成并更新缓存
+            futures.forEachIndexed { i, future ->
+                runCatching {
+                    decisionCache[cardTexts[i]] = future.get()
+                }.onFailure {
+                    logger.w("ai request error", it)
+                    decisionCache[cardTexts[i]] = false
+                }
+            }
+
+            // 根据缓存过滤items
+            val iterator = items.iterator()
+            while (iterator.hasNext()) {
+                val item = iterator.next()
+                val rawJson = JsonHelper.gsonToString(item) ?: continue
+                if (rawJson.isBlank()) continue
+                val cardText = runCatching {
+                    json.parseToJsonElement(rawJson).clean().toString()
+                }.getOrDefault(rawJson)
+                if (decisionCache[cardText] == true) {
+                    iterator.remove()
+                    count++
+                }
+            }
+
             if (count > 0 && config.getBoolean(KEY_SHOW_COUNT, false) == true) {
                 val configData = data.getJsonFieldValueAs<Any>("config")
                 val toastConfig = configData.getJsonFieldValueAs<Any>("toast")
@@ -93,20 +140,8 @@ object PegasusAiFilter : BaseModule(), SwitchModule, UIComplex {
 
     override fun onUnload(): Boolean {
         PegasusHook.removeIntercept(id)
+        executor.shutdown()
         return super.onUnload()
-    }
-
-    private fun shouldRemove(item: Any): Boolean {
-        // 宿主 gson 序列化出完整卡片 json 再剔除链接等无意义的长字符串 信息丰富又省 token
-        val rawJson = JsonHelper.gsonToString(item) ?: return false
-        if (rawJson.isBlank()) return false
-        val cardText = runCatching {
-            json.parseToJsonElement(rawJson).clean().toString()
-        }.getOrDefault(rawJson)
-        decisionCache[cardText]?.let { return it }
-        val decision = askAi(cardText)
-        decisionCache[cardText] = decision
-        return decision
     }
 
     /** 递归剔除链接 / 过长 / 无意义的字段 减少 token 噪音 */
@@ -250,7 +285,7 @@ object PegasusAiFilter : BaseModule(), SwitchModule, UIComplex {
         })
 
         ll.addView(TextView(context).apply {
-            text = "AI 回答 yes 时移除卡片 网络请求发生在卡片解析线程 过滤所有卡片会导致首页加载出错"
+            text = "AI 回答 yes 时移除卡片 请求已改为并发模式"
         })
 
         return ll
