@@ -14,6 +14,7 @@ jobs:
   build_matrix:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     strategy:
+      fail-fast: ${{ github.event_name == 'pull_request' }}
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest, macos-15-intel ]
     name: Build on ${{ matrix.os }}
