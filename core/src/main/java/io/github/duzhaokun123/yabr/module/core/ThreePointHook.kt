@@ -2,6 +2,7 @@ package io.github.duzhaokun123.yabr.module.core
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
@@ -30,6 +31,7 @@ import io.github.duzhaokun123.yabr.utils.setJsonFieldValue
 import io.github.duzhaokun123.yabr.utils.toClass
 import io.github.duzhaokun123.yabr.utils.toMethod
 import io.github.duzhaokun123.yabr.utils.allocateInstance
+import io.github.duzhaokun123.yabr.utils.findField
 import java.lang.reflect.Proxy
 
 data class ThreePointItemItemData(
@@ -90,25 +92,41 @@ object ThreePointHook : BaseModule(), Core, DexKitMemberOwner, UIComplex {
     }
 
     val class_DetailRelateService by lazyLoadClass("com.bilibili.ship.theseus.united.page.intro.module.relate.DetailRelateService")
-    val method_DetailRelateService_onClickMore by dexKitMember(
-        "com.bilibili.ship.theseus.united.page.intro.module.relate.DetailRelateService.onClickMore"
+    val class_RelateCard by lazyLoadClass("com.bilibili.ship.theseus.united.page.intro.module.relate.RelateCard")
+    val class_RelateCardMoreMenuHelperKt by lazyLoadClass("com.bilibili.ship.theseus.united.page.intro.module.relate.RelateCardMoreMenuHelperKt")
+    val class_TheseusDetailRelateMenuService by lazyLoadClass("com.bilibili.ship.theseus.united.page.intro.module.relate.TheseusDetailRelateMenuService")
+    val method_DetailRelateService_showRelateCardMoreMenu by dexKitMember(
+        "com.bilibili.ship.theseus.united.page.intro.module.relate.DetailRelateService.showRelateCardMoreMenu"
     ) { bridge ->
         bridge.findMethod {
             matcher {
                 declaredClass(class_DetailRelateService)
-                usingStrings("DetailRelateService", "onClickMore, threePoint is null")
+                paramTypes(
+                    Rect::class.java,
+                    class_RelateCard,
+                    Boolean::class.javaPrimitiveType,
+                    loadClass("kotlin.jvm.functions.Function1"),
+                    loadClass("kotlin.jvm.functions.Function1"),
+                    loadClass("kotlin.jvm.functions.Function2")
+                )
             }
         }.single().toMethod()
     }
-    val method_DetailRelateService_addThreePointData by dexKitMember(
-        "com.bilibili.ship.theseus.united.page.intro.module.relate.DetailRelateService.addThreePointData"
+    val method_RelateCardMoreMenuHelper_addMenuItem by dexKitMember(
+        "com.bilibili.ship.theseus.united.page.intro.module.relate.RelateCardMoreMenuHelperKt.addMenuItem"
     ) { bridge ->
         bridge.findMethod {
             matcher {
-                declaredClass(class_DetailRelateService)
-                addCaller {
-                    usingStrings("DetailRelateService", "onClickMore, threePoint is null")
-                }
+                declaredClass(class_RelateCardMoreMenuHelperKt)
+                paramTypes(
+                    class_RelateCard,
+                    Boolean::class.javaPrimitiveType,
+                    class_RelateDislike,
+                    Boolean::class.javaPrimitiveType,
+                    class_TheseusDetailRelateMenuService,
+                    loadClass("kotlin.jvm.functions.Function1"),
+                    loadClass("kotlin.jvm.functions.Function1")
+                )
             }
         }.single().toMethod()
     }
@@ -134,34 +152,20 @@ object ThreePointHook : BaseModule(), Core, DexKitMemberOwner, UIComplex {
     }
 
     fun hookTheseus(): Boolean {
-        method_DetailRelateService_onClickMore!!
+        val fieldDetailRelateMenuService = class_DetailRelateService.findField {
+            it.type == class_TheseusDetailRelateMenuService
+        }
+        val classFunction1 = loadClass("kotlin.jvm.functions.Function1")
+        method_DetailRelateService_showRelateCardMoreMenu!!
             .hookBefore {
-                val relateCard: Any
-                val z0: Boolean
-                val function0: Any
-                val version: Int
-                when(it.args.size) {
-                    3 -> { // 国内 7.71.0
-                        relateCard = it.args[0] as Any
-                        z0 = it.args[1] as Boolean
-                        function0 = Unit
-                        version = 0
-                    }
-                    6 -> { // 国内 8.51.0
-                        relateCard = it.args[1] as Any
-                        z0 = it.args[2] as Boolean
-                        function0 = it.args[3] as Any
-                        version = 1
-                    }
-                    else -> {
-                        logger.e("unsupported method_DetailRelateService_onClickMore\n\t${it.method}")
-                        return@hookBefore
-                    }
-                }
+                val relateCard = it.args[1] as Any
+                val isLongClick = it.args[2] as Boolean
                 val relateDislike = class_RelateDislike!!.allocateInstance()
                 relateDislike.setFieldValue("a", "YABR") // title
                 relateDislike.setFieldValue("b", " menu") // subtitle
                 relateDislike.setFieldValue("c", " menu") // closedSubtitle
+                relateDislike.setFieldValue("d", "") // pasteText
+                relateDislike.setFieldValue("e", "") // closedPasteText
                 val dislikeReasons = mutableListOf<Any>()
                 val datas = parseData(relateCard)
                 datas.forEach { (id, data) ->
@@ -177,24 +181,31 @@ object ThreePointHook : BaseModule(), Core, DexKitMemberOwner, UIComplex {
                     dislikeReasons.add(relateReason)
                 }
                 relateDislike.setFieldValue("f", dislikeReasons) // dislikeReason
+                relateDislike.setFieldValue("g", "") // toast
+                relateDislike.setFieldValue("h", "") // closedToast
+                val noReportCallback = Proxy.newProxyInstance(
+                    loaderContext.hostClassloader,
+                    arrayOf(classFunction1)
+                ) { _, _, _ -> Unit }
                 val callback = Proxy.newProxyInstance(
                     loaderContext.hostClassloader,
-                    arrayOf(loadClass("kotlin.jvm.functions.Function1"))
-                ) { _, method, args ->
+                    arrayOf(classFunction1)
+                ) { _, _, args ->
                     val cancelDislikeData = args[0]
                     val feedbackId = cancelDislikeData.getFieldValueAs<String?>("d")?.toLongOrNull() ?: return@newProxyInstance Unit
                     val data = datas.find { it.first == feedbackId }?.second ?: return@newProxyInstance Unit
                     callCallback(feedbackId, data)
                 }
-                when(version) {
-                    0 -> {
-                        // FIXME: not added
-                        method_DetailRelateService_addThreePointData!!
-                            .invoke(it.thiz, relateCard, z0, arrayListOf<Any>(), relateDislike, true, callback)
-                    }
-                    1 -> method_DetailRelateService_addThreePointData!!
-                        .invoke(it.thiz, relateCard, z0, relateDislike, true, function0, callback)
-                }
+                method_RelateCardMoreMenuHelper_addMenuItem!!.invoke(
+                    null,
+                    relateCard,
+                    isLongClick,
+                    relateDislike,
+                    true,
+                    it.thiz!!.getFieldValue(fieldDetailRelateMenuService),
+                    noReportCallback,
+                    callback
+                )
             }
         return true
     }
