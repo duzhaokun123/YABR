@@ -1,9 +1,9 @@
 [versions]
 agp = "9.3.1"
 appcompat = "1.8.0"
-composeBom = "2026.06.01"
+composeBom = "2026.08.00"
 drawerlayout = "1.2.0"
-jacksonBom = "3.2.1"
+jacksonBom = "3.2.2"
 material = "1.14.0"
 photoview = "1.0.3"
 subsamplingScaleImageView = "3.10.0"
