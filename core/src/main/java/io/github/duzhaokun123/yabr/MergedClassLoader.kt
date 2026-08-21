@@ -1,7 +1,5 @@
 package io.github.duzhaokun123.yabr
 
-import io.github.duzhaokun123.yabr.logger.AndroidLogger
-
 class MergedClassLoader(
     val hostClassLoader: ClassLoader,
     val selfParentClassLoader: ClassLoader?

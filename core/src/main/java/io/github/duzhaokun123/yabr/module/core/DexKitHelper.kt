@@ -82,6 +82,9 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
         return rootView
     }
 
+
+    private lateinit var appClassloader: ClassLoader
+
     var dexKitRecyclableBridge: DexKitCacheBridge.RecyclableBridge? = null
         private set
 
@@ -90,6 +93,7 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
     val dexkitCache by lazy { ConfigStore.ofModule(this) }
 
     override fun onLoad(): Boolean {
+        appClassloader = loaderContext.application.classLoader
         val failsafeFile = loaderContext.application.getExternalFilesDir(null)!!
             .resolve("yabr_failsafe")
             .resolve("dexkit")
@@ -214,7 +218,7 @@ object DexKitHelper : BaseModule(), Core, UIComplex {
             }
         })
         DexKitCacheBridge.init(MemoryCache)
-        dexKitRecyclableBridge = DexKitCacheBridge.create("bili", loaderContext.application.classLoader)
+        dexKitRecyclableBridge = DexKitCacheBridge.create("bili", appClassloader)
         dexKitRecyclableBridge!!.withBridge { bridge ->
             logger.d("dexNum: ${bridge.getDexNum()}")
         }
