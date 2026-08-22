@@ -14,6 +14,7 @@ import io.github.duzhaokun123.yabr.module.core.ActivityUtils
 import io.github.duzhaokun123.yabr.utils.Toast
 import io.github.duzhaokun123.yabr.utils.findMethod
 import io.github.duzhaokun123.yabr.utils.hookerContext
+import io.github.duzhaokun123.yabr.utils.loaderContext
 import kotlin.reflect.jvm.javaMethod
 
 @ModuleEntry(
@@ -55,5 +56,10 @@ object CopyHook: BaseModule(), UISwitch, SwitchModule {
             .apply {
                 findViewById<TextView>(R.id.message).setTextIsSelectable(true)
             }
+    }
+
+    fun copyDirect(clip: ClipData) {
+        val cm = loaderContext.application.getSystemService(ClipboardManager::class.java)
+        hookerContext.invokeOriginal(ClipboardManager::setPrimaryClip.javaMethod!!, cm, clip)
     }
 }
