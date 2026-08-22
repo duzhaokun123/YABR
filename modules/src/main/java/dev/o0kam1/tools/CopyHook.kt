@@ -1,6 +1,5 @@
 package dev.o0kam1.tools
 
-import android.R
 import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -54,7 +53,7 @@ object CopyHook: BaseModule(), UISwitch, SwitchModule {
                 hookerContext.invokeOriginal(ClipboardManager::setPrimaryClip.javaMethod!!, cm, clip)
             }.show()
             .apply {
-                findViewById<TextView>(R.id.message).setTextIsSelectable(true)
+                findViewById<TextView>(android.R.id.message).setTextIsSelectable(true)
             }
     }
 
