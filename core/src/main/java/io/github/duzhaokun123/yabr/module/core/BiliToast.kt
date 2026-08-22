@@ -14,17 +14,23 @@ import java.lang.reflect.Method
     id = "bili_toast"
 )
 object BiliToast : BaseModule(), Core {
-    lateinit var method_show: Method
+    private lateinit var method_show: Method
 
     override fun onLoad(): Boolean {
         method_show = loadClass("com.bilibili.droid.ToastHelper")
-            .findMethod { it.parameterTypes contentEquals arrayOf(Context::class.java, Int::class.javaPrimitiveType, String::class.java) }
+            .findMethod {
+                it.parameterTypes contentEquals arrayOf(
+                    Int::class.javaPrimitiveType,
+                    String::class.java,
+                    Context::class.java
+                )
+            }
         return true
     }
 
     fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) : Boolean {
         return runCatching {
-            method_show.invoke(null, loaderContext.application, duration, message)
+            method_show.invoke(null, duration, message, loaderContext.application)
             true
         }.getOrDefault(false)
     }
