@@ -160,7 +160,11 @@ object SettingsUI : BaseModule(), Core, DexKitMemberOwner {
         // TODO: 注册路由提升为框架功能
         // TODO: 延迟加载提升为框架功能
         Handler(Looper.getMainLooper()).postDelayed({
-            registerSettingsRoute()
+            runCatching {
+                registerSettingsRoute()
+            }.onFailure { e ->
+                logger.e("registerSettingsRoute failed", e)
+            }
         }, 1000)
         return true
     }
