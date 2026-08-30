@@ -22,7 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
+import com.mikepenz.aboutlibraries.ui.compose.variant.LibrariesDensity
+import com.mikepenz.aboutlibraries.ui.compose.variant.LibrariesVariant
+import com.mikepenz.aboutlibraries.ui.compose.variant.LibraryActionMode
 import com.mikepenz.aboutlibraries.ui.compose.variant.LibraryBadges
+import com.mikepenz.aboutlibraries.ui.compose.variant.LibraryDetailMode
 import io.github.duzhaokun123.module.base.ModuleEntry
 import io.github.duzhaokun123.yabr.core.R
 import io.github.duzhaokun123.yabr.module.UICategory
@@ -77,6 +81,10 @@ class AboutLibrariesActivity : ComponentActivity(), ModuleActivityMeta {
                     val libraries by produceLibraries(R.raw.aboutlibraries)
                     LibrariesContainer(
                         libraries, Modifier.padding(innerPadding),
+                        variant = LibrariesVariant.Refined,
+                        density = LibrariesDensity.Compact,
+                        detailMode = LibraryDetailMode.Sheet,
+                        actionMode = LibraryActionMode.Chips,
                         badges = LibraryBadges(
                             version = true,
                             author = true,
