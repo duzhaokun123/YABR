@@ -77,7 +77,10 @@ object HomeDrawerHook : BaseModule(), UISwitch, SwitchModule, Compatible, DexKit
             navView = fragmentManager.invokeMethod("findFragmentByTag", "home")!!
                 .invokeMethodAs("getView")!!
             val layoutParams = DrawerLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.START)
-            (navView.parent as? ViewGroup ?: drawerLayout).addView(navView, 1, layoutParams)
+            if (navView.parent !== drawerLayout) {
+                (navView.parent as? ViewGroup)?.removeView(navView)
+                drawerLayout.addView(navView, 1, layoutParams)
+            }
         }
 
         (class_MainActivity.getDeclaredMethodOrNull("onPostCreate", Bundle::class.java)
