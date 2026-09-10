@@ -8,7 +8,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: ${{ github.event_name == 'push' && 'write' || 'none' }}
+
+cache-mode: ${{ github.event_name == 'push' && 'write' || 'read' }}
 
 jobs:
   build_matrix:
